@@ -9,6 +9,7 @@ type ReactElementWithProps = React.ReactElement & {
     seriesDescription?: string;
     children?: React.ReactNode;
     fileUnitStatus?: FileUnitStatus;
+    isVisible?: boolean;
   };
 };
 
@@ -58,6 +59,11 @@ export const isNodeOrDescendantVisible = (
   searchTerm?: string,
   statusFilter?: FileUnitStatus | 'all'
 ): boolean => {
+  // First check if node is explicitly marked as visible (parent matched search)
+  if (node.props.isVisible === true) {
+    return true;
+  }
+  
   // Base case checks
   const matches = nodeMatchesSearch(node, searchTerm);
   const matchesFilter = nodeMatchesStatusFilter(node, statusFilter);
@@ -130,6 +136,11 @@ export const shouldNodeDisplay = (
   const matchesStatusFilter = !statusFilter || statusFilter === 'all' || 
     type !== 'file-unit' || 
     fileUnitStatus === statusFilter;
+  
+  // If this node matches search, show it and all its children
+  if (matchesSearch && searchTerm && searchTerm.trim() !== '') {
+    return matchesStatusFilter;
+  }
   
   // Item visibility
   if (type === 'item') {

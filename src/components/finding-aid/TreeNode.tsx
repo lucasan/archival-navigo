@@ -47,18 +47,28 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   
   // Modify children with search and filter props
   const processedChildren = childrenArray.map((child) => {
+    // When a parent node matches the search term, pass a special flag to show all children
+    const showAllChildren = matchesSearch && searchTerm.trim() !== '';
+    
     return React.cloneElement(child, {
       searchTerm,
       statusFilter,
+      // When a parent matches, force children to be visible regardless of their own search match
+      isVisible: showAllChildren ? true : child.props.isVisible
     });
   });
   
   // Expand nodes when searching or filtering
   useEffect(() => {
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
-      setIsExpanded(true);
+      // If this node matches the search, expand it to show children
+      if (matchesSearch && searchTerm.trim() !== '') {
+        setIsExpanded(true);
+      } else if (hasVisibleDescendants()) {
+        setIsExpanded(true);
+      }
     }
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, matchesSearch]);
   
   // Check if any descendants match search and filter criteria
   const hasVisibleDescendants = useCallback(() => {
@@ -77,6 +87,11 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   
   // Determine if this node should be displayed
   const shouldDisplay = useMemo(() => {
+    // If this node matches the search, always display it and its children
+    if (matchesSearch && searchTerm.trim() !== '') {
+      return true;
+    }
+    
     return shouldNodeDisplay(
       { 
         title, 
@@ -152,4 +167,3 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
 };
 
 export default TreeNode;
-
