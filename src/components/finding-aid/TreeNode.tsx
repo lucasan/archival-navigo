@@ -63,18 +63,20 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   // A node is visible if it matches both search and filter criteria
   const nodeIsVisible = matchesSearch && matchesStatusFilter;
   
-  // Check if any children are visible
+  // Check if any children are visible after filtering
   let hasVisibleChildren = false;
   
   // Modify children with search and filter props
   const processedChildren = childrenArray.map((child) => {
+    // Clone each child with the search term and status filter
     const newChild = React.cloneElement(child, {
       searchTerm,
       statusFilter,
     });
     
-    // Check if the child will be visible after processing
-    if (newChild.props.isVisible !== false) {
+    // We need to check if the child has isVisible property explicitly set to false
+    // This needs to be improved as it's not correctly detecting if children will be visible
+    if (child.props.isVisible !== false) {
       hasVisibleChildren = true;
     }
     
@@ -88,14 +90,60 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
   }, [searchTerm, statusFilter]);
   
+  // This function will be called to check if any child is actually visible after rendering
+  // This is necessary because our current check with hasVisibleChildren isn't reliable
+  const checkChildrenVisibility = () => {
+    if (!hasChildren || !children) return false;
+    
+    // If we're searching or filtering, we need to check each child recursively
+    if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
+      // Process each child to see if it matches search/filter criteria
+      return processedChildren.some(child => {
+        // For containers, we need to check if their children have matches
+        if (child.props.type === 'container') {
+          // Containers are visible only if they have visible children
+          return child.props.children && React.Children.toArray(child.props.children).some(
+            (grandchild: any) => {
+              // Check if this grandchild matches the search/filter
+              const matchesGrandchildSearch = searchTerm.trim() === '' || 
+                grandchild.props.title.toLowerCase().includes(searchTerm.toLowerCase());
+              
+              const matchesGrandchildFilter = statusFilter === 'all' || 
+                grandchild.props.type !== 'file-unit' || 
+                grandchild.props.fileUnitStatus === statusFilter;
+              
+              return matchesGrandchildSearch && matchesGrandchildFilter;
+            }
+          );
+        }
+        
+        // For other types, check if they directly match
+        const matchesChildSearch = searchTerm.trim() === '' || 
+          child.props.title.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const matchesChildFilter = statusFilter === 'all' || 
+          child.props.type !== 'file-unit' || 
+          child.props.fileUnitStatus === statusFilter;
+        
+        return matchesChildSearch && matchesChildFilter;
+      });
+    }
+    
+    // If not searching or filtering, then there are visible children if there are any children
+    return childrenArray.length > 0;
+  };
+  
+  // Calculate the actual visibility of children
+  const childrenAreVisible = checkChildrenVisibility();
+  
   // Final visibility determination:
   // - For items: visible if they match search/filter criteria
   // - For containers: only visible if they have visible children
   // - For series/file-units: only visible if they match criteria OR have visible children
   const shouldDisplay = isVisible && (
     (type === 'item' && nodeIsVisible) ||
-    (type === 'container' && hasVisibleChildren) ||
-    ((type === 'series' || type === 'file-unit') && (nodeIsVisible || hasVisibleChildren))
+    (type === 'container' && childrenAreVisible) ||
+    ((type === 'series' || type === 'file-unit') && (nodeIsVisible || childrenAreVisible))
   );
   
   // Early return AFTER all hooks have been called
