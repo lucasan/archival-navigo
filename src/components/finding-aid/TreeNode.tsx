@@ -11,6 +11,10 @@ type TreeNodeProps = {
   thumbnailUrl?: string;
   externalUrl?: string;
   level?: number;
+  seriesDescription?: string;
+  seriesExtent?: string;
+  seriesArrangement?: string;
+  seriesDate?: string;
 };
 
 const TreeNode: React.FC<TreeNodeProps> = ({
@@ -21,8 +25,12 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   thumbnailUrl,
   externalUrl,
   level = 0,
+  seriesDescription,
+  seriesExtent,
+  seriesArrangement,
+  seriesDate,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(type === 'series');
   const hasChildren = Boolean(children);
 
   const toggleExpand = () => {
@@ -101,6 +109,35 @@ const TreeNode: React.FC<TreeNodeProps> = ({
           </span>
         )}
       </div>
+
+      {type === 'series' && (
+        <div className="mt-2 mb-4 ml-5 pl-1 text-sm text-muted-foreground border-l">
+          {seriesDescription && (
+            <div className="mb-2">
+              <span className="font-medium text-foreground">Description: </span>
+              {seriesDescription}
+            </div>
+          )}
+          {seriesExtent && (
+            <div className="mb-2">
+              <span className="font-medium text-foreground">Extent: </span>
+              {seriesExtent}
+            </div>
+          )}
+          {seriesArrangement && (
+            <div className="mb-2">
+              <span className="font-medium text-foreground">System of Arrangement: </span>
+              {seriesArrangement}
+            </div>
+          )}
+          {seriesDate && (
+            <div className="mb-2">
+              <span className="font-medium text-foreground">Date: </span>
+              {seriesDate}
+            </div>
+          )}
+        </div>
+      )}
 
       {hasChildren && isExpanded && (
         <div className="ml-5 border-l pl-1 mt-1 animate-slide-in">

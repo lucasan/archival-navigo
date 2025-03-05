@@ -173,7 +173,14 @@ const FindingAid: React.FC = () => {
                   
                   {/* Hierarchical Tree Structure */}
                   <div className="space-y-2">
-                    <TreeNode type="series" title="Series I: Personal Correspondence, 1770-1826">
+                    <TreeNode 
+                      type="series" 
+                      title="Series I: Personal Correspondence, 1770-1826"
+                      seriesDescription="A comprehensive collection of Madison's personal letters to family members, friends, and colleagues."
+                      seriesExtent="12 boxes (5.2 linear feet)"
+                      seriesArrangement="Chronological by year, then alphabetical by correspondent"
+                      seriesDate="1770-1826"
+                    >
                       <TreeNode type="file-unit" title="File Unit 1: Family Letters" isDigitized={true}>
                         <TreeNode 
                           type="item" 
@@ -198,7 +205,14 @@ const FindingAid: React.FC = () => {
                       </TreeNode>
                     </TreeNode>
 
-                    <TreeNode type="series" title="Series II: Political Documents, 1780-1817">
+                    <TreeNode 
+                      type="series" 
+                      title="Series II: Political Documents, 1780-1817"
+                      seriesDescription="Documents related to Madison's political career, including Constitutional Convention notes and presidential papers."
+                      seriesExtent="24 boxes (10.5 linear feet)"
+                      seriesArrangement="By document type, then chronological"
+                      seriesDate="1780-1817"
+                    >
                       <TreeNode type="file-unit" title="File Unit 1: Constitutional Convention Notes" isDigitized={true}>
                         <TreeNode 
                           type="item" 
@@ -229,7 +243,14 @@ const FindingAid: React.FC = () => {
                       </TreeNode>
                     </TreeNode>
 
-                    <TreeNode type="series" title="Series III: Financial Records, 1780-1836">
+                    <TreeNode 
+                      type="series" 
+                      title="Series III: Financial Records, 1780-1836"
+                      seriesDescription="Madison's personal and estate financial records, including accounts, receipts, and property documents."
+                      seriesExtent="8 boxes (3.5 linear feet)"
+                      seriesArrangement="By record type, then chronological"
+                      seriesDate="1780-1836"
+                    >
                       <TreeNode type="file-unit" title="File Unit 1: Estate Accounts" isDigitized={false}>
                         <TreeNode 
                           type="item" 
