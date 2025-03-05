@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronDown, File, Package, Lock, FolderOpen, Scan, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -87,7 +88,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     // Helper function to check if a node or its descendants match the criteria
     const isNodeOrDescendantVisible = (node: React.ReactElement): boolean => {
       // Check if the node itself matches both search and filter criteria
-      const nodeMatchesSearch = 
+      const nodeMatchesSearch = searchTerm.trim() === '' || 
         node.props.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (node.props.seriesDescription && 
          node.props.seriesDescription.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -97,17 +98,17 @@ const TreeNode: React.FC<TreeNodeProps> = ({
         node.props.type !== 'file-unit' || 
         node.props.fileUnitStatus === statusFilter;
       
-      // For file units, they need to match both search and filter criteria
-      if (node.props.type === 'file-unit') {
-        if (nodeMatchesSearch && nodeMatchesFilter) {
-          return true;
-        }
-      } else if (nodeMatchesSearch && searchTerm.trim() !== '') {
-        // Non-file-units can be visible if they match the search (regardless of filter)
-        return true;
+      // For items, they are visible if they match the search
+      if (node.props.type === 'item') {
+        return nodeMatchesSearch;
       }
       
-      // Check if any child of this node matches the criteria
+      // For file units, they need to match both search and filter criteria
+      if (node.props.type === 'file-unit') {
+        return nodeMatchesSearch && nodeMatchesFilter;
+      }
+      
+      // For containers and series, check if they match the search OR have visible descendants
       if (node.props.children) {
         const nodeChildren = React.Children.toArray(node.props.children) as React.ReactElement[];
         return nodeChildren.some(isNodeOrDescendantVisible);
@@ -130,7 +131,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
       return true;
     }
     
-    // For items: they are visible if they match the search term and the parent's status filter
+    // For items: they are visible if they match the search term
     if (type === 'item') {
       return matchesSearch;
     }
