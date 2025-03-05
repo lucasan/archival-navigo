@@ -20,6 +20,9 @@ type TreeNodeProps = {
   containerNumber?: string;
   containerType?: string;
   fileUnitStatus?: FileUnitStatus;
+  searchTerm?: string;
+  statusFilter?: FileUnitStatus | 'all';
+  isVisible?: boolean;
 };
 
 const TreeNode: React.FC<TreeNodeProps> = ({
@@ -37,9 +40,63 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   containerNumber,
   containerType,
   fileUnitStatus = 'open',
+  searchTerm = '',
+  statusFilter = 'all',
+  isVisible = true,
 }) => {
   const [isExpanded, setIsExpanded] = useState(type === 'series' || type === 'container');
   const hasChildren = Boolean(children);
+
+  // Process children to apply search and filter
+  const childrenArray = React.Children.toArray(children) as React.ReactElement[];
+  
+  // Check if this node matches the search term
+  const matchesSearch = searchTerm.trim() === '' || 
+    title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (seriesDescription && seriesDescription.toLowerCase().includes(searchTerm.toLowerCase()));
+  
+  // Check if this node matches the status filter (only applies to file-units)
+  const matchesStatusFilter = statusFilter === 'all' || 
+    type !== 'file-unit' || 
+    fileUnitStatus === statusFilter;
+  
+  // A node is visible if it matches both search and filter criteria
+  const nodeIsVisible = matchesSearch && matchesStatusFilter;
+  
+  // If this is a parent node, we need to check if any children are visible
+  let hasVisibleChildren = false;
+  
+  // Modify children with search and filter props
+  const processedChildren = childrenArray.map((child) => {
+    // Clone the child element with new props
+    const newChild = React.cloneElement(child, {
+      searchTerm,
+      statusFilter,
+    });
+    
+    // If the child is a TreeNode component and it has a isVisible prop that's true,
+    // then this parent should be visible too
+    if (newChild.props.isVisible !== false) {
+      hasVisibleChildren = true;
+    }
+    
+    return newChild;
+  });
+  
+  // If this node is hidden, but has visible children, it should be shown
+  const shouldDisplay = nodeIsVisible || hasVisibleChildren;
+  
+  // If we're hidden and have no visible children, don't render anything
+  if (!shouldDisplay && !isVisible) {
+    return null;
+  }
+  
+  // Auto-expand if searching or filtering
+  React.useEffect(() => {
+    if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
+      setIsExpanded(true);
+    }
+  }, [searchTerm, statusFilter]);
 
   const toggleExpand = () => {
     if (hasChildren) {
@@ -83,6 +140,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
             'tree-node-container': type === 'container',
             'tree-node-file': type === 'file-unit',
             'tree-node-item': type === 'item',
+            'bg-yellow-50': matchesSearch && searchTerm.trim() !== '',
           }
         )}
       >
@@ -183,7 +241,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
 
       {hasChildren && isExpanded && (
         <div className="ml-5 border-l pl-1 mt-1 animate-slide-in">
-          {children}
+          {processedChildren}
         </div>
       )}
     </div>

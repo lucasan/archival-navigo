@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Search, Filter } from 'lucide-react';
 import TreeNode from '@/components/finding-aid/TreeNode';
 import AccordionDetails from '@/components/finding-aid/AccordionDetails';
 
@@ -113,6 +113,16 @@ const collectionData = {
 
 const FindingAid: React.FC = () => {
   const [activeTab, setActiveTab] = useState("series");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'closed' | 'digitized'>('all');
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleStatusFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatusFilter(e.target.value as 'all' | 'open' | 'closed' | 'digitized');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -172,6 +182,37 @@ const FindingAid: React.FC = () => {
                 <div className="bg-white rounded-lg border shadow-sm p-4 md:p-6">
                   <h3 className="text-xl font-medium mb-4">Collection Structure</h3>
                   
+                  {/* Search and Filter Controls */}
+                  <div className="mb-6 flex flex-col md:flex-row gap-4 items-start md:items-center">
+                    <div className="relative w-full md:w-1/2">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <Search size={16} className="text-muted-foreground" />
+                      </div>
+                      <input 
+                        type="text" 
+                        className="bg-background border border-input rounded-md py-2 pl-10 pr-4 w-full focus:ring-2 focus:ring-ring focus:outline-none" 
+                        placeholder="Search series, file units, and items..." 
+                        value={searchTerm}
+                        onChange={handleSearch}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center gap-2 w-full md:w-auto">
+                      <Filter size={16} className="text-muted-foreground" />
+                      <span className="text-sm font-medium">Status:</span>
+                      <select 
+                        className="bg-background border border-input rounded-md py-2 px-3 focus:ring-2 focus:ring-ring focus:outline-none text-sm"
+                        value={statusFilter}
+                        onChange={handleStatusFilter}
+                      >
+                        <option value="all">All Statuses</option>
+                        <option value="open">Open</option>
+                        <option value="closed">Closed</option>
+                        <option value="digitized">Digitized</option>
+                      </select>
+                    </div>
+                  </div>
+                  
                   {/* Hierarchical Tree Structure */}
                   <div className="space-y-2">
                     <TreeNode 
@@ -181,6 +222,8 @@ const FindingAid: React.FC = () => {
                       seriesExtent="12 boxes (5.2 linear feet)"
                       seriesArrangement="Chronological by year, then alphabetical by correspondent"
                       seriesDate="1770-1826"
+                      searchTerm={searchTerm}
+                      statusFilter={statusFilter}
                     >
                       <TreeNode 
                         type="container" 
@@ -236,6 +279,8 @@ const FindingAid: React.FC = () => {
                       seriesExtent="24 boxes (10.5 linear feet)"
                       seriesArrangement="By document type, then chronological"
                       seriesDate="1780-1817"
+                      searchTerm={searchTerm}
+                      statusFilter={statusFilter}
                     >
                       <TreeNode 
                         type="container" 
@@ -297,6 +342,8 @@ const FindingAid: React.FC = () => {
                       seriesExtent="8 boxes (3.5 linear feet)"
                       seriesArrangement="By record type, then chronological"
                       seriesDate="1780-1836"
+                      searchTerm={searchTerm}
+                      statusFilter={statusFilter}
                     >
                       <TreeNode 
                         type="container" 
