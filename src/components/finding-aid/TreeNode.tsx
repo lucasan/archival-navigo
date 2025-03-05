@@ -89,29 +89,54 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
     
     return childrenArray.some(child => {
-      const childMatchesFilters = childMatchesSearchAndFilter(child);
-      
-      // If the child itself matches both filters
-      if (childMatchesFilters) {
+      // Check if the child itself is directly visible according to search & filter criteria
+      if (childMatchesSearchAndFilter(child)) {
+        // For file-unit specifically, must match status filter as well
+        if (child.props.type === 'file-unit') {
+          const childMatchesStatus = statusFilter === 'all' || child.props.fileUnitStatus === statusFilter;
+          return childMatchesStatus;
+        }
         return true;
       }
       
-      // For containers and series, check their children recursively
+      // For containers and series, we need to recursively check their children
       if ((child.props.type === 'container' || child.props.type === 'series') && child.props.children) {
         const childChildren = React.Children.toArray(child.props.children) as React.ReactElement[];
         
         return childChildren.some(grandchild => {
-          // Check if grandchild matches search and filter
+          // Check if grandchild is a file-unit that matches status filter
+          if (grandchild.props.type === 'file-unit') {
+            // File units must match both search and status criteria
+            const matchesStatus = statusFilter === 'all' || grandchild.props.fileUnitStatus === statusFilter;
+            const matchesGrandchildSearch = searchTerm.trim() === '' || 
+              grandchild.props.title.toLowerCase().includes(searchTerm.toLowerCase());
+            
+            return matchesStatus && matchesGrandchildSearch;
+          }
+          
+          // Check if grandchild is visible and if so, it makes this branch visible
           if (childMatchesSearchAndFilter(grandchild)) {
             return true;
           }
           
-          // If grandchild is a file-unit or container, check its children
-          if ((grandchild.props.type === 'file-unit' || grandchild.props.type === 'container') && grandchild.props.children) {
+          // For grandchildren that are containers or have their own children, check them too
+          if ((grandchild.props.type === 'container' || grandchild.props.type === 'file-unit') && 
+              grandchild.props.children) {
             const greatGrandchildren = React.Children.toArray(grandchild.props.children) as React.ReactElement[];
-            return greatGrandchildren.some(ggChild => 
-              childMatchesSearchAndFilter(ggChild)
-            );
+            return greatGrandchildren.some(ggChild => {
+              // Special check for items to ensure they only appear when parents match status filter
+              if (ggChild.props.type === 'item') {
+                // For items, we need to check if their parent (file-unit) matches the status filter
+                const parentMatchesFilter = statusFilter === 'all' || 
+                  grandchild.props.fileUnitStatus === statusFilter;
+                
+                return parentMatchesFilter && 
+                  (searchTerm.trim() === '' || 
+                   ggChild.props.title.toLowerCase().includes(searchTerm.toLowerCase()));
+              }
+              
+              return childMatchesSearchAndFilter(ggChild);
+            });
           }
           
           return false;
@@ -145,7 +170,10 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     // For file-units: visible ONLY if they match both search AND status filter
     (type === 'file-unit' && nodeIsVisible) ||
     // For series/containers: visible if they match criteria OR have visible children
-    ((type === 'series' || type === 'container') && (nodeIsVisible || hasVisibleChildren()))
+    ((type === 'series' || type === 'container') && (
+      // Only show if it matches search term itself OR has children that match BOTH search AND status filter
+      (nodeIsVisible || hasVisibleChildren())
+    ))
   );
   
   // Early return AFTER all hooks have been called
