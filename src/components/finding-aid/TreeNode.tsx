@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronDown, File, Package, Lock, FolderOpen, Scan, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -80,11 +81,6 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     return newChild;
   });
   
-  // Final visibility determination:
-  // - If either this node matches criteria OR has visible children
-  // - AND we're not already marked as invisible by parent node calculation
-  const shouldDisplay = (nodeIsVisible || hasVisibleChildren) && isVisible;
-  
   // IMPORTANT: All hooks must be at the top level, including useEffect
   useEffect(() => {
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
@@ -92,7 +88,17 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
   }, [searchTerm, statusFilter]);
   
-  // Early return AFTER all hooks have been called, not before
+  // Final visibility determination:
+  // - For items: visible if they match search/filter criteria
+  // - For containers: only visible if they have visible children
+  // - For series/file-units: only visible if they match criteria OR have visible children
+  const shouldDisplay = isVisible && (
+    (type === 'item' && nodeIsVisible) ||
+    (type === 'container' && hasVisibleChildren) ||
+    ((type === 'series' || type === 'file-unit') && (nodeIsVisible || hasVisibleChildren))
+  );
+  
+  // Early return AFTER all hooks have been called
   if (!shouldDisplay) {
     return null;
   }
