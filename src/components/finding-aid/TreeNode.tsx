@@ -140,11 +140,11 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   const shouldDisplay = isVisible && (
     // If no search/filter is applied, show everything
     (searchTerm.trim() === '' && statusFilter === 'all') ||
-    // For items: visible if they match search criteria and their parent file-unit matches filter
+    // For items: they're visible only if they match search AND their parent file-unit matches the filter
     (type === 'item' && matchesSearch) ||
-    // For file-units: visible if they match both search and status filter
+    // For file-units: visible ONLY if they match both search AND status filter
     (type === 'file-unit' && nodeIsVisible) ||
-    // For other types: visible if they match criteria OR have visible children
+    // For series/containers: visible if they match criteria OR have visible children
     ((type === 'series' || type === 'container') && (nodeIsVisible || hasVisibleChildren()))
   );
   
