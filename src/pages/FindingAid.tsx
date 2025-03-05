@@ -1,11 +1,9 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from 'lucide-react';
 import TreeNode from '@/components/finding-aid/TreeNode';
 import AccordionDetails from '@/components/finding-aid/AccordionDetails';
-import { cn } from '@/lib/utils';
 
 // Sample data for demonstration
 const collectionData = {
@@ -145,7 +143,7 @@ const FindingAid: React.FC = () => {
       <main className="container px-4 mx-auto py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content (75%) */}
-          <div className="w-full lg:w-3/4 animate-slide-in">
+          <div className="w-full lg:w-3/4 animate-slide-in order-first">
             {/* Overview Section */}
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">Overview</h2>
@@ -255,10 +253,7 @@ const FindingAid: React.FC = () => {
           </div>
 
           {/* Sidebar (25%) */}
-          <div className={cn(
-            "w-full lg:w-1/4 flex-shrink-0 animate-fade-in",
-            activeTab === "details" ? "lg:order-first" : "lg:order-last"
-          )}>
+          <div className="w-full lg:w-1/4 flex-shrink-0 animate-fade-in order-last">
             <aside className="bg-white rounded-lg border shadow-sm p-5">
               <h3 className="text-lg font-semibold mb-3">Research Assistance</h3>
               <p className="text-muted-foreground mb-4">
