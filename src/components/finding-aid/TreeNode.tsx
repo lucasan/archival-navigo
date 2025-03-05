@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { TreeNodeProps, FileUnitStatus } from './types';
+import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, FileUnitNodeProps } from './types';
 import { NodeContent } from './NodeContent';
 import { SeriesMetadata } from './SeriesMetadata';
 import { shouldNodeDisplay, childrenMatchSearch, isNodeOrDescendantVisible } from './treeNodeUtils';
@@ -15,17 +15,19 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     thumbnailUrl,
     externalUrl,
     level = 0,
-    seriesDescription,
-    seriesExtent,
-    seriesArrangement,
-    seriesDate,
-    containerNumber,
-    containerType,
-    fileUnitStatus = 'open',
     searchTerm = '',
     statusFilter = 'all',
     isVisible = true,
   } = props;
+
+  // Type-specific properties with proper type narrowing
+  const seriesDescription = type === 'series' ? (props as SeriesNodeProps).seriesDescription : undefined;
+  const seriesExtent = type === 'series' ? (props as SeriesNodeProps).seriesExtent : undefined;
+  const seriesArrangement = type === 'series' ? (props as SeriesNodeProps).seriesArrangement : undefined;
+  const seriesDate = type === 'series' ? (props as SeriesNodeProps).seriesDate : undefined;
+  const containerNumber = type === 'container' ? (props as ContainerNodeProps).containerNumber : undefined;
+  const containerType = type === 'container' ? (props as ContainerNodeProps).containerType : undefined;
+  const fileUnitStatus = type === 'file-unit' ? (props as FileUnitNodeProps).fileUnitStatus || 'open' : undefined;
 
   const [isExpanded, setIsExpanded] = useState(type === 'series' || type === 'container');
   const hasChildren = Boolean(children);
@@ -41,7 +43,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   // Check if this node matches status filter
   const matchesStatusFilter = statusFilter === 'all' || 
     type !== 'file-unit' || 
-    fileUnitStatus === statusFilter;
+    (fileUnitStatus && fileUnitStatus === statusFilter);
   
   // Modify children with search and filter props
   const processedChildren = childrenArray.map((child) => {
@@ -150,3 +152,4 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
 };
 
 export default TreeNode;
+
