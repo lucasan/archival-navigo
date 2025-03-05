@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ExternalLink, File, Package } from 'lucide-react';
+import { ExternalLink, File, Package, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TreeNodeBase } from './types';
 import { StatusIcon } from './StatusIcon';
@@ -109,8 +109,6 @@ interface NodeIconProps {
 }
 
 const NodeIcon: React.FC<NodeIconProps> = ({ type, hasChildren, isExpanded, toggleExpand }) => {
-  const { ChevronRight, ChevronDown } = require('lucide-react');
-  
   if (hasChildren) {
     return (
       <button 
