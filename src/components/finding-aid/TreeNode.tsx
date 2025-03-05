@@ -1,11 +1,11 @@
 
 import React, { useState } from 'react';
-import { ChevronRight, ChevronDown, Check, Minus, ExternalLink, File } from 'lucide-react';
+import { ChevronRight, ChevronDown, Check, Minus, ExternalLink, File, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type TreeNodeProps = {
   title: string;
-  type: 'series' | 'file-unit' | 'item';
+  type: 'series' | 'container' | 'file-unit' | 'item';
   isDigitized?: boolean;
   children?: React.ReactNode;
   thumbnailUrl?: string;
@@ -15,6 +15,8 @@ type TreeNodeProps = {
   seriesExtent?: string;
   seriesArrangement?: string;
   seriesDate?: string;
+  containerNumber?: string;
+  containerType?: string;
 };
 
 const TreeNode: React.FC<TreeNodeProps> = ({
@@ -29,8 +31,10 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   seriesExtent,
   seriesArrangement,
   seriesDate,
+  containerNumber,
+  containerType,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(type === 'series');
+  const [isExpanded, setIsExpanded] = useState(type === 'series' || type === 'container');
   const hasChildren = Boolean(children);
 
   const toggleExpand = () => {
@@ -46,6 +50,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
           'tree-node flex items-center gap-2',
           {
             'tree-node-series': type === 'series',
+            'tree-node-container': type === 'container',
             'tree-node-file': type === 'file-unit',
             'tree-node-item': type === 'item',
           }
@@ -62,6 +67,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
         ) : (
           <span className="w-5 h-5 flex-none flex items-center justify-center">
             {type === 'item' && <File size={16} className="text-muted-foreground" />}
+            {type === 'container' && <Package size={16} className="text-muted-foreground" />}
           </span>
         )}
 
@@ -91,8 +97,14 @@ const TreeNode: React.FC<TreeNodeProps> = ({
             <span className={cn(
               "truncate",
               type === 'series' && "font-bold text-lg",
+              type === 'container' && "font-medium",
             )}>
               {title}
+              {type === 'container' && containerType && containerNumber && (
+                <span className="text-muted-foreground ml-2 text-sm">
+                  ({containerType} {containerNumber})
+                </span>
+              )}
             </span>
           )}
         </div>

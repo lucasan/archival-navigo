@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -181,27 +182,42 @@ const FindingAid: React.FC = () => {
                       seriesArrangement="Chronological by year, then alphabetical by correspondent"
                       seriesDate="1770-1826"
                     >
-                      <TreeNode type="file-unit" title="File Unit 1: Family Letters" isDigitized={true}>
-                        <TreeNode 
-                          type="item" 
-                          title="Letter to Dolley Madison, June 15, 1789" 
-                          thumbnailUrl="/placeholder.svg"
-                          externalUrl="#"
-                        />
-                        <TreeNode 
-                          type="item" 
-                          title="Letter from Father, August 3, 1782" 
-                          thumbnailUrl="/placeholder.svg"
-                          externalUrl="#"
-                        />
+                      <TreeNode 
+                        type="container" 
+                        title="Box 1" 
+                        containerType="Box" 
+                        containerNumber="1"
+                      >
+                        <TreeNode type="file-unit" title="File Unit 1: Family Letters" isDigitized={true}>
+                          <TreeNode 
+                            type="item" 
+                            title="Letter to Dolley Madison, June 15, 1789" 
+                            thumbnailUrl="/placeholder.svg"
+                            externalUrl="#"
+                          />
+                          <TreeNode 
+                            type="item" 
+                            title="Letter from Father, August 3, 1782" 
+                            thumbnailUrl="/placeholder.svg"
+                            externalUrl="#"
+                          />
+                        </TreeNode>
                       </TreeNode>
-                      <TreeNode type="file-unit" title="File Unit 2: Correspondence with Friends" isDigitized={false}>
-                        <TreeNode 
-                          type="item" 
-                          title="Letter from Thomas Jefferson, May 12, 1790" 
-                          thumbnailUrl="/placeholder.svg"
-                          externalUrl="#"
-                        />
+                      
+                      <TreeNode 
+                        type="container" 
+                        title="Box 2" 
+                        containerType="Box" 
+                        containerNumber="2"
+                      >
+                        <TreeNode type="file-unit" title="File Unit 2: Correspondence with Friends" isDigitized={false}>
+                          <TreeNode 
+                            type="item" 
+                            title="Letter from Thomas Jefferson, May 12, 1790" 
+                            thumbnailUrl="/placeholder.svg"
+                            externalUrl="#"
+                          />
+                        </TreeNode>
                       </TreeNode>
                     </TreeNode>
 
@@ -213,33 +229,48 @@ const FindingAid: React.FC = () => {
                       seriesArrangement="By document type, then chronological"
                       seriesDate="1780-1817"
                     >
-                      <TreeNode type="file-unit" title="File Unit 1: Constitutional Convention Notes" isDigitized={true}>
-                        <TreeNode 
-                          type="item" 
-                          title="Notes on the Constitutional Convention, May-September 1787" 
-                          thumbnailUrl="/placeholder.svg"
-                          externalUrl="#"
-                        />
-                        <TreeNode 
-                          type="item" 
-                          title="Draft of Federalist No. 10, November 1787" 
-                          thumbnailUrl="/placeholder.svg"
-                          externalUrl="#"
-                        />
+                      <TreeNode 
+                        type="container" 
+                        title="Box 3" 
+                        containerType="Box" 
+                        containerNumber="3"
+                      >
+                        <TreeNode type="file-unit" title="File Unit 1: Constitutional Convention Notes" isDigitized={true}>
+                          <TreeNode 
+                            type="item" 
+                            title="Notes on the Constitutional Convention, May-September 1787" 
+                            thumbnailUrl="/placeholder.svg"
+                            externalUrl="#"
+                          />
+                          <TreeNode 
+                            type="item" 
+                            title="Draft of Federalist No. 10, November 1787" 
+                            thumbnailUrl="/placeholder.svg"
+                            externalUrl="#"
+                          />
+                        </TreeNode>
                       </TreeNode>
-                      <TreeNode type="file-unit" title="File Unit 2: Presidential Papers" isDigitized={true}>
-                        <TreeNode 
-                          type="item" 
-                          title="First Inaugural Address, March 4, 1809" 
-                          thumbnailUrl="/placeholder.svg"
-                          externalUrl="#"
-                        />
-                        <TreeNode 
-                          type="item" 
-                          title="War of 1812 Documents" 
-                          thumbnailUrl="/placeholder.svg"
-                          externalUrl="#"
-                        />
+                      
+                      <TreeNode 
+                        type="container" 
+                        title="Box 4" 
+                        containerType="Box" 
+                        containerNumber="4"
+                      >
+                        <TreeNode type="file-unit" title="File Unit 2: Presidential Papers" isDigitized={true}>
+                          <TreeNode 
+                            type="item" 
+                            title="First Inaugural Address, March 4, 1809" 
+                            thumbnailUrl="/placeholder.svg"
+                            externalUrl="#"
+                          />
+                          <TreeNode 
+                            type="item" 
+                            title="War of 1812 Documents" 
+                            thumbnailUrl="/placeholder.svg"
+                            externalUrl="#"
+                          />
+                        </TreeNode>
                       </TreeNode>
                     </TreeNode>
 
@@ -251,15 +282,30 @@ const FindingAid: React.FC = () => {
                       seriesArrangement="By record type, then chronological"
                       seriesDate="1780-1836"
                     >
-                      <TreeNode type="file-unit" title="File Unit 1: Estate Accounts" isDigitized={false}>
-                        <TreeNode 
-                          type="item" 
-                          title="Montpelier Estate Ledger, 1810-1820" 
-                          thumbnailUrl="/placeholder.svg"
-                          externalUrl="#"
-                        />
+                      <TreeNode 
+                        type="container" 
+                        title="Box 5" 
+                        containerType="Box" 
+                        containerNumber="5"
+                      >
+                        <TreeNode type="file-unit" title="File Unit 1: Estate Accounts" isDigitized={false}>
+                          <TreeNode 
+                            type="item" 
+                            title="Montpelier Estate Ledger, 1810-1820" 
+                            thumbnailUrl="/placeholder.svg"
+                            externalUrl="#"
+                          />
+                        </TreeNode>
                       </TreeNode>
-                      <TreeNode type="file-unit" title="File Unit 2: Personal Expenses" isDigitized={false} />
+                      
+                      <TreeNode 
+                        type="container" 
+                        title="Oversized Drawer 1" 
+                        containerType="Drawer" 
+                        containerNumber="1"
+                      >
+                        <TreeNode type="file-unit" title="File Unit 2: Personal Expenses" isDigitized={false} />
+                      </TreeNode>
                     </TreeNode>
                   </div>
                 </div>
