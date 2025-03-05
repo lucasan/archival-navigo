@@ -111,7 +111,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
       // For containers and series, check if they match the search OR have visible descendants
       if (node.props.children) {
         const nodeChildren = React.Children.toArray(node.props.children) as React.ReactElement[];
-        return nodeChildren.some(isNodeOrDescendantVisible);
+        return nodeMatchesSearch || nodeChildren.some(isNodeOrDescendantVisible);
       }
       
       return false;
