@@ -1,83 +1,65 @@
 
-import React, { useState, useEffect } from 'react';
-import { ChevronRight, ChevronDown, File, Package, Lock, FolderOpen, Scan, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
+import { TreeNodeProps, FileUnitStatus } from './types';
+import { NodeContent } from './NodeContent';
+import { SeriesMetadata } from './SeriesMetadata';
+import { shouldNodeDisplay, childrenMatchSearch, isNodeOrDescendantVisible } from './treeNodeUtils';
 
-type FileUnitStatus = 'open' | 'closed' | 'digitized';
+// Main TreeNode component
+const TreeNode: React.FC<TreeNodeProps> = (props) => {
+  const {
+    title,
+    type,
+    children,
+    thumbnailUrl,
+    externalUrl,
+    level = 0,
+    seriesDescription,
+    seriesExtent,
+    seriesArrangement,
+    seriesDate,
+    containerNumber,
+    containerType,
+    fileUnitStatus = 'open',
+    searchTerm = '',
+    statusFilter = 'all',
+    isVisible = true,
+  } = props;
 
-type TreeNodeProps = {
-  title: string;
-  type: 'series' | 'container' | 'file-unit' | 'item';
-  isDigitized?: boolean;
-  children?: React.ReactNode;
-  thumbnailUrl?: string;
-  externalUrl?: string;
-  level?: number;
-  seriesDescription?: string;
-  seriesExtent?: string;
-  seriesArrangement?: string;
-  seriesDate?: string;
-  containerNumber?: string;
-  containerType?: string;
-  fileUnitStatus?: FileUnitStatus;
-  searchTerm?: string;
-  statusFilter?: FileUnitStatus | 'all';
-  isVisible?: boolean;
-};
-
-const TreeNode: React.FC<TreeNodeProps> = ({
-  title,
-  type,
-  isDigitized,
-  children,
-  thumbnailUrl,
-  externalUrl,
-  level = 0,
-  seriesDescription,
-  seriesExtent,
-  seriesArrangement,
-  seriesDate,
-  containerNumber,
-  containerType,
-  fileUnitStatus = 'open',
-  searchTerm = '',
-  statusFilter = 'all',
-  isVisible = true,
-}) => {
   const [isExpanded, setIsExpanded] = useState(type === 'series' || type === 'container');
   const hasChildren = Boolean(children);
 
-  // Process children to apply search and filter
+  // Process children for search and filter
   const childrenArray = React.Children.toArray(children) as React.ReactElement[];
   
-  // Check if this node matches the search term
+  // Check if this node matches search term
   const matchesSearch = searchTerm.trim() === '' || 
     title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (seriesDescription && seriesDescription.toLowerCase().includes(searchTerm.toLowerCase()));
   
-  // Check if this node matches the status filter (only applies to file-units)
+  // Check if this node matches status filter
   const matchesStatusFilter = statusFilter === 'all' || 
     type !== 'file-unit' || 
     fileUnitStatus === statusFilter;
   
   // Modify children with search and filter props
   const processedChildren = childrenArray.map((child) => {
-    // Clone each child with the search term and status filter
     return React.cloneElement(child, {
       searchTerm,
       statusFilter,
     });
   });
   
-  // IMPORTANT: All hooks must be at the top level, including useEffect
+  // Expand nodes when searching or filtering
   useEffect(() => {
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
       setIsExpanded(true);
     }
   }, [searchTerm, statusFilter]);
   
-  // Recursive function to check if any descendant is visible based on both search and filter criteria
-  const hasVisibleDescendants = React.useCallback(() => {
+  // Check if any descendants match search and filter criteria
+  const hasVisibleDescendants = useCallback(() => {
     if (!hasChildren || !children) return false;
     
     // If not searching or filtering, all children are visible
@@ -85,237 +67,77 @@ const TreeNode: React.FC<TreeNodeProps> = ({
       return childrenArray.length > 0;
     }
     
-    // Helper function to check if a node or its descendants match the criteria
-    const isNodeOrDescendantVisible = (node: React.ReactElement): boolean => {
-      // Check if the node itself matches both search and filter criteria
-      const nodeMatchesSearch = searchTerm.trim() === '' || 
-        node.props.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (node.props.seriesDescription && 
-         node.props.seriesDescription.toLowerCase().includes(searchTerm.toLowerCase()));
-      
-      const nodeMatchesFilter = 
-        statusFilter === 'all' || 
-        node.props.type !== 'file-unit' || 
-        node.props.fileUnitStatus === statusFilter;
-      
-      // For items, they are visible if they match the search term
-      if (node.props.type === 'item') {
-        return nodeMatchesSearch;
-      }
-      
-      // For file units, they need to match both search and filter criteria
-      if (node.props.type === 'file-unit') {
-        // Also check if any child items match the search term
-        if (node.props.children && searchTerm.trim() !== '') {
-          const fileUnitChildren = React.Children.toArray(node.props.children) as React.ReactElement[];
-          const anyChildMatches = fileUnitChildren.some(child => 
-            child.props.title.toLowerCase().includes(searchTerm.toLowerCase())
-          );
-          return (nodeMatchesSearch || anyChildMatches) && nodeMatchesFilter;
-        }
-        return nodeMatchesSearch && nodeMatchesFilter;
-      }
-      
-      // For containers and series, check if they match the search OR have visible descendants
-      if (node.props.children) {
-        const nodeChildren = React.Children.toArray(node.props.children) as React.ReactElement[];
-        return nodeMatchesSearch || nodeChildren.some(isNodeOrDescendantVisible);
-      }
-      
-      return false;
-    };
-    
     // Check if any direct child or its descendants match the criteria
-    return childrenArray.some(isNodeOrDescendantVisible);
+    return childrenArray.some(node => 
+      isNodeOrDescendantVisible(node, searchTerm, statusFilter)
+    );
   }, [hasChildren, children, childrenArray, searchTerm, statusFilter]);
   
-  // Determine if this node should be displayed based on visibility rules
-  const shouldDisplay = React.useMemo(() => {
-    // Base visibility check - must be initially visible
-    if (!isVisible) return false;
-    
-    // If no filtering or searching is active, show everything
-    if (searchTerm.trim() === '' && statusFilter === 'all') {
-      return true;
-    }
-    
-    // For items: they are visible if they match the search term
-    if (type === 'item') {
-      return matchesSearch;
-    }
-    
-    // For file-units: they are visible if they match BOTH search AND status filter
-    // OR if they have items that match the search term
-    if (type === 'file-unit') {
-      // If searching, check children (items) too
-      if (searchTerm.trim() !== '' && children) {
-        const fileUnitChildren = React.Children.toArray(children) as React.ReactElement[];
-        const anyChildMatches = fileUnitChildren.some(child => 
-          child.props.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        return (matchesSearch || anyChildMatches) && matchesStatusFilter;
-      }
-      return matchesSearch && matchesStatusFilter;
-    }
-    
-    // For series and containers:
-    if (type === 'series' || type === 'container') {
-      // If they match the search term themselves, show them
-      if (matchesSearch && searchTerm.trim() !== '') {
-        return true;
-      }
-      
-      // Otherwise, show them only if they have at least one visible descendant
-      return hasVisibleDescendants();
-    }
-    
-    return false;
-  }, [isVisible, searchTerm, statusFilter, type, matchesSearch, matchesStatusFilter, hasVisibleDescendants, children]);
+  // Determine if this node should be displayed
+  const shouldDisplay = useMemo(() => {
+    return shouldNodeDisplay(
+      { 
+        title, 
+        type, 
+        searchTerm, 
+        statusFilter, 
+        isVisible, 
+        seriesDescription, 
+        children, 
+        fileUnitStatus 
+      }, 
+      hasVisibleDescendants
+    );
+  }, [
+    isVisible, 
+    searchTerm, 
+    statusFilter, 
+    type, 
+    title, 
+    seriesDescription,
+    matchesSearch, 
+    matchesStatusFilter, 
+    hasVisibleDescendants, 
+    children,
+    fileUnitStatus
+  ]);
   
-  // Early return AFTER all hooks have been called
-  if (!shouldDisplay) {
-    return null;
-  }
-
+  // Handle node expansion toggle
   const toggleExpand = () => {
     if (hasChildren) {
       setIsExpanded(!isExpanded);
     }
   };
 
-  const renderStatusIcon = (status: FileUnitStatus) => {
-    switch (status) {
-      case 'open':
-        return <FolderOpen size={16} className="text-green-600" />;
-      case 'closed':
-        return <Lock size={16} className="text-red-600" />;
-      case 'digitized':
-        return <Scan size={16} className="text-blue-600" />;
-      default:
-        return null;
-    }
-  };
-
-  const getStatusText = (status: FileUnitStatus) => {
-    switch (status) {
-      case 'open':
-        return 'Open';
-      case 'closed':
-        return 'Closed';
-      case 'digitized':
-        return 'Digitized';
-      default:
-        return '';
-    }
-  };
+  // Early return if node shouldn't be displayed
+  if (!shouldDisplay) {
+    return null;
+  }
 
   return (
     <div className="animate-fade-in">
-      <div 
-        className={cn(
-          'tree-node flex items-center gap-2',
-          {
-            'tree-node-series': type === 'series',
-            'tree-node-container': type === 'container',
-            'tree-node-file': type === 'file-unit',
-            'tree-node-item': type === 'item',
-            'bg-yellow-50': matchesSearch && searchTerm.trim() !== '',
-          }
-        )}
-      >
-        {hasChildren ? (
-          <button 
-            onClick={toggleExpand}
-            className="flex-none w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-            aria-label={isExpanded ? "Collapse" : "Expand"}
-          >
-            {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          </button>
-        ) : (
-          <span className="w-5 h-5 flex-none flex items-center justify-center">
-            {type === 'item' && <File size={16} className="text-muted-foreground" />}
-            {type === 'container' && <Package size={16} className="text-muted-foreground" />}
-          </span>
-        )}
-
-        {type === 'item' && thumbnailUrl && (
-          <div className="relative w-[75px] h-[75px] md:w-[100px] md:h-[100px] flex-none overflow-hidden rounded-md border mr-2">
-            <img 
-              src={thumbnailUrl} 
-              alt={`Thumbnail for ${title}`} 
-              className="w-full h-full object-cover transition-transform hover:scale-105"
-              loading="lazy"
-            />
-          </div>
-        )}
-
-        <div className="flex-1 min-w-0">
-          {type === 'item' && externalUrl ? (
-            <a 
-              href={externalUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
-            >
-              <span className="truncate">{title}</span>
-              <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity" />
-            </a>
-          ) : (
-            <span className={cn(
-              "truncate",
-              type === 'series' && "font-bold text-lg",
-              type === 'container' && "font-medium",
-            )}>
-              {title}
-              {type === 'container' && containerType && containerNumber && (
-                <span className="text-muted-foreground ml-2 text-sm">
-                  ({containerType} {containerNumber})
-                </span>
-              )}
-            </span>
-          )}
-        </div>
-
-        {type === 'file-unit' && (
-          <span className={cn(
-            "flex-none flex items-center text-sm ml-2 gap-1",
-            `status-${fileUnitStatus}`
-          )}>
-            {renderStatusIcon(fileUnitStatus)}
-            <span className="ml-1 text-xs hidden md:inline">
-              {getStatusText(fileUnitStatus)}
-            </span>
-          </span>
-        )}
-      </div>
+      <NodeContent
+        type={type}
+        title={title}
+        externalUrl={externalUrl}
+        thumbnailUrl={thumbnailUrl}
+        containerType={containerType}
+        containerNumber={containerNumber}
+        fileUnitStatus={fileUnitStatus}
+        toggleExpand={toggleExpand}
+        isExpanded={isExpanded}
+        hasChildren={hasChildren}
+        matchesSearch={matchesSearch}
+        searchTerm={searchTerm}
+      />
 
       {type === 'series' && (
-        <div className="mt-2 mb-4 ml-5 pl-1 text-sm text-muted-foreground border-l">
-          {seriesDescription && (
-            <div className="mb-2">
-              <span className="font-medium text-foreground">Description: </span>
-              {seriesDescription}
-            </div>
-          )}
-          {seriesExtent && (
-            <div className="mb-2">
-              <span className="font-medium text-foreground">Extent: </span>
-              {seriesExtent}
-            </div>
-          )}
-          {seriesArrangement && (
-            <div className="mb-2">
-              <span className="font-medium text-foreground">System of Arrangement: </span>
-              {seriesArrangement}
-            </div>
-          )}
-          {seriesDate && (
-            <div className="mb-2">
-              <span className="font-medium text-foreground">Date: </span>
-              {seriesDate}
-            </div>
-          )}
-        </div>
+        <SeriesMetadata
+          description={seriesDescription}
+          extent={seriesExtent}
+          arrangement={seriesArrangement}
+          date={seriesDate}
+        />
       )}
 
       {hasChildren && isExpanded && (
