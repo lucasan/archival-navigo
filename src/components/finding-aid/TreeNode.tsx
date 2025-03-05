@@ -79,8 +79,8 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
   }, [searchTerm, statusFilter]);
   
-  // Recursive function to check if any child or descendant is visible with both search and status filter
-  const hasVisibleChildren = () => {
+  // Recursive function to check if any child or descendant is visible with current filters
+  const hasVisibleChildren = React.useCallback(() => {
     if (!hasChildren || !children) return false;
     
     // If not searching or filtering, all children are visible
@@ -88,93 +88,69 @@ const TreeNode: React.FC<TreeNodeProps> = ({
       return childrenArray.length > 0;
     }
     
-    return childrenArray.some(child => {
-      // Check if the child itself is directly visible according to search & filter criteria
-      if (childMatchesSearchAndFilter(child)) {
-        // For file-unit specifically, must match status filter as well
-        if (child.props.type === 'file-unit') {
-          const childMatchesStatus = statusFilter === 'all' || child.props.fileUnitStatus === statusFilter;
-          return childMatchesStatus;
-        }
-        return true;
+    // Helper function to check if a node's descendants match the filter criteria
+    const hasMatchingDescendants = (node: React.ReactElement): boolean => {
+      // Check if the node is a file-unit that matches the status filter
+      if (node.props.type === 'file-unit') {
+        return (statusFilter === 'all' || node.props.fileUnitStatus === statusFilter) &&
+               (searchTerm.trim() === '' || 
+                node.props.title.toLowerCase().includes(searchTerm.toLowerCase()));
       }
       
-      // For containers and series, we need to recursively check their children
-      if ((child.props.type === 'container' || child.props.type === 'series') && child.props.children) {
-        const childChildren = React.Children.toArray(child.props.children) as React.ReactElement[];
-        
-        return childChildren.some(grandchild => {
-          // Check if grandchild is a file-unit that matches status filter
-          if (grandchild.props.type === 'file-unit') {
-            // File units must match both search and status criteria
-            const matchesStatus = statusFilter === 'all' || grandchild.props.fileUnitStatus === statusFilter;
-            const matchesGrandchildSearch = searchTerm.trim() === '' || 
-              grandchild.props.title.toLowerCase().includes(searchTerm.toLowerCase());
-            
-            return matchesStatus && matchesGrandchildSearch;
-          }
-          
-          // Check if grandchild is visible and if so, it makes this branch visible
-          if (childMatchesSearchAndFilter(grandchild)) {
-            return true;
-          }
-          
-          // For grandchildren that are containers or have their own children, check them too
-          if ((grandchild.props.type === 'container' || grandchild.props.type === 'file-unit') && 
-              grandchild.props.children) {
-            const greatGrandchildren = React.Children.toArray(grandchild.props.children) as React.ReactElement[];
-            return greatGrandchildren.some(ggChild => {
-              // Special check for items to ensure they only appear when parents match status filter
-              if (ggChild.props.type === 'item') {
-                // For items, we need to check if their parent (file-unit) matches the status filter
-                const parentMatchesFilter = statusFilter === 'all' || 
-                  grandchild.props.fileUnitStatus === statusFilter;
-                
-                return parentMatchesFilter && 
-                  (searchTerm.trim() === '' || 
-                   ggChild.props.title.toLowerCase().includes(searchTerm.toLowerCase()));
-              }
-              
-              return childMatchesSearchAndFilter(ggChild);
-            });
-          }
-          
-          return false;
-        });
+      // If it's an item, it's visible only if its parent file-unit matches the filter
+      if (node.props.type === 'item') {
+        return searchTerm.trim() === '' || 
+               node.props.title.toLowerCase().includes(searchTerm.toLowerCase());
+      }
+      
+      // For containers and series, check their children
+      if ((node.props.type === 'container' || node.props.type === 'series') && node.props.children) {
+        const nodeChildren = React.Children.toArray(node.props.children) as React.ReactElement[];
+        return nodeChildren.some(hasMatchingDescendants);
       }
       
       return false;
-    });
-  };
-  
-  // Helper function to check if a child node matches search and filter criteria
-  const childMatchesSearchAndFilter = (child: React.ReactElement) => {
-    const childMatchesSearch = searchTerm.trim() === '' || 
-      child.props.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (child.props.seriesDescription && 
-       child.props.seriesDescription.toLowerCase().includes(searchTerm.toLowerCase()));
+    };
     
-    const childMatchesFilter = statusFilter === 'all' || 
-      child.props.type !== 'file-unit' || 
-      child.props.fileUnitStatus === statusFilter;
-    
-    return childMatchesSearch && childMatchesFilter;
-  };
+    // Check if any direct child or its descendants match the filter criteria
+    return childrenArray.some(hasMatchingDescendants);
+  }, [hasChildren, children, childrenArray, searchTerm, statusFilter]);
   
-  // Determine if this node should be displayed based on visibility rules for its type
-  const shouldDisplay = isVisible && (
-    // If no search/filter is applied, show everything
-    (searchTerm.trim() === '' && statusFilter === 'all') ||
-    // For items: they're visible only if they match search AND their parent file-unit matches the filter
-    (type === 'item' && matchesSearch) ||
-    // For file-units: visible ONLY if they match both search AND status filter
-    (type === 'file-unit' && nodeIsVisible) ||
-    // For series/containers: visible if they match criteria OR have visible children
-    ((type === 'series' || type === 'container') && (
-      // Only show if it matches search term itself OR has children that match BOTH search AND status filter
-      (nodeIsVisible || hasVisibleChildren())
-    ))
-  );
+  // Determine if this node should be displayed based on visibility rules
+  const shouldDisplay = React.useMemo(() => {
+    // Base visibility check - must be initially visible
+    if (!isVisible) return false;
+    
+    // If no filtering is active, show everything
+    if (searchTerm.trim() === '' && statusFilter === 'all') {
+      return true;
+    }
+    
+    // For items: only show if they match the search term
+    // (their parent file-unit's status filter is checked at the parent level)
+    if (type === 'item') {
+      return matchesSearch;
+    }
+    
+    // For file-units: ONLY show if they match BOTH search AND status filter
+    if (type === 'file-unit') {
+      return matchesSearch && (statusFilter === 'all' || fileUnitStatus === statusFilter);
+    }
+    
+    // For series and containers: only show if they have matching children
+    // or they themselves match the search term
+    if (type === 'series' || type === 'container') {
+      // Match search term themselves
+      if (matchesSearch && statusFilter === 'all') {
+        return true;
+      }
+      
+      // Have at least one child that matches the filters
+      return hasVisibleChildren();
+    }
+    
+    return false;
+  }, [isVisible, searchTerm, statusFilter, type, matchesSearch, fileUnitStatus, hasVisibleChildren]);
   
   // Early return AFTER all hooks have been called
   if (!shouldDisplay) {
