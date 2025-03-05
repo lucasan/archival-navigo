@@ -98,13 +98,21 @@ const TreeNode: React.FC<TreeNodeProps> = ({
         node.props.type !== 'file-unit' || 
         node.props.fileUnitStatus === statusFilter;
       
-      // For items, they are visible if they match the search
+      // For items, they are visible if they match the search term
       if (node.props.type === 'item') {
         return nodeMatchesSearch;
       }
       
       // For file units, they need to match both search and filter criteria
       if (node.props.type === 'file-unit') {
+        // Also check if any child items match the search term
+        if (node.props.children && searchTerm.trim() !== '') {
+          const fileUnitChildren = React.Children.toArray(node.props.children) as React.ReactElement[];
+          const anyChildMatches = fileUnitChildren.some(child => 
+            child.props.title.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          return (nodeMatchesSearch || anyChildMatches) && nodeMatchesFilter;
+        }
         return nodeMatchesSearch && nodeMatchesFilter;
       }
       
@@ -137,7 +145,16 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
     
     // For file-units: they are visible if they match BOTH search AND status filter
+    // OR if they have items that match the search term
     if (type === 'file-unit') {
+      // If searching, check children (items) too
+      if (searchTerm.trim() !== '' && children) {
+        const fileUnitChildren = React.Children.toArray(children) as React.ReactElement[];
+        const anyChildMatches = fileUnitChildren.some(child => 
+          child.props.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        return (matchesSearch || anyChildMatches) && matchesStatusFilter;
+      }
       return matchesSearch && matchesStatusFilter;
     }
     
@@ -153,7 +170,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
     
     return false;
-  }, [isVisible, searchTerm, statusFilter, type, matchesSearch, matchesStatusFilter, hasVisibleDescendants]);
+  }, [isVisible, searchTerm, statusFilter, type, matchesSearch, matchesStatusFilter, hasVisibleDescendants, children]);
   
   // Early return AFTER all hooks have been called
   if (!shouldDisplay) {
