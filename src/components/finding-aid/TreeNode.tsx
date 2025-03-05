@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { ChevronRight, ChevronDown, Check, Minus, ExternalLink, File, Package, Lock, FolderOpen, Scan } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, ChevronDown, File, Package, Lock, FolderOpen, Scan, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type FileUnitStatus = 'open' | 'closed' | 'digitized';
@@ -63,19 +63,17 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   // A node is visible if it matches both search and filter criteria
   const nodeIsVisible = matchesSearch && matchesStatusFilter;
   
-  // If this is a parent node, we need to check if any children are visible
+  // Check if any children are visible
   let hasVisibleChildren = false;
   
   // Modify children with search and filter props
   const processedChildren = childrenArray.map((child) => {
-    // Clone the child element with new props
     const newChild = React.cloneElement(child, {
       searchTerm,
       statusFilter,
     });
     
-    // If the child is a TreeNode component and it has a isVisible prop that's true,
-    // then this parent should be visible too
+    // Check if the child will be visible after processing
     if (newChild.props.isVisible !== false) {
       hasVisibleChildren = true;
     }
@@ -83,16 +81,18 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     return newChild;
   });
   
-  // If this node is hidden, but has visible children, it should be shown
-  const shouldDisplay = nodeIsVisible || hasVisibleChildren;
+  // Final visibility determination:
+  // - If either this node matches criteria OR has visible children
+  // - AND we're not already marked as invisible by parent node calculation
+  const shouldDisplay = (nodeIsVisible || hasVisibleChildren) && isVisible;
   
-  // If we're hidden and have no visible children, don't render anything
-  if (!shouldDisplay && !isVisible) {
+  // If not visible, don't render
+  if (!shouldDisplay) {
     return null;
   }
   
   // Auto-expand if searching or filtering
-  React.useEffect(() => {
+  useEffect(() => {
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
       setIsExpanded(true);
     }
