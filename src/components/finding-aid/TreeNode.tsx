@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronDown, File, Package, Lock, FolderOpen, Scan, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -78,7 +79,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
   }, [searchTerm, statusFilter]);
   
-  // This function checks if any child is actually visible after applying filters
+  // Recursive function to check if any child or descendant is visible
   const hasVisibleChildren = () => {
     if (!hasChildren || !children) return false;
     
@@ -87,55 +88,61 @@ const TreeNode: React.FC<TreeNodeProps> = ({
       return childrenArray.length > 0;
     }
     
-    // Check each child to see if it or its descendants match search/filter criteria
     return childrenArray.some(child => {
-      // For direct match on the child's title
-      const childMatchesSearch = searchTerm.trim() === '' || 
-        child.props.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (child.props.seriesDescription && child.props.seriesDescription.toLowerCase().includes(searchTerm.toLowerCase()));
+      // If the child itself matches the search
+      if (childMatchesSearchAndFilter(child)) {
+        return true;
+      }
       
-      const childMatchesFilter = statusFilter === 'all' || 
-        child.props.type !== 'file-unit' || 
-        child.props.fileUnitStatus === statusFilter;
-      
-      // If this is a container, check if any of its file units match
-      if (child.props.type === 'container' && child.props.children) {
-        const fileUnits = React.Children.toArray(child.props.children) as React.ReactElement[];
-        return fileUnits.some(fileUnit => {
-          const fileUnitMatchesSearch = searchTerm.trim() === '' || 
-            fileUnit.props.title.toLowerCase().includes(searchTerm.toLowerCase());
+      // For containers and file units, we need to check their children recursively
+      if ((child.props.type === 'container' || child.props.type === 'file-unit') && child.props.children) {
+        const grandchildren = React.Children.toArray(child.props.children) as React.ReactElement[];
+        
+        return grandchildren.some(grandchild => {
+          // Check if grandchild matches search
+          if (childMatchesSearchAndFilter(grandchild)) {
+            return true;
+          }
           
-          const fileUnitMatchesFilter = statusFilter === 'all' || 
-            fileUnit.props.type !== 'file-unit' || 
-            fileUnit.props.fileUnitStatus === statusFilter;
-          
-          // For nested items within file units
-          if (fileUnit.props.children && (fileUnitMatchesSearch || fileUnitMatchesFilter)) {
-            const items = React.Children.toArray(fileUnit.props.children) as React.ReactElement[];
+          // For file units, check their item children
+          if (grandchild.props.type === 'file-unit' && grandchild.props.children) {
+            const items = React.Children.toArray(grandchild.props.children) as React.ReactElement[];
             return items.some(item => 
               searchTerm.trim() === '' || 
               item.props.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
           }
           
-          return fileUnitMatchesSearch && fileUnitMatchesFilter;
+          return false;
         });
       }
       
-      return childMatchesSearch && childMatchesFilter;
+      return false;
     });
+  };
+  
+  // Helper function to check if a child node matches search and filter criteria
+  const childMatchesSearchAndFilter = (child: React.ReactElement) => {
+    const childMatchesSearch = searchTerm.trim() === '' || 
+      child.props.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (child.props.seriesDescription && 
+       child.props.seriesDescription.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const childMatchesFilter = statusFilter === 'all' || 
+      child.props.type !== 'file-unit' || 
+      child.props.fileUnitStatus === statusFilter;
+    
+    return childMatchesSearch && childMatchesFilter;
   };
   
   // Determine if this node should be displayed based on visibility rules for its type
   const shouldDisplay = isVisible && (
     // If no search/filter is applied, show everything
     (searchTerm.trim() === '' && statusFilter === 'all') ||
-    // For items: visible if they match search/filter criteria
+    // For items: visible if they match search criteria
     (type === 'item' && nodeIsVisible) ||
-    // For containers: only visible if they have visible children
-    (type === 'container' && hasVisibleChildren()) ||
-    // For series/file-units: visible if they match criteria OR have visible children
-    ((type === 'series' || type === 'file-unit') && (nodeIsVisible || hasVisibleChildren()))
+    // For other types: visible if they match criteria OR have visible children
+    (type !== 'item' && (nodeIsVisible || hasVisibleChildren()))
   );
   
   // Early return AFTER all hooks have been called
