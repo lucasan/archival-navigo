@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronRight, ChevronDown, Check, Minus, ExternalLink, File, Package, Lock, FolderOpen, Scanner } from 'lucide-react';
+import { ChevronRight, ChevronDown, Check, Minus, ExternalLink, File, Package, Lock, FolderOpen, Scan } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type FileUnitStatus = 'open' | 'closed' | 'digitized';
@@ -54,7 +54,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
       case 'closed':
         return <Lock size={16} className="text-red-600" />;
       case 'digitized':
-        return <Scanner size={16} className="text-blue-600" />;
+        return <Scan size={16} className="text-blue-600" />;
       default:
         return null;
     }
