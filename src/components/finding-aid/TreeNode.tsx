@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
-import { ChevronRight, ChevronDown, Check, Minus, ExternalLink, File, Package } from 'lucide-react';
+import { ChevronRight, ChevronDown, Check, Minus, ExternalLink, File, Package, Lock, FolderOpen, Scanner } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+type FileUnitStatus = 'open' | 'closed' | 'digitized';
 
 type TreeNodeProps = {
   title: string;
@@ -17,6 +19,7 @@ type TreeNodeProps = {
   seriesDate?: string;
   containerNumber?: string;
   containerType?: string;
+  fileUnitStatus?: FileUnitStatus;
 };
 
 const TreeNode: React.FC<TreeNodeProps> = ({
@@ -33,6 +36,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   seriesDate,
   containerNumber,
   containerType,
+  fileUnitStatus = 'open',
 }) => {
   const [isExpanded, setIsExpanded] = useState(type === 'series' || type === 'container');
   const hasChildren = Boolean(children);
@@ -40,6 +44,32 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   const toggleExpand = () => {
     if (hasChildren) {
       setIsExpanded(!isExpanded);
+    }
+  };
+
+  const renderStatusIcon = (status: FileUnitStatus) => {
+    switch (status) {
+      case 'open':
+        return <FolderOpen size={16} className="text-green-600" />;
+      case 'closed':
+        return <Lock size={16} className="text-red-600" />;
+      case 'digitized':
+        return <Scanner size={16} className="text-blue-600" />;
+      default:
+        return null;
+    }
+  };
+
+  const getStatusText = (status: FileUnitStatus) => {
+    switch (status) {
+      case 'open':
+        return 'Open';
+      case 'closed':
+        return 'Closed';
+      case 'digitized':
+        return 'Digitized';
+      default:
+        return '';
     }
   };
 
@@ -111,12 +141,12 @@ const TreeNode: React.FC<TreeNodeProps> = ({
 
         {type === 'file-unit' && (
           <span className={cn(
-            "flex-none flex items-center text-sm ml-2",
-            isDigitized ? "digitized" : "not-digitized"
+            "flex-none flex items-center text-sm ml-2 gap-1",
+            `status-${fileUnitStatus}`
           )}>
-            {isDigitized ? <Check size={16} /> : <Minus size={16} />}
+            {renderStatusIcon(fileUnitStatus)}
             <span className="ml-1 text-xs hidden md:inline">
-              {isDigitized ? 'Digitized' : 'Not digitized'}
+              {getStatusText(fileUnitStatus)}
             </span>
           </span>
         )}

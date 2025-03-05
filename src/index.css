@@ -129,11 +129,15 @@
     @apply pl-10;
   }
 
-  .digitized {
+  .status-open {
     @apply text-green-600;
   }
 
-  .not-digitized {
-    @apply text-muted-foreground;
+  .status-closed {
+    @apply text-red-600;
+  }
+
+  .status-digitized {
+    @apply text-blue-600;
   }
 }

@@ -188,7 +188,11 @@ const FindingAid: React.FC = () => {
                         containerType="Box" 
                         containerNumber="1"
                       >
-                        <TreeNode type="file-unit" title="File Unit 1: Family Letters" isDigitized={true}>
+                        <TreeNode 
+                          type="file-unit" 
+                          title="File Unit 1: Family Letters" 
+                          fileUnitStatus="digitized"
+                        >
                           <TreeNode 
                             type="item" 
                             title="Letter to Dolley Madison, June 15, 1789" 
@@ -210,7 +214,11 @@ const FindingAid: React.FC = () => {
                         containerType="Box" 
                         containerNumber="2"
                       >
-                        <TreeNode type="file-unit" title="File Unit 2: Correspondence with Friends" isDigitized={false}>
+                        <TreeNode 
+                          type="file-unit" 
+                          title="File Unit 2: Correspondence with Friends" 
+                          fileUnitStatus="closed"
+                        >
                           <TreeNode 
                             type="item" 
                             title="Letter from Thomas Jefferson, May 12, 1790" 
@@ -235,7 +243,11 @@ const FindingAid: React.FC = () => {
                         containerType="Box" 
                         containerNumber="3"
                       >
-                        <TreeNode type="file-unit" title="File Unit 1: Constitutional Convention Notes" isDigitized={true}>
+                        <TreeNode 
+                          type="file-unit" 
+                          title="File Unit 1: Constitutional Convention Notes" 
+                          fileUnitStatus="open"
+                        >
                           <TreeNode 
                             type="item" 
                             title="Notes on the Constitutional Convention, May-September 1787" 
@@ -257,7 +269,11 @@ const FindingAid: React.FC = () => {
                         containerType="Box" 
                         containerNumber="4"
                       >
-                        <TreeNode type="file-unit" title="File Unit 2: Presidential Papers" isDigitized={true}>
+                        <TreeNode 
+                          type="file-unit" 
+                          title="File Unit 2: Presidential Papers" 
+                          fileUnitStatus="digitized"
+                        >
                           <TreeNode 
                             type="item" 
                             title="First Inaugural Address, March 4, 1809" 
@@ -288,7 +304,11 @@ const FindingAid: React.FC = () => {
                         containerType="Box" 
                         containerNumber="5"
                       >
-                        <TreeNode type="file-unit" title="File Unit 1: Estate Accounts" isDigitized={false}>
+                        <TreeNode 
+                          type="file-unit" 
+                          title="File Unit 1: Estate Accounts" 
+                          fileUnitStatus="closed"
+                        >
                           <TreeNode 
                             type="item" 
                             title="Montpelier Estate Ledger, 1810-1820" 
@@ -304,7 +324,11 @@ const FindingAid: React.FC = () => {
                         containerType="Drawer" 
                         containerNumber="1"
                       >
-                        <TreeNode type="file-unit" title="File Unit 2: Personal Expenses" isDigitized={false} />
+                        <TreeNode 
+                          type="file-unit" 
+                          title="File Unit 2: Personal Expenses" 
+                          fileUnitStatus="open"
+                        />
                       </TreeNode>
                     </TreeNode>
                   </div>
