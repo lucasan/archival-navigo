@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronDown, File, Package, Lock, FolderOpen, Scan, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -86,17 +85,17 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   // - AND we're not already marked as invisible by parent node calculation
   const shouldDisplay = (nodeIsVisible || hasVisibleChildren) && isVisible;
   
-  // If not visible, don't render
-  if (!shouldDisplay) {
-    return null;
-  }
-  
-  // Auto-expand if searching or filtering
+  // IMPORTANT: All hooks must be at the top level, including useEffect
   useEffect(() => {
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
       setIsExpanded(true);
     }
   }, [searchTerm, statusFilter]);
+  
+  // Early return AFTER all hooks have been called, not before
+  if (!shouldDisplay) {
+    return null;
+  }
 
   const toggleExpand = () => {
     if (hasChildren) {
