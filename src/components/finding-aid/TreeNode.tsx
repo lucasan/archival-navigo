@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, FileUnitNodeProps } from './types';
 import { NodeContent } from './NodeContent';
@@ -36,6 +36,11 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   // Initial expand state - default containers to open for better UX
   const [isExpanded, setIsExpanded] = useState(type === 'container');
   const [forceRender, setForceRender] = useState(0); // Added to force re-render when needed
+  
+  // Prevent infinite re-renders
+  const autoExpandTriggered = useRef(false);
+  const currentSearchTerm = useRef(searchTerm);
+  const currentStatusFilter = useRef(statusFilter);
   
   // Check if we actually have children
   const hasChildren = Boolean(children && React.Children.count(children) > 0);
@@ -120,12 +125,11 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     });
   });
 
-  // Force render when expandAll changes
+  // Force render when expandAll changes - only once
   useEffect(() => {
     if (hasChildren) {
       console.log(`ExpandAll changed to ${expandAll} for ${title}`);
       setIsExpanded(expandAll);
-      setForceRender(prev => prev + 1); // Force re-render
     }
   }, [expandAll, hasChildren, title]);
   
@@ -144,18 +148,48 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     );
   }, [hasChildren, children, childrenArray, searchTerm, statusFilter]);
 
-  // Auto-expand logic - SIMPLIFIED for reliability
+  // Auto-expand logic - WITH INFINITE LOOP PROTECTION
   useEffect(() => {
-    if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
-      // Auto-expand conditions
-      if (matchesSearch || hasVisibleDescendants() || hasDescendantItemMatchingSearch()) {
-        console.log(`EXPANDING ${title} due to search/filter match`);
-        setIsExpanded(true);
-        // Force a re-render to make sure the UI updates
-        setForceRender(prev => prev + 1);
+    // Check if search or filter has changed to reset the ref
+    if (currentSearchTerm.current !== searchTerm || currentStatusFilter.current !== statusFilter) {
+      autoExpandTriggered.current = false;
+      currentSearchTerm.current = searchTerm;
+      currentStatusFilter.current = statusFilter;
+    }
+    
+    // Only run auto-expand logic if it hasn't been triggered for this search/filter combo
+    if (!autoExpandTriggered.current && 
+        ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all')) {
+      
+      console.log(`Auto-expand check for ${title}, search: "${searchTerm}", filter: ${statusFilter}`);
+      
+      if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
+        if (matchesSearch || hasVisibleDescendants() || hasDescendantItemMatchingSearch()) {
+          // Mark as triggered to prevent infinite loop
+          autoExpandTriggered.current = true;
+          
+          if (searchTerm && searchTerm.trim() !== '') {
+            console.log(`Search/filter active for ${title}`);
+          }
+          
+          if (matchesSearch && searchTerm && searchTerm.trim() !== '') {
+            console.log(`Node ${title} matches search/filter - expanding`);
+          } else if (hasVisibleDescendants()) {
+            console.log(`Node ${title} has visible descendants - expanding`);
+          }
+          
+          setIsExpanded(true);
+        }
       }
     }
-  }, [searchTerm, statusFilter, matchesSearch, hasVisibleDescendants, hasDescendantItemMatchingSearch, title]);
+  }, [
+    searchTerm, 
+    statusFilter, 
+    matchesSearch, 
+    hasVisibleDescendants, 
+    hasDescendantItemMatchingSearch, 
+    title
+  ]);
   
   // Determine if this node should be displayed
   const shouldDisplay = useMemo(() => {
@@ -184,7 +218,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     fileUnitStatus
   ]);
   
-  // Handle node expansion toggle - SIMPLIFIED for reliability
+  // Handle node expansion toggle - using callback to prevent recreation
   const toggleExpand = useCallback(() => {
     if (hasChildren) {
       console.log(`TOGGLE EVENT: ${title} from ${isExpanded} to ${!isExpanded}`);
@@ -223,10 +257,9 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
         />
       )}
 
-      {/* Render children - key based on forceRender to ensure re-render */}
+      {/* Render children with explicit styles to ensure proper display */}
       {hasChildren && (
         <div 
-          key={`children-${forceRender}`}
           className={cn(
             "ml-5 border-l pl-1 mt-1",
             isExpanded ? "block" : "hidden"

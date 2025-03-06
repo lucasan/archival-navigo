@@ -34,7 +34,6 @@ export const NodeContent: React.FC<NodeContentProps> = ({
     if (hasChildren) {
       e.preventDefault();
       e.stopPropagation();
-      console.log(`Node click on ${title} - toggling`);
       toggleExpand();
     }
   };
@@ -81,7 +80,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
       )}
 
       {/* Title and content */}
-      <div className="flex-1 min-w-0 break-words" onClick={(e) => e.stopPropagation()}>
+      <div className="flex-1 min-w-0 break-words">
         {type === 'item' && externalUrl ? (
           <a 
             href={externalUrl} 
@@ -111,7 +110,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
 
       {/* Status icon for file units */}
       {type === 'file-unit' && fileUnitStatus && (
-        <div className="ml-auto flex-none" onClick={(e) => e.stopPropagation()}>
+        <div className="ml-auto flex-none">
           <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
         </div>
       )}
@@ -119,7 +118,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   );
 };
 
-// Helper component for node icons with SIMPLIFIED click handling
+// Helper component for node icons
 interface NodeIconProps {
   type: 'series' | 'container' | 'file-unit' | 'item';
   hasChildren: boolean;
@@ -134,7 +133,6 @@ const NodeIcon: React.FC<NodeIconProps> = ({ type, hasChildren, isExpanded, togg
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation(); // Critical to prevent double-firing
-          console.log(`Icon button clicked for expansion`);
           toggleExpand();
         }}
         className={cn(
