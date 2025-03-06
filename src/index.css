@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -114,7 +113,7 @@
   }
 
   .tree-node {
-    @apply py-1 sm:py-1.5 px-1 sm:px-2 rounded-md transition-colors hover:bg-muted/70 text-sm sm:text-base cursor-pointer;
+    @apply py-1 sm:py-1.5 px-1 sm:px-2 rounded-md transition-colors hover:bg-muted/70 text-sm sm:text-base;
   }
 
   .tree-node-series {

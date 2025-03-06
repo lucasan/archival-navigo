@@ -6,7 +6,7 @@ import { FileUnitStatus } from './types';
 interface FileUnitNodeProps {
   title: string;
   status: FileUnitStatus;
-  children?: React.ReactNode; // Making children optional with "?"
+  children?: React.ReactNode;
 }
 
 const FileUnitNode: React.FC<FileUnitNodeProps> = ({
@@ -14,6 +14,9 @@ const FileUnitNode: React.FC<FileUnitNodeProps> = ({
   status,
   children
 }) => {
+  // Log to help debug expansion issues
+  const hasChildren = Boolean(children && React.Children.count(children) > 0);
+  
   return (
     <TreeNode 
       type="file-unit" 

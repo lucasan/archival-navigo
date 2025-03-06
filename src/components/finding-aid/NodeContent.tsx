@@ -39,12 +39,9 @@ export const NodeContent: React.FC<NodeContentProps> = ({
           'tree-node-file': type === 'file-unit',
           'tree-node-item': type === 'item',
           'bg-yellow-50': matchesSearch && searchTerm && searchTerm.trim() !== '',
-          'bg-blue-50/50': isExpanded && hasChildren && type !== 'item', // Highlight expanded nodes
+          'bg-blue-50/50': isExpanded && hasChildren && type !== 'item',
         }
       )}
-      onClick={hasChildren ? toggleExpand : undefined}
-      role={hasChildren ? "button" : undefined}
-      aria-expanded={hasChildren ? isExpanded : undefined}
     >
       {/* Node icon/expand button */}
       <NodeIcon 
@@ -67,7 +64,11 @@ export const NodeContent: React.FC<NodeContentProps> = ({
       )}
 
       {/* Title and content - Improved for mobile with better wrapping */}
-      <div className="flex-1 min-w-0 break-words">
+      <div 
+        className="flex-1 min-w-0 break-words"
+        onClick={hasChildren ? toggleExpand : undefined}
+        style={hasChildren ? { cursor: 'pointer' } : undefined}
+      >
         {type === 'item' && externalUrl ? (
           <a 
             href={externalUrl} 
@@ -118,7 +119,7 @@ const NodeIcon: React.FC<NodeIconProps> = ({ type, hasChildren, isExpanded, togg
     return (
       <button 
         onClick={(e) => {
-          e.stopPropagation(); // Prevent double-triggering
+          e.stopPropagation(); // This was problematic - let's make sure the event doesn't bubble
           toggleExpand();
         }}
         className={cn(

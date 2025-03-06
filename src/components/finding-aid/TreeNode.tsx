@@ -33,9 +33,9 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   const containerType = type === 'container' ? (props as ContainerNodeProps).containerType : undefined;
   const fileUnitStatus = type === 'file-unit' ? (props as FileUnitNodeProps).fileUnitStatus || 'open' : undefined;
 
-  // Changed initial state for series to be collapsed
+  // Initial expand state - default containers to open for better UX
   const [isExpanded, setIsExpanded] = useState(type === 'container');
-  const hasChildren = Boolean(children);
+  const hasChildren = Boolean(children && React.Children.count(children) > 0);
 
   // Process children for search and filter
   const childrenArray = React.Children.toArray(children) as React.ReactElement[];
@@ -105,7 +105,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   }, [hasChildren, children, childrenArray, searchTerm]);
   
   // Modify children with search and filter props
-  const processedChildren = React.Children.toArray(children).map((child) => {
+  const processedChildren = React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) return null;
     return React.cloneElement(child as React.ReactElement, {
       searchTerm,
       statusFilter,
@@ -136,7 +137,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     );
   }, [hasChildren, children, childrenArray, searchTerm, statusFilter]);
 
-  // Auto-expand logic when searching or filtering - ENHANCED
+  // Auto-expand logic when searching or filtering
   useEffect(() => {
     // Only auto-expand when actively searching or filtering
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
@@ -238,8 +239,9 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   // Handle node expansion toggle
   const toggleExpand = () => {
     if (hasChildren) {
-      setIsExpanded(!isExpanded);
-      console.log(`Toggling ${title} to ${!isExpanded ? 'expanded' : 'collapsed'}`);
+      console.log(`Before toggle: ${title} isExpanded=${isExpanded}`);
+      setIsExpanded(prevState => !prevState);
+      console.log(`After toggle: ${title} will be ${!isExpanded ? 'expanded' : 'collapsed'}`);
     }
   };
 
@@ -277,8 +279,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
       {hasChildren && (
         <div 
           className={cn(
-            "ml-5 border-l pl-1 mt-1 overflow-hidden transition-all duration-300",
-            isExpanded ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"
+            "ml-5 border-l pl-1 mt-1 overflow-hidden",
+            isExpanded ? "block" : "hidden"
           )}
         >
           {processedChildren}
