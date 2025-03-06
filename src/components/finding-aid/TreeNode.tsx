@@ -29,7 +29,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   const containerType = type === 'container' ? (props as ContainerNodeProps).containerType : undefined;
   const fileUnitStatus = type === 'file-unit' ? (props as FileUnitNodeProps).fileUnitStatus || 'open' : undefined;
 
-  const [isExpanded, setIsExpanded] = useState(type === 'series' || type === 'container');
+  // Changed initial state for series to be collapsed
+  const [isExpanded, setIsExpanded] = useState(type === 'container');
   const hasChildren = Boolean(children);
 
   // Process children for search and filter
