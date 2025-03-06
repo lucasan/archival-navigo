@@ -29,6 +29,15 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   matchesSearch,
   searchTerm
 }) => {
+  // Handle container click for expansion
+  const handleContainerClick = (e: React.MouseEvent) => {
+    if (hasChildren) {
+      e.stopPropagation(); // Prevent bubbling
+      console.log(`Container click on ${title}`);
+      toggleExpand();
+    }
+  };
+
   return (
     <div 
       className={cn(
@@ -42,6 +51,10 @@ export const NodeContent: React.FC<NodeContentProps> = ({
           'bg-blue-50/50': isExpanded && hasChildren && type !== 'item',
         }
       )}
+      onClick={handleContainerClick}
+      style={hasChildren ? { cursor: 'pointer' } : undefined}
+      role={hasChildren ? "button" : undefined}
+      aria-expanded={hasChildren ? isExpanded : undefined}
     >
       {/* Node icon/expand button */}
       <NodeIcon 
@@ -51,7 +64,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         toggleExpand={toggleExpand} 
       />
 
-      {/* Thumbnail for items - Improved for mobile */}
+      {/* Thumbnail for items */}
       {type === 'item' && thumbnailUrl && (
         <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-[100px] lg:h-[100px] flex-none overflow-hidden rounded-md border mr-1 sm:mr-2">
           <img 
@@ -63,12 +76,8 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         </div>
       )}
 
-      {/* Title and content - Improved for mobile with better wrapping */}
-      <div 
-        className="flex-1 min-w-0 break-words"
-        onClick={hasChildren ? toggleExpand : undefined}
-        style={hasChildren ? { cursor: 'pointer' } : undefined}
-      >
+      {/* Title and content */}
+      <div className="flex-1 min-w-0 break-words">
         {type === 'item' && externalUrl ? (
           <a 
             href={externalUrl} 
@@ -106,7 +115,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   );
 };
 
-// Helper component for node icons
+// Helper component for node icons - FIXED TO PREVENT EVENT BUBBLING
 interface NodeIconProps {
   type: 'series' | 'container' | 'file-unit' | 'item';
   hasChildren: boolean;
@@ -119,7 +128,8 @@ const NodeIcon: React.FC<NodeIconProps> = ({ type, hasChildren, isExpanded, togg
     return (
       <button 
         onClick={(e) => {
-          e.stopPropagation(); // This was problematic - let's make sure the event doesn't bubble
+          e.stopPropagation(); // Prevent bubbling to ensure only one expand/collapse event
+          console.log(`Icon button clicked for expansion`);
           toggleExpand();
         }}
         className={cn(
