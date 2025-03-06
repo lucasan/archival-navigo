@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, FileUnitNodeProps } from './types';
@@ -65,7 +64,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     );
   }, [hasChildren, children, childrenArray, searchTerm]);
   
-  // New function to check if any descendant item matches the search
+  // Function to check if any descendant item matches the search
   const hasDescendantItemMatchingSearch = useCallback(() => {
     if (!hasChildren || !children || !searchTerm || searchTerm.trim() === '') return false;
     
@@ -77,17 +76,30 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     
     if (directMatch) return true;
     
-    // Recursive check for deeper descendants
+    // Recursive check for deeper descendants - Check 2 levels deep
     return childrenArray.some(child => {
       if (!child.props.children) return false;
       
-      // For each child that has children, look through its children
       const childChildren = React.Children.toArray(child.props.children) as React.ReactElement[];
       
-      return childChildren.some(grandChild => 
-        (grandChild.props.type === 'item' && 
-         grandChild.props.title.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
+      // Check each grandchild
+      return childChildren.some(grandChild => {
+        if (grandChild.props.type === 'item' && 
+            grandChild.props.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+          return true;
+        }
+        
+        // Check one more level deeper for container > file-unit > item structure
+        if (grandChild.props.children) {
+          const greatGrandchildren = React.Children.toArray(grandChild.props.children) as React.ReactElement[];
+          return greatGrandchildren.some(greatGrandChild => 
+            greatGrandChild.props.type === 'item' && 
+            greatGrandChild.props.title.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
+        
+        return false;
+      });
     });
   }, [hasChildren, children, childrenArray, searchTerm]);
   
@@ -123,7 +135,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     );
   }, [hasChildren, children, childrenArray, searchTerm, statusFilter]);
 
-  // Auto-expand logic when searching or filtering
+  // Auto-expand logic when searching or filtering - ENHANCED
   useEffect(() => {
     // Only auto-expand when actively searching or filtering
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
@@ -143,6 +155,29 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
       else if (type === 'file-unit' && hasMatchingItemWithThumbnail()) {
         setIsExpanded(true);
       }
+      
+      // FORCE EXPANSION: Always expand containers when there's a search
+      if (type === 'container' && searchTerm && searchTerm.trim() !== '') {
+        // Check if any descendants at any level match the search
+        const hasAnyMatchingDescendant = (node: React.ReactElement): boolean => {
+          // Check if this node matches
+          if (node.props.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+            return true;
+          }
+          
+          // No children to check
+          if (!node.props.children) return false;
+          
+          // Check children recursively
+          const nodeChildren = React.Children.toArray(node.props.children) as React.ReactElement[];
+          return nodeChildren.some(hasAnyMatchingDescendant);
+        };
+        
+        // If any descendant matches, force expansion
+        if (childrenArray.some(hasAnyMatchingDescendant)) {
+          setIsExpanded(true);
+        }
+      }
     }
   }, [
     searchTerm, 
@@ -152,7 +187,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     hasVisibleDescendants, 
     type, 
     hasMatchingItemWithThumbnail,
-    hasDescendantItemMatchingSearch
+    hasDescendantItemMatchingSearch,
+    childrenArray
   ]);
   
   // Determine if this node should be displayed
