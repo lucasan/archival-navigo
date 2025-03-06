@@ -1,0 +1,57 @@
+
+import React from 'react';
+import { FileUnitStatus } from './types';
+import SeriesSection from './SeriesSection';
+import ContainerNode from './ContainerNode';
+import FileUnitNode from './FileUnitNode';
+import ItemNode from './ItemNode';
+
+interface SeriesIIIContentProps {
+  searchTerm: string;
+  statusFilter: 'all' | FileUnitStatus;
+}
+
+const SeriesIIIContent: React.FC<SeriesIIIContentProps> = ({ searchTerm, statusFilter }) => {
+  return (
+    <SeriesSection
+      id="series-3"
+      title="Series III: Financial Records, 1780-1836"
+      description="Madison's personal and estate financial records, including accounts, receipts, and property documents."
+      extent="8 boxes (3.5 linear feet)"
+      arrangement="By record type, then chronological"
+      date="1780-1836"
+      searchTerm={searchTerm}
+      statusFilter={statusFilter}
+    >
+      <ContainerNode 
+        title="Box 5" 
+        containerType="Box" 
+        containerNumber="5"
+      >
+        <FileUnitNode 
+          title="File Unit 1: Estate Accounts" 
+          status="closed"
+        >
+          <ItemNode 
+            title="Montpelier Estate Ledger, 1810-1820" 
+            thumbnailUrl="/placeholder.svg"
+            externalUrl="#"
+          />
+        </FileUnitNode>
+      </ContainerNode>
+            
+      <ContainerNode 
+        title="Oversized Drawer 1" 
+        containerType="Drawer" 
+        containerNumber="1"
+      >
+        <FileUnitNode 
+          title="File Unit 2: Personal Expenses" 
+          status="open"
+        />
+      </ContainerNode>
+    </SeriesSection>
+  );
+};
+
+export default SeriesIIIContent;
