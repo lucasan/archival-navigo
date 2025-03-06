@@ -72,7 +72,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
             className="group inline-flex items-start gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words"
           >
             <span className="break-words">{title}</span>
-            <ExternalLink size={12} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity sm:size-14 mt-1" />
+            <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity mt-0.5" />
           </a>
         ) : (
           <span className={cn(
