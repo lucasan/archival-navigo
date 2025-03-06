@@ -45,15 +45,16 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     type !== 'file-unit' || 
     (fileUnitStatus && fileUnitStatus === statusFilter);
   
+  // Determine when to show all children (when parent matches search or filter)
+  const showAllChildren = (matchesSearch && searchTerm.trim() !== '') || 
+                         (type === 'file-unit' && matchesStatusFilter && statusFilter !== 'all');
+  
   // Modify children with search and filter props
   const processedChildren = childrenArray.map((child) => {
-    // When a parent node matches the search term, pass a special flag to show all children
-    const showAllChildren = matchesSearch && searchTerm.trim() !== '';
-    
     return React.cloneElement(child, {
       searchTerm,
       statusFilter,
-      // When a parent matches, force children to be visible regardless of their own search match
+      // When a parent matches, force children to be visible regardless of their own match
       isVisible: showAllChildren ? true : child.props.isVisible
     });
   });
@@ -61,14 +62,15 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   // Expand nodes when searching or filtering
   useEffect(() => {
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
-      // If this node matches the search, expand it to show children
-      if (matchesSearch && searchTerm.trim() !== '') {
+      // If this node matches the search or filter, expand it to show children
+      if ((matchesSearch && searchTerm.trim() !== '') || 
+          (type === 'file-unit' && matchesStatusFilter && statusFilter !== 'all')) {
         setIsExpanded(true);
       } else if (hasVisibleDescendants()) {
         setIsExpanded(true);
       }
     }
-  }, [searchTerm, statusFilter, matchesSearch]);
+  }, [searchTerm, statusFilter, matchesSearch, matchesStatusFilter]);
   
   // Check if any descendants match search and filter criteria
   const hasVisibleDescendants = useCallback(() => {
@@ -87,8 +89,9 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   
   // Determine if this node should be displayed
   const shouldDisplay = useMemo(() => {
-    // If this node matches the search, always display it and its children
-    if (matchesSearch && searchTerm.trim() !== '') {
+    // If this node matches the search or filter, always display it and its children
+    if ((matchesSearch && searchTerm.trim() !== '') ||
+        (type === 'file-unit' && matchesStatusFilter && statusFilter !== 'all')) {
       return true;
     }
     

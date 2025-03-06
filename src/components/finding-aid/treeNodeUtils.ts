@@ -59,24 +59,24 @@ export const isNodeOrDescendantVisible = (
   searchTerm?: string,
   statusFilter?: FileUnitStatus | 'all'
 ): boolean => {
-  // First check if node is explicitly marked as visible (parent matched search)
+  // First check if node is explicitly marked as visible (parent matched criteria)
   if (node.props.isVisible === true) {
     return true;
   }
   
   // Base case checks
-  const matches = nodeMatchesSearch(node, searchTerm);
+  const matchesSearch = nodeMatchesSearch(node, searchTerm);
   const matchesFilter = nodeMatchesStatusFilter(node, statusFilter);
   
-  // For items, they are visible if they match the search term
+  // For items, they are visible if they match the criteria
   if (node.props.type === 'item') {
-    return matches;
+    return matchesSearch && matchesFilter;
   }
   
   // For file units, check both the unit itself and any child items
   if (node.props.type === 'file-unit') {
     // Check direct matches first
-    if (matches && matchesFilter) return true;
+    if (matchesSearch && matchesFilter) return true;
     
     // If searching, also check children
     if (node.props.children && searchTerm && searchTerm.trim() !== '') {
@@ -87,7 +87,8 @@ export const isNodeOrDescendantVisible = (
   }
   
   // For series and containers, they're visible if they match or have visible descendants
-  if (searchTerm && searchTerm.trim() !== '' && matches) {
+  if ((searchTerm && searchTerm.trim() !== '' && matchesSearch) || 
+      (statusFilter !== 'all' && matchesFilter)) {
     return true;
   }
   
@@ -124,7 +125,7 @@ export const shouldNodeDisplay = (
   if (!isVisible) return false;
   
   // If no filtering or searching, show everything
-  if (!searchTerm || searchTerm.trim() === '' && (!statusFilter || statusFilter === 'all')) {
+  if ((!searchTerm || searchTerm.trim() === '') && (!statusFilter || statusFilter === 'all')) {
     return true;
   }
   
@@ -137,32 +138,37 @@ export const shouldNodeDisplay = (
     type !== 'file-unit' || 
     fileUnitStatus === statusFilter;
   
-  // If this node matches search, show it and all its children
-  if (matchesSearch && searchTerm && searchTerm.trim() !== '') {
-    return matchesStatusFilter;
+  // If this node matches search or filter, show it and all its children
+  if ((matchesSearch && searchTerm && searchTerm.trim() !== '') || 
+      (matchesStatusFilter && statusFilter !== 'all' && type === 'file-unit')) {
+    return true;
   }
   
   // Item visibility
   if (type === 'item') {
-    return matchesSearch;
+    return matchesSearch && matchesStatusFilter;
   }
   
   // File unit visibility
   if (type === 'file-unit') {
-    // If searching, check children too
-    if (searchTerm && searchTerm.trim() !== '' && children) {
-      const fileUnitChildren = React.Children.toArray(children) as ReactElementWithProps[];
-      const anyChildMatches = fileUnitChildren.some(child => 
-        child.props.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      return (matchesSearch || anyChildMatches) && matchesStatusFilter;
+    // If searching or filtering, check children too
+    if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
+      if (children) {
+        const fileUnitChildren = React.Children.toArray(children) as ReactElementWithProps[];
+        const anyChildMatches = fileUnitChildren.some(child => 
+          (searchTerm && child.props.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (statusFilter !== 'all' && matchesStatusFilter)
+        );
+        return (matchesSearch || anyChildMatches) && matchesStatusFilter;
+      }
     }
     return matchesSearch && matchesStatusFilter;
   }
   
   // Series and container visibility
   if (type === 'series' || type === 'container') {
-    if (searchTerm && searchTerm.trim() !== '' && matchesSearch) {
+    if ((searchTerm && searchTerm.trim() !== '' && matchesSearch) || 
+        (statusFilter !== 'all' && matchesStatusFilter)) {
       return true;
     }
     return hasVisibleDescendants();
