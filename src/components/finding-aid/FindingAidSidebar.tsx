@@ -18,18 +18,19 @@ const FindingAidSidebar: React.FC<FindingAidSidebarProps> = ({
 }) => {
   return (
     <div className={`${isVisible ? 'block' : 'hidden lg:block'} w-full lg:w-1/4 flex-shrink-0 animate-fade-in order-last`}>
-      <aside className="bg-white rounded-lg border shadow-sm p-4 md:p-5">
+      <Button className="w-full text-xs md:text-sm py-1.5 h-auto mb-4 md:mb-6 shadow-sm">
+        <FileDown className="h-4 w-4 mr-1" />
+        Download Finding Aid
+      </Button>
+      
+      <aside className="bg-white rounded-lg border shadow-sm p-4 md:p-5 mb-4 md:mb-6">
         <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Review Status</h3>
-        <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
+        <p className="text-xs md:text-sm text-muted-foreground">
           Need help navigating this collection or locating specific documents? Our archival team can provide specialized assistance and additional context.
         </p>
-        <Button className="w-full text-xs md:text-sm py-1.5 h-auto">
-          <FileDown className="h-4 w-4 mr-1" />
-          Download Finding Aid
-        </Button>
       </aside>
 
-      <div className="mt-4 md:mt-6 bg-white rounded-lg border shadow-sm p-4 md:p-5">
+      <div className="bg-white rounded-lg border shadow-sm p-4 md:p-5">
         <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Collection Highlights</h3>
         <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
           {highlights.map((highlight, index) => (
