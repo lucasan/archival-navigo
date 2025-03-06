@@ -1,114 +1,11 @@
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { ExternalLink, Search, Filter, Menu } from 'lucide-react';
-import TreeNode from '@/components/finding-aid/TreeNode';
-import AccordionDetails from '@/components/finding-aid/AccordionDetails';
 
-// Sample data for demonstration
-const collectionData = {
-  id: "MSS-2023-003",
-  name: "James Madison Papers",
-  acquisitionDate: "05/12/2023",
-  sourceUrl: "https://example.org/archive/madison-papers",
-  description: [
-    "The James Madison Papers is a comprehensive collection documenting the life and career of the fourth president of the United States. The collection spans from 1723 to 1836 and includes correspondence, personal notes, drafts of speeches and legislation, and financial documents.",
-    "Madison served as Secretary of State (1801-1809) and then as President (1809-1817), during which he led the nation through the War of 1812. This collection provides remarkable insight into the early American republic, the drafting of the Constitution and Bill of Rights, and Madison's pivotal role in shaping American political philosophy.",
-    "The papers are organized into series based on Madison's career phases and document types, with special attention to his extensive correspondence with figures such as Thomas Jefferson, Alexander Hamilton, and his wife Dolley Madison."
-  ],
-  accordionSections: [
-    {
-      title: "Scope and Content Note",
-      content: (
-        <>
-          <p className="mb-3">This collection contains approximately 12,000 items, including personal and official correspondence, legal documents, notes on debates, and drafts of state papers and legislation.</p>
-          <p className="mb-3">The collection is particularly rich in documenting Madison's role in the Constitutional Convention of 1787, his partnership with Alexander Hamilton and John Jay in writing The Federalist Papers, his tenure as Jefferson's Secretary of State, and his presidency.</p>
-          <p>Special attention has been given to preserving Madison's extensive notes on the Constitutional Convention, which provide one of the most comprehensive firsthand accounts of the debates and proceedings that shaped the United States Constitution.</p>
-        </>
-      )
-    },
-    {
-      title: "Date Ranges",
-      content: (
-        <div className="space-y-2">
-          <div>
-            <div className="font-medium">Inclusive Dates</div>
-            <div>1723-1836</div>
-          </div>
-          <div>
-            <div className="font-medium">Bulk Dates</div>
-            <div>1780-1817</div>
-          </div>
-          <div>
-            <div className="font-medium">Significant Date Ranges</div>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>Constitutional Convention Period: 1787-1788</li>
-              <li>Secretary of State Period: 1801-1809</li>
-              <li>Presidential Period: 1809-1817</li>
-            </ul>
-          </div>
-        </div>
-      )
-    },
-    {
-      title: "Creator Information",
-      content: (
-        <div className="space-y-2">
-          <div>
-            <div className="font-medium">Primary Creator</div>
-            <div>Madison, James, 1751-1836</div>
-          </div>
-          <div>
-            <div className="font-medium">Biographical Note</div>
-            <p>James Madison (March 16, 1751 - June 28, 1836) was an American statesman, diplomat, and Founding Father. He served as the fourth president of the United States from 1809 to 1817. Madison is hailed as the "Father of the Constitution" for his pivotal role in drafting and promoting the Constitution of the United States and the Bill of Rights.</p>
-          </div>
-        </div>
-      )
-    },
-    {
-      title: "Donor Details",
-      content: (
-        <div className="space-y-2">
-          <div>
-            <div className="font-medium">Acquisition</div>
-            <div>Donated by the Madison Family Trust, 2023</div>
-          </div>
-          <div>
-            <div className="font-medium">Provenance</div>
-            <p>The collection was maintained by Dolley Madison after her husband's death in 1836, and subsequently passed through descendants until its donation to the archive.</p>
-          </div>
-        </div>
-      )
-    },
-    {
-      title: "Additional Metadata",
-      content: (
-        <div className="space-y-3">
-          <div>
-            <div className="font-medium">Physical Description</div>
-            <div>78 boxes (31.2 linear feet); 24 oversize folders</div>
-          </div>
-          <div>
-            <div className="font-medium">Language</div>
-            <div>Materials primarily in English with some correspondence in French</div>
-          </div>
-          <div>
-            <div className="font-medium">Access Restrictions</div>
-            <div>Open for research. Some fragile originals may require viewing of digital surrogates.</div>
-          </div>
-          <div>
-            <div className="font-medium">Related Materials</div>
-            <ul className="list-disc pl-5">
-              <li>Thomas Jefferson Papers</li>
-              <li>Dolley Madison Collection</li>
-              <li>Continental Congress Records</li>
-            </ul>
-          </div>
-        </div>
-      )
-    }
-  ]
-};
+import React, { useState } from 'react';
+import { Menu } from 'lucide-react';
+import FindingAidHeader from '@/components/finding-aid/FindingAidHeader';
+import FindingAidSidebar from '@/components/finding-aid/FindingAidSidebar';
+import CollectionOverview from '@/components/finding-aid/CollectionOverview';
+import FindingAidTabs from '@/components/finding-aid/FindingAidTabs';
+import { collectionData } from '@/components/finding-aid/constants';
 
 const FindingAid: React.FC = () => {
   const [activeTab, setActiveTab] = useState("series");
@@ -131,37 +28,13 @@ const FindingAid: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header Section */}
-      <header className="border-b border-border bg-white shadow-sm animate-fade-in">
-        <div className="container px-4 py-4 sm:py-6 md:py-8 mx-auto">
-          <div className="flex justify-between items-center mb-2 md:mb-3">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
-              {collectionData.name}
-            </h1>
-            <button 
-              onClick={toggleSidebar}
-              className="lg:hidden p-2 rounded-md hover:bg-gray-100"
-              aria-label="Toggle sidebar"
-            >
-              <Menu size={20} />
-            </button>
-          </div>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-xs sm:text-sm text-muted-foreground">
-            <div className="flex flex-col sm:flex-row sm:gap-x-6 mb-2 md:mb-0">
-              <span className="mb-1 sm:mb-0">Collection ID: <span className="font-medium text-foreground">{collectionData.id}</span></span>
-              <span>Acquisition Date: <span className="font-medium text-foreground">{collectionData.acquisitionDate}</span></span>
-            </div>
-            <a 
-              href={collectionData.sourceUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-primary transition-colors"
-            >
-              View Original Source
-              <ExternalLink size={14} className="inline" />
-            </a>
-          </div>
-        </div>
-      </header>
+      <FindingAidHeader 
+        collectionName={collectionData.name}
+        collectionId={collectionData.id}
+        acquisitionDate={collectionData.acquisitionDate}
+        sourceUrl={collectionData.sourceUrl}
+        toggleSidebar={toggleSidebar}
+      />
 
       {/* Main Content Area */}
       <main className="container px-4 mx-auto py-4 sm:py-6 md:py-8">
@@ -169,274 +42,25 @@ const FindingAid: React.FC = () => {
           {/* Main Content (75%) */}
           <div className={`w-full lg:w-3/4 animate-slide-in order-first transition-all duration-300 ${sidebarVisible ? 'lg:w-3/4' : 'lg:w-full'}`}>
             {/* Overview Section */}
-            <section className="mb-4 sm:mb-6 md:mb-8">
-              <h2 className="text-xl md:text-2xl font-semibold mb-2 md:mb-4">Overview</h2>
-              <div className="prose prose-sm sm:prose-base prose-slate max-w-none">
-                {collectionData.description.map((paragraph, index) => (
-                  <p key={index} className="mb-3 md:mb-4 text-sm md:text-base text-muted-foreground">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </section>
+            <CollectionOverview description={collectionData.description} />
 
             {/* Interactive Navigation Tabs */}
-            <Tabs defaultValue="series" onValueChange={setActiveTab} className="w-full">
-              <TabsList className="mb-4 md:mb-6 bg-muted overflow-x-auto flex w-full">
-                <TabsTrigger value="series" className="finding-aid-tab whitespace-nowrap">
-                  Series & File Units
-                </TabsTrigger>
-                <TabsTrigger value="details" className="finding-aid-tab whitespace-nowrap">
-                  Finding Aid Details
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="series" className="mt-0 p-0">
-                <div className="bg-white rounded-lg border shadow-sm p-3 sm:p-4 md:p-6">
-                  <h3 className="text-lg md:text-xl font-medium mb-3 md:mb-4">Collection Structure</h3>
-                  
-                  {/* Search and Filter Controls */}
-                  <div className="mb-4 md:mb-6 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                    <div className="relative w-full sm:w-1/2">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <Search size={16} className="text-muted-foreground" />
-                      </div>
-                      <input 
-                        type="text" 
-                        className="bg-background border border-input rounded-md py-1.5 sm:py-2 pl-10 pr-4 w-full text-sm focus:ring-2 focus:ring-ring focus:outline-none" 
-                        placeholder="Search series, file units, and items..." 
-                        value={searchTerm}
-                        onChange={handleSearch}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                      <Filter size={16} className="text-muted-foreground" />
-                      <span className="text-xs sm:text-sm font-medium">Status:</span>
-                      <select 
-                        className="bg-background border border-input rounded-md py-1.5 sm:py-2 px-2 sm:px-3 focus:ring-2 focus:ring-ring focus:outline-none text-xs sm:text-sm"
-                        value={statusFilter}
-                        onChange={handleStatusFilter}
-                      >
-                        <option value="all">All Statuses</option>
-                        <option value="open">Open</option>
-                        <option value="closed">Closed</option>
-                        <option value="digitized">Digitized</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  {/* Hierarchical Tree Structure */}
-                  <div className="space-y-2 text-sm md:text-base overflow-x-auto">
-                    <TreeNode 
-                      type="series" 
-                      title="Series I: Personal Correspondence, 1770-1826"
-                      seriesDescription="A comprehensive collection of Madison's personal letters to family members, friends, and colleagues."
-                      seriesExtent="12 boxes (5.2 linear feet)"
-                      seriesArrangement="Chronological by year, then alphabetical by correspondent"
-                      seriesDate="1770-1826"
-                      searchTerm={searchTerm}
-                      statusFilter={statusFilter}
-                    >
-                      <TreeNode 
-                        type="container" 
-                        title="Box 1" 
-                        containerType="Box" 
-                        containerNumber="1"
-                      >
-                        <TreeNode 
-                          type="file-unit" 
-                          title="File Unit 1: Family Letters" 
-                          fileUnitStatus="digitized"
-                        >
-                          <TreeNode 
-                            type="item" 
-                            title="Letter to Dolley Madison, June 15, 1789" 
-                            thumbnailUrl="/placeholder.svg"
-                            externalUrl="#"
-                          />
-                          <TreeNode 
-                            type="item" 
-                            title="Letter from Father, August 3, 1782" 
-                            thumbnailUrl="/placeholder.svg"
-                            externalUrl="#"
-                          />
-                        </TreeNode>
-                      </TreeNode>
-                      
-                      <TreeNode 
-                        type="container" 
-                        title="Box 2" 
-                        containerType="Box" 
-                        containerNumber="2"
-                      >
-                        <TreeNode 
-                          type="file-unit" 
-                          title="File Unit 2: Correspondence with Friends" 
-                          fileUnitStatus="closed"
-                        >
-                          <TreeNode 
-                            type="item" 
-                            title="Letter from Thomas Jefferson, May 12, 1790" 
-                            thumbnailUrl="/placeholder.svg"
-                            externalUrl="#"
-                          />
-                        </TreeNode>
-                      </TreeNode>
-                    </TreeNode>
-
-                    <TreeNode 
-                      type="series" 
-                      title="Series II: Political Documents, 1780-1817"
-                      seriesDescription="Documents related to Madison's political career, including Constitutional Convention notes and presidential papers."
-                      seriesExtent="24 boxes (10.5 linear feet)"
-                      seriesArrangement="By document type, then chronological"
-                      seriesDate="1780-1817"
-                      searchTerm={searchTerm}
-                      statusFilter={statusFilter}
-                    >
-                      <TreeNode 
-                        type="container" 
-                        title="Box 3" 
-                        containerType="Box" 
-                        containerNumber="3"
-                      >
-                        <TreeNode 
-                          type="file-unit" 
-                          title="File Unit 1: Constitutional Convention Notes" 
-                          fileUnitStatus="open"
-                        >
-                          <TreeNode 
-                            type="item" 
-                            title="Notes on the Constitutional Convention, May-September 1787" 
-                            thumbnailUrl="/placeholder.svg"
-                            externalUrl="#"
-                          />
-                          <TreeNode 
-                            type="item" 
-                            title="Draft of Federalist No. 10, November 1787" 
-                            thumbnailUrl="/placeholder.svg"
-                            externalUrl="#"
-                          />
-                        </TreeNode>
-                      </TreeNode>
-                      
-                      <TreeNode 
-                        type="container" 
-                        title="Box 4" 
-                        containerType="Box" 
-                        containerNumber="4"
-                      >
-                        <TreeNode 
-                          type="file-unit" 
-                          title="File Unit 2: Presidential Papers" 
-                          fileUnitStatus="digitized"
-                        >
-                          <TreeNode 
-                            type="item" 
-                            title="First Inaugural Address, March 4, 1809" 
-                            thumbnailUrl="/placeholder.svg"
-                            externalUrl="#"
-                          />
-                          <TreeNode 
-                            type="item" 
-                            title="War of 1812 Documents" 
-                            thumbnailUrl="/placeholder.svg"
-                            externalUrl="#"
-                          />
-                        </TreeNode>
-                      </TreeNode>
-                    </TreeNode>
-
-                    <TreeNode 
-                      type="series" 
-                      title="Series III: Financial Records, 1780-1836"
-                      seriesDescription="Madison's personal and estate financial records, including accounts, receipts, and property documents."
-                      seriesExtent="8 boxes (3.5 linear feet)"
-                      seriesArrangement="By record type, then chronological"
-                      seriesDate="1780-1836"
-                      searchTerm={searchTerm}
-                      statusFilter={statusFilter}
-                    >
-                      <TreeNode 
-                        type="container" 
-                        title="Box 5" 
-                        containerType="Box" 
-                        containerNumber="5"
-                      >
-                        <TreeNode 
-                          type="file-unit" 
-                          title="File Unit 1: Estate Accounts" 
-                          fileUnitStatus="closed"
-                        >
-                          <TreeNode 
-                            type="item" 
-                            title="Montpelier Estate Ledger, 1810-1820" 
-                            thumbnailUrl="/placeholder.svg"
-                            externalUrl="#"
-                          />
-                        </TreeNode>
-                      </TreeNode>
-                      
-                      <TreeNode 
-                        type="container" 
-                        title="Oversized Drawer 1" 
-                        containerType="Drawer" 
-                        containerNumber="1"
-                      >
-                        <TreeNode 
-                          type="file-unit" 
-                          title="File Unit 2: Personal Expenses" 
-                          fileUnitStatus="open"
-                        />
-                      </TreeNode>
-                    </TreeNode>
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="details" className="mt-0 p-0">
-                <div className="bg-white rounded-lg border shadow-sm p-1">
-                  <AccordionDetails sections={collectionData.accordionSections} />
-                </div>
-              </TabsContent>
-            </Tabs>
+            <FindingAidTabs 
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              accordionSections={collectionData.accordionSections}
+              searchTerm={searchTerm}
+              handleSearch={handleSearch}
+              statusFilter={statusFilter}
+              handleStatusFilter={handleStatusFilter}
+            />
           </div>
 
           {/* Sidebar (25%) */}
-          <div className={`${sidebarVisible ? 'block' : 'hidden lg:block'} w-full lg:w-1/4 flex-shrink-0 animate-fade-in order-last`}>
-            <aside className="bg-white rounded-lg border shadow-sm p-4 md:p-5">
-              <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Research Assistance</h3>
-              <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
-                Need help navigating this collection or locating specific documents? Our archival team can provide specialized assistance and additional context.
-              </p>
-              <Button className="w-full text-xs md:text-sm py-1.5 h-auto">
-                Request Research Support
-              </Button>
-            </aside>
-
-            <div className="mt-4 md:mt-6 bg-white rounded-lg border shadow-sm p-4 md:p-5">
-              <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Collection Highlights</h3>
-              <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
-                <li className="flex gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0"></span>
-                  <span className="text-muted-foreground">Complete set of Madison's Constitutional Convention notes</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0"></span>
-                  <span className="text-muted-foreground">Original drafts of multiple Federalist Papers</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0"></span>
-                  <span className="text-muted-foreground">Correspondence with all early U.S. presidents</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0"></span>
-                  <span className="text-muted-foreground">First-hand accounts of the War of 1812</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <FindingAidSidebar 
+            isVisible={sidebarVisible}
+            highlights={collectionData.collectionHighlights}
+          />
         </div>
       </main>
     </div>
