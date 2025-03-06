@@ -54,6 +54,17 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   const showAllChildren = (matchesSearch && searchTerm.trim() !== '') || 
                          (type === 'file-unit' && matchesStatusFilter && statusFilter !== 'all');
   
+  // Check if any child items have thumbnails and match the search
+  const hasMatchingItemWithThumbnail = useCallback(() => {
+    if (!hasChildren || !children || !searchTerm || searchTerm.trim() === '') return false;
+    
+    return childrenArray.some(child => 
+      child.props.type === 'item' && 
+      child.props.thumbnailUrl && 
+      child.props.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [hasChildren, children, childrenArray, searchTerm]);
+  
   // Modify children with search and filter props
   const processedChildren = React.Children.toArray(children).map((child) => {
     return React.cloneElement(child as React.ReactElement, {
@@ -98,14 +109,31 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
       else if (hasVisibleDescendants()) {
         setIsExpanded(true);
       }
+      // Special case: if this is a file unit and has a child item with thumbnail that matches search
+      else if (type === 'file-unit' && hasMatchingItemWithThumbnail()) {
+        setIsExpanded(true);
+      }
     }
-  }, [searchTerm, statusFilter, matchesSearch, matchesStatusFilter, hasVisibleDescendants]);
+  }, [
+    searchTerm, 
+    statusFilter, 
+    matchesSearch, 
+    matchesStatusFilter, 
+    hasVisibleDescendants, 
+    type, 
+    hasMatchingItemWithThumbnail
+  ]);
   
   // Determine if this node should be displayed
   const shouldDisplay = useMemo(() => {
     // If this node matches the search or filter, always display it and its children
     if ((matchesSearch && searchTerm.trim() !== '') ||
         (type === 'file-unit' && matchesStatusFilter && statusFilter !== 'all')) {
+      return true;
+    }
+    
+    // Special case for file units with matching items with thumbnails
+    if (type === 'file-unit' && hasMatchingItemWithThumbnail()) {
       return true;
     }
     
@@ -133,7 +161,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     matchesStatusFilter, 
     hasVisibleDescendants, 
     children,
-    fileUnitStatus
+    fileUnitStatus,
+    hasMatchingItemWithThumbnail
   ]);
   
   // Handle node expansion toggle
