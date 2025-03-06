@@ -65,6 +65,32 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     );
   }, [hasChildren, children, childrenArray, searchTerm]);
   
+  // New function to check if any descendant item matches the search
+  const hasDescendantItemMatchingSearch = useCallback(() => {
+    if (!hasChildren || !children || !searchTerm || searchTerm.trim() === '') return false;
+    
+    // Direct check for immediate children
+    const directMatch = childrenArray.some(child => 
+      (child.props.type === 'item' && 
+       child.props.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    
+    if (directMatch) return true;
+    
+    // Recursive check for deeper descendants
+    return childrenArray.some(child => {
+      if (!child.props.children) return false;
+      
+      // For each child that has children, look through its children
+      const childChildren = React.Children.toArray(child.props.children) as React.ReactElement[];
+      
+      return childChildren.some(grandChild => 
+        (grandChild.props.type === 'item' && 
+         grandChild.props.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    });
+  }, [hasChildren, children, childrenArray, searchTerm]);
+  
   // Modify children with search and filter props
   const processedChildren = React.Children.toArray(children).map((child) => {
     return React.cloneElement(child as React.ReactElement, {
@@ -109,6 +135,10 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
       else if (hasVisibleDescendants()) {
         setIsExpanded(true);
       }
+      // Check if this is a container or file unit and has descendant items matching search
+      else if ((type === 'container' || type === 'file-unit') && hasDescendantItemMatchingSearch()) {
+        setIsExpanded(true);
+      }
       // Special case: if this is a file unit and has a child item with thumbnail that matches search
       else if (type === 'file-unit' && hasMatchingItemWithThumbnail()) {
         setIsExpanded(true);
@@ -121,7 +151,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     matchesStatusFilter, 
     hasVisibleDescendants, 
     type, 
-    hasMatchingItemWithThumbnail
+    hasMatchingItemWithThumbnail,
+    hasDescendantItemMatchingSearch
   ]);
   
   // Determine if this node should be displayed
@@ -132,8 +163,9 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
       return true;
     }
     
-    // Special case for file units with matching items with thumbnails
-    if (type === 'file-unit' && hasMatchingItemWithThumbnail()) {
+    // Special case for nodes with matching items with thumbnails
+    if ((type === 'container' || type === 'file-unit') && 
+        (hasMatchingItemWithThumbnail() || hasDescendantItemMatchingSearch())) {
       return true;
     }
     
@@ -162,7 +194,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     hasVisibleDescendants, 
     children,
     fileUnitStatus,
-    hasMatchingItemWithThumbnail
+    hasMatchingItemWithThumbnail,
+    hasDescendantItemMatchingSearch
   ]);
   
   // Handle node expansion toggle
