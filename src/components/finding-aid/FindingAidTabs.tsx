@@ -30,14 +30,16 @@ const FindingAidTabs: React.FC<FindingAidTabsProps> = ({
 }) => {
   return (
     <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="mb-4 md:mb-6 bg-muted overflow-x-auto flex w-auto">
-        <TabsTrigger value="series" className="finding-aid-tab whitespace-nowrap">
-          Series & File Units
-        </TabsTrigger>
-        <TabsTrigger value="details" className="finding-aid-tab whitespace-nowrap">
-          Finding Aid Details
-        </TabsTrigger>
-      </TabsList>
+      <div className="flex justify-start w-full">
+        <TabsList className="mb-4 md:mb-6 bg-muted overflow-x-auto w-auto">
+          <TabsTrigger value="series" className="finding-aid-tab whitespace-nowrap">
+            Series & File Units
+          </TabsTrigger>
+          <TabsTrigger value="details" className="finding-aid-tab whitespace-nowrap">
+            Finding Aid Details
+          </TabsTrigger>
+        </TabsList>
+      </div>
 
       <TabsContent value="series" className="mt-0 p-0">
         <CollectionStructure 
