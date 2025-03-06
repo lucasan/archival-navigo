@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Menu } from 'lucide-react';
 import FindingAidHeader from '@/components/finding-aid/FindingAidHeader';
