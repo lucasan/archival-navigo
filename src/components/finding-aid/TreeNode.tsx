@@ -71,19 +71,6 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     }
   }, [expandAll, hasChildren]);
   
-  // Expand nodes when searching or filtering
-  useEffect(() => {
-    if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
-      // If this node matches the search or filter, expand it to show children
-      if ((matchesSearch && searchTerm.trim() !== '') || 
-          (type === 'file-unit' && matchesStatusFilter && statusFilter !== 'all')) {
-        setIsExpanded(true);
-      } else if (hasVisibleDescendants()) {
-        setIsExpanded(true);
-      }
-    }
-  }, [searchTerm, statusFilter, matchesSearch, matchesStatusFilter]);
-  
   // Check if any descendants match search and filter criteria
   const hasVisibleDescendants = useCallback(() => {
     if (!hasChildren || !children) return false;
@@ -98,6 +85,21 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
       isNodeOrDescendantVisible(node, searchTerm, statusFilter)
     );
   }, [hasChildren, children, childrenArray, searchTerm, statusFilter]);
+
+  // Auto-expand logic when searching or filtering
+  useEffect(() => {
+    // Only auto-expand when actively searching or filtering
+    if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
+      // If this node matches, expand it to show children
+      if (matchesSearch || matchesStatusFilter !== (statusFilter === 'all')) {
+        setIsExpanded(true);
+      } 
+      // If any descendant matches, expand this node
+      else if (hasVisibleDescendants()) {
+        setIsExpanded(true);
+      }
+    }
+  }, [searchTerm, statusFilter, matchesSearch, matchesStatusFilter, hasVisibleDescendants]);
   
   // Determine if this node should be displayed
   const shouldDisplay = useMemo(() => {
