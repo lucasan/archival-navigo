@@ -39,8 +39,12 @@ export const NodeContent: React.FC<NodeContentProps> = ({
           'tree-node-file': type === 'file-unit',
           'tree-node-item': type === 'item',
           'bg-yellow-50': matchesSearch && searchTerm && searchTerm.trim() !== '',
+          'bg-blue-50/50': isExpanded && hasChildren && type !== 'item', // Highlight expanded nodes
         }
       )}
+      onClick={hasChildren ? toggleExpand : undefined}
+      role={hasChildren ? "button" : undefined}
+      aria-expanded={hasChildren ? isExpanded : undefined}
     >
       {/* Node icon/expand button */}
       <NodeIcon 
@@ -70,6 +74,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
             target="_blank" 
             rel="noopener noreferrer"
             className="group inline-flex items-start gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words"
+            onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
           >
             <span className="break-words">{title}</span>
             <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity mt-0.5" />
@@ -92,7 +97,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
 
       {/* Status icon for file units */}
       {type === 'file-unit' && fileUnitStatus && (
-        <div className="ml-auto flex-none">
+        <div className="ml-auto flex-none" onClick={(e) => e.stopPropagation()}>
           <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
         </div>
       )}
@@ -112,8 +117,15 @@ const NodeIcon: React.FC<NodeIconProps> = ({ type, hasChildren, isExpanded, togg
   if (hasChildren) {
     return (
       <button 
-        onClick={toggleExpand}
-        className="flex-none w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent double-triggering
+          toggleExpand();
+        }}
+        className={cn(
+          "flex-none w-5 h-5 flex items-center justify-center transition-colors",
+          "text-muted-foreground hover:text-foreground",
+          isExpanded && "text-primary"
+        )}
         aria-label={isExpanded ? "Collapse" : "Expand"}
       >
         {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}

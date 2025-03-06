@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, FileUnitNodeProps } from './types';
@@ -238,6 +239,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   const toggleExpand = () => {
     if (hasChildren) {
       setIsExpanded(!isExpanded);
+      console.log(`Toggling ${title} to ${!isExpanded ? 'expanded' : 'collapsed'}`);
     }
   };
 
@@ -272,8 +274,13 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
         />
       )}
 
-      {hasChildren && isExpanded && (
-        <div className="ml-5 border-l pl-1 mt-1 animate-slide-in">
+      {hasChildren && (
+        <div 
+          className={cn(
+            "ml-5 border-l pl-1 mt-1 overflow-hidden transition-all duration-300",
+            isExpanded ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"
+          )}
+        >
           {processedChildren}
         </div>
       )}

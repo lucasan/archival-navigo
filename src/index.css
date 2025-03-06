@@ -114,7 +114,7 @@
   }
 
   .tree-node {
-    @apply py-1 sm:py-1.5 px-1 sm:px-2 rounded-md transition-colors hover:bg-muted text-sm sm:text-base;
+    @apply py-1 sm:py-1.5 px-1 sm:px-2 rounded-md transition-colors hover:bg-muted/70 text-sm sm:text-base cursor-pointer;
   }
 
   .tree-node-series {
@@ -126,7 +126,7 @@
   }
 
   .tree-node-item {
-    @apply pl-6 sm:pl-10;
+    @apply pl-6 sm:pl-10 cursor-default;
   }
 
   .status-open {
@@ -140,4 +140,28 @@
   .status-digitized {
     @apply text-blue-600;
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-10px); 
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0); 
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-in-out;
 }
