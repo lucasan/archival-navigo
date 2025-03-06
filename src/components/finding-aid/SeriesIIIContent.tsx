@@ -48,7 +48,9 @@ const SeriesIIIContent: React.FC<SeriesIIIContentProps> = ({ searchTerm, statusF
         <FileUnitNode 
           title="File Unit 2: Personal Expenses" 
           status="open"
-        />
+        >
+          {/* Empty children element to satisfy the prop requirement */}
+        </FileUnitNode>
       </ContainerNode>
     </SeriesSection>
   );

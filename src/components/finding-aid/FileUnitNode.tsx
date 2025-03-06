@@ -6,7 +6,7 @@ import { FileUnitStatus } from './types';
 interface FileUnitNodeProps {
   title: string;
   status: FileUnitStatus;
-  children: React.ReactNode;
+  children?: React.ReactNode; // Making children optional with "?"
 }
 
 const FileUnitNode: React.FC<FileUnitNodeProps> = ({
