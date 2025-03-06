@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Search, Filter } from 'lucide-react';
+import { ExternalLink, Search, Filter, Menu } from 'lucide-react';
 import TreeNode from '@/components/finding-aid/TreeNode';
 import AccordionDetails from '@/components/finding-aid/AccordionDetails';
 
@@ -115,6 +114,7 @@ const FindingAid: React.FC = () => {
   const [activeTab, setActiveTab] = useState("series");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'closed' | 'digitized'>('all');
+  const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -124,17 +124,30 @@ const FindingAid: React.FC = () => {
     setStatusFilter(e.target.value as 'all' | 'open' | 'closed' | 'digitized');
   };
 
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header Section */}
       <header className="border-b border-border bg-white shadow-sm animate-fade-in">
-        <div className="container px-4 py-8 mx-auto">
-          <h1 className="text-3xl font-bold text-center md:text-left mb-3 tracking-tight">
-            {collectionData.name}
-          </h1>
-          <div className="flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-            <div className="flex gap-x-6 mb-2 md:mb-0">
-              <span>Collection ID: <span className="font-medium text-foreground">{collectionData.id}</span></span>
+        <div className="container px-4 py-4 sm:py-6 md:py-8 mx-auto">
+          <div className="flex justify-between items-center mb-2 md:mb-3">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
+              {collectionData.name}
+            </h1>
+            <button 
+              onClick={toggleSidebar}
+              className="lg:hidden p-2 rounded-md hover:bg-gray-100"
+              aria-label="Toggle sidebar"
+            >
+              <Menu size={20} />
+            </button>
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-xs sm:text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row sm:gap-x-6 mb-2 md:mb-0">
+              <span className="mb-1 sm:mb-0">Collection ID: <span className="font-medium text-foreground">{collectionData.id}</span></span>
               <span>Acquisition Date: <span className="font-medium text-foreground">{collectionData.acquisitionDate}</span></span>
             </div>
             <a 
@@ -151,16 +164,16 @@ const FindingAid: React.FC = () => {
       </header>
 
       {/* Main Content Area */}
-      <main className="container px-4 mx-auto py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <main className="container px-4 mx-auto py-4 sm:py-6 md:py-8">
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
           {/* Main Content (75%) */}
-          <div className="w-full lg:w-3/4 animate-slide-in order-first">
+          <div className={`w-full lg:w-3/4 animate-slide-in order-first transition-all duration-300 ${sidebarVisible ? 'lg:w-3/4' : 'lg:w-full'}`}>
             {/* Overview Section */}
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold mb-4">Overview</h2>
-              <div className="prose prose-slate max-w-none">
+            <section className="mb-4 sm:mb-6 md:mb-8">
+              <h2 className="text-xl md:text-2xl font-semibold mb-2 md:mb-4">Overview</h2>
+              <div className="prose prose-sm sm:prose-base prose-slate max-w-none">
                 {collectionData.description.map((paragraph, index) => (
-                  <p key={index} className="mb-4 text-muted-foreground">
+                  <p key={index} className="mb-3 md:mb-4 text-sm md:text-base text-muted-foreground">
                     {paragraph}
                   </p>
                 ))}
@@ -169,39 +182,39 @@ const FindingAid: React.FC = () => {
 
             {/* Interactive Navigation Tabs */}
             <Tabs defaultValue="series" onValueChange={setActiveTab} className="w-full">
-              <TabsList className="mb-6 bg-muted">
-                <TabsTrigger value="series" className="finding-aid-tab">
+              <TabsList className="mb-4 md:mb-6 bg-muted overflow-x-auto flex w-full">
+                <TabsTrigger value="series" className="finding-aid-tab whitespace-nowrap">
                   Series & File Units
                 </TabsTrigger>
-                <TabsTrigger value="details" className="finding-aid-tab">
+                <TabsTrigger value="details" className="finding-aid-tab whitespace-nowrap">
                   Finding Aid Details
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="series" className="mt-0 p-0">
-                <div className="bg-white rounded-lg border shadow-sm p-4 md:p-6">
-                  <h3 className="text-xl font-medium mb-4">Collection Structure</h3>
+                <div className="bg-white rounded-lg border shadow-sm p-3 sm:p-4 md:p-6">
+                  <h3 className="text-lg md:text-xl font-medium mb-3 md:mb-4">Collection Structure</h3>
                   
                   {/* Search and Filter Controls */}
-                  <div className="mb-6 flex flex-col md:flex-row gap-4 items-start md:items-center">
-                    <div className="relative w-full md:w-1/2">
+                  <div className="mb-4 md:mb-6 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                    <div className="relative w-full sm:w-1/2">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <Search size={16} className="text-muted-foreground" />
                       </div>
                       <input 
                         type="text" 
-                        className="bg-background border border-input rounded-md py-2 pl-10 pr-4 w-full focus:ring-2 focus:ring-ring focus:outline-none" 
+                        className="bg-background border border-input rounded-md py-1.5 sm:py-2 pl-10 pr-4 w-full text-sm focus:ring-2 focus:ring-ring focus:outline-none" 
                         placeholder="Search series, file units, and items..." 
                         value={searchTerm}
                         onChange={handleSearch}
                       />
                     </div>
                     
-                    <div className="flex items-center gap-2 w-full md:w-auto">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
                       <Filter size={16} className="text-muted-foreground" />
-                      <span className="text-sm font-medium">Status:</span>
+                      <span className="text-xs sm:text-sm font-medium">Status:</span>
                       <select 
-                        className="bg-background border border-input rounded-md py-2 px-3 focus:ring-2 focus:ring-ring focus:outline-none text-sm"
+                        className="bg-background border border-input rounded-md py-1.5 sm:py-2 px-2 sm:px-3 focus:ring-2 focus:ring-ring focus:outline-none text-xs sm:text-sm"
                         value={statusFilter}
                         onChange={handleStatusFilter}
                       >
@@ -214,7 +227,7 @@ const FindingAid: React.FC = () => {
                   </div>
                   
                   {/* Hierarchical Tree Structure */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 text-sm md:text-base overflow-x-auto">
                     <TreeNode 
                       type="series" 
                       title="Series I: Personal Correspondence, 1770-1826"
@@ -391,20 +404,20 @@ const FindingAid: React.FC = () => {
           </div>
 
           {/* Sidebar (25%) */}
-          <div className="w-full lg:w-1/4 flex-shrink-0 animate-fade-in order-last">
-            <aside className="bg-white rounded-lg border shadow-sm p-5">
-              <h3 className="text-lg font-semibold mb-3">Research Assistance</h3>
-              <p className="text-muted-foreground mb-4">
+          <div className={`${sidebarVisible ? 'block' : 'hidden lg:block'} w-full lg:w-1/4 flex-shrink-0 animate-fade-in order-last`}>
+            <aside className="bg-white rounded-lg border shadow-sm p-4 md:p-5">
+              <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Research Assistance</h3>
+              <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
                 Need help navigating this collection or locating specific documents? Our archival team can provide specialized assistance and additional context.
               </p>
-              <Button className="w-full">
+              <Button className="w-full text-xs md:text-sm py-1.5 h-auto">
                 Request Research Support
               </Button>
             </aside>
 
-            <div className="mt-6 bg-white rounded-lg border shadow-sm p-5">
-              <h3 className="text-lg font-semibold mb-3">Collection Highlights</h3>
-              <ul className="space-y-3 text-sm">
+            <div className="mt-4 md:mt-6 bg-white rounded-lg border shadow-sm p-4 md:p-5">
+              <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Collection Highlights</h3>
+              <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
                 <li className="flex gap-2">
                   <span className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0"></span>
                   <span className="text-muted-foreground">Complete set of Madison's Constitutional Convention notes</span>

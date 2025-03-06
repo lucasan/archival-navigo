@@ -32,7 +32,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   return (
     <div 
       className={cn(
-        'tree-node flex items-center gap-2',
+        'tree-node flex flex-wrap md:flex-nowrap items-center gap-2',
         {
           'tree-node-series': type === 'series',
           'tree-node-container': type === 'container',
@@ -52,7 +52,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
 
       {/* Thumbnail for items */}
       {type === 'item' && thumbnailUrl && (
-        <div className="relative w-[75px] h-[75px] md:w-[100px] md:h-[100px] flex-none overflow-hidden rounded-md border mr-2">
+        <div className="relative w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] md:w-[100px] md:h-[100px] flex-none overflow-hidden rounded-md border mr-2">
           <img 
             src={thumbnailUrl} 
             alt={`Thumbnail for ${title}`} 
@@ -77,7 +77,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         ) : (
           <span className={cn(
             "truncate",
-            type === 'series' && "font-bold text-lg",
+            type === 'series' && "font-bold text-base sm:text-lg",
             type === 'container' && "font-medium",
           )}>
             {title}
@@ -92,8 +92,8 @@ export const NodeContent: React.FC<NodeContentProps> = ({
 
       {/* Status icon for file units */}
       {type === 'file-unit' && fileUnitStatus && (
-        <div className="ml-2">
-          <StatusIcon status={fileUnitStatus} showLabel />
+        <div className="ml-auto mt-1 md:mt-0">
+          <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
         </div>
       )}
     </div>

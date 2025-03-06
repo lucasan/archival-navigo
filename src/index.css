@@ -92,15 +92,15 @@
   }
 
   h1 {
-    @apply text-3xl md:text-4xl;
+    @apply text-2xl sm:text-3xl md:text-4xl;
   }
 
   h2 {
-    @apply text-2xl md:text-3xl;
+    @apply text-xl sm:text-2xl md:text-3xl;
   }
 
   h3 {
-    @apply text-xl md:text-2xl;
+    @apply text-lg sm:text-xl md:text-2xl;
   }
 
   p {
@@ -110,23 +110,23 @@
 
 @layer components {
   .finding-aid-tab {
-    @apply inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow;
+    @apply inline-flex h-8 sm:h-10 items-center justify-center rounded-md px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow;
   }
 
   .tree-node {
-    @apply py-1.5 px-2 rounded-md transition-colors hover:bg-muted;
+    @apply py-1 sm:py-1.5 px-1 sm:px-2 rounded-md transition-colors hover:bg-muted text-sm sm:text-base;
   }
 
   .tree-node-series {
-    @apply font-medium pl-2;
+    @apply font-medium pl-1 sm:pl-2;
   }
 
   .tree-node-file {
-    @apply pl-6;
+    @apply pl-4 sm:pl-6;
   }
 
   .tree-node-item {
-    @apply pl-10;
+    @apply pl-6 sm:pl-10;
   }
 
   .status-open {
