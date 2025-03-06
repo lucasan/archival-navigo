@@ -17,7 +17,7 @@ const ContainerNode: React.FC<ContainerNodeProps> = ({
   containerType,
   containerNumber,
   children,
-  searchTerm,
+  searchTerm = '',
   statusFilter,
   isVisible
 }) => {

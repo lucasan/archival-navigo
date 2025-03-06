@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { ExternalLink, File, Package, ChevronRight, ChevronDown } from 'lucide-react';
+import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TreeNodeBase } from './types';
 import { StatusIcon } from './StatusIcon';
@@ -38,17 +37,22 @@ export const NodeContent: React.FC<NodeContentProps> = ({
     }
   };
 
+  // Determine if this node directly matches the search term
+  const directMatch = searchTerm && 
+                     searchTerm.trim() !== '' && 
+                     title.toLowerCase().includes(searchTerm.toLowerCase());
+
   return (
     <div 
       className={cn(
-        'tree-node flex flex-wrap md:flex-nowrap items-center gap-2 w-full',
+        'tree-node flex flex-wrap md:flex-nowrap items-center gap-2 w-full p-1.5 rounded-md transition-colors',
         {
           'tree-node-series': type === 'series',
           'tree-node-container': type === 'container',
           'tree-node-file': type === 'file-unit',
           'tree-node-item': type === 'item',
-          'bg-yellow-50': matchesSearch && searchTerm && searchTerm.trim() !== '',
-          'bg-blue-50/50': isExpanded && hasChildren && type !== 'item',
+          'bg-yellow-50 border border-yellow-200': directMatch,
+          'bg-blue-50/50': isExpanded && hasChildren && type !== 'item' && !directMatch,
         }
       )}
       onClick={handleNodeClick}
@@ -63,6 +67,11 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         isExpanded={isExpanded} 
         toggleExpand={toggleExpand} 
       />
+
+      {/* Search match indicator */}
+      {directMatch && (
+        <Sparkle size={16} className="text-amber-500 flex-none animate-pulse" />
+      )}
 
       {/* Thumbnail for items */}
       {type === 'item' && thumbnailUrl && (
@@ -86,7 +95,10 @@ export const NodeContent: React.FC<NodeContentProps> = ({
             href={externalUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="group inline-flex items-start gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words"
+            className={cn(
+              "group inline-flex items-start gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words",
+              directMatch && "font-semibold text-amber-700"
+            )}
             onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
           >
             <span className="break-words">{title}</span>
@@ -95,6 +107,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         ) : (
           <span className={cn(
             "break-words w-full inline-block",
+            directMatch && "font-semibold text-amber-700",
             type === 'series' && "font-bold text-base sm:text-lg",
             type === 'container' && "font-medium",
           )}>

@@ -6,12 +6,16 @@ interface ItemNodeProps {
   title: string;
   thumbnailUrl: string;
   externalUrl: string;
+  searchTerm?: string;
+  statusFilter?: 'all' | 'open' | 'closed' | 'digitized';
 }
 
 const ItemNode: React.FC<ItemNodeProps> = ({
   title,
   thumbnailUrl,
-  externalUrl
+  externalUrl,
+  searchTerm = '',
+  statusFilter
 }) => {
   return (
     <TreeNode 
@@ -19,6 +23,8 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       title={title} 
       thumbnailUrl={thumbnailUrl}
       externalUrl={externalUrl}
+      searchTerm={searchTerm}
+      statusFilter={statusFilter}
     />
   );
 };
