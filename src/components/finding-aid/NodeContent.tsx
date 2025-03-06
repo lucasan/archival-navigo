@@ -32,7 +32,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   return (
     <div 
       className={cn(
-        'tree-node flex flex-wrap md:flex-nowrap items-center gap-2',
+        'tree-node flex flex-wrap md:flex-nowrap items-center gap-2 w-full',
         {
           'tree-node-series': type === 'series',
           'tree-node-container': type === 'container',
@@ -62,21 +62,21 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         </div>
       )}
 
-      {/* Title and content - Improved for mobile */}
-      <div className="flex-1 min-w-0">
+      {/* Title and content - Improved for mobile with better wrapping */}
+      <div className="flex-1 min-w-0 break-words">
         {type === 'item' && externalUrl ? (
           <a 
             href={externalUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base"
+            className="group inline-flex items-start gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words"
           >
-            <span className="truncate">{title}</span>
-            <ExternalLink size={12} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity sm:size-14" />
+            <span className="break-words">{title}</span>
+            <ExternalLink size={12} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity sm:size-14 mt-1" />
           </a>
         ) : (
           <span className={cn(
-            "truncate",
+            "break-words w-full inline-block",
             type === 'series' && "font-bold text-base sm:text-lg",
             type === 'container' && "font-medium",
           )}>
@@ -92,7 +92,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
 
       {/* Status icon for file units */}
       {type === 'file-unit' && fileUnitStatus && (
-        <div className="ml-auto">
+        <div className="ml-auto flex-none">
           <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
         </div>
       )}
