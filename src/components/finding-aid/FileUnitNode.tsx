@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import TreeNode from './TreeNode';
 import { FileUnitStatus } from './types';
 
@@ -20,9 +20,18 @@ const FileUnitNode: React.FC<FileUnitNodeProps> = ({
   statusFilter,
   isVisible = true
 }) => {
-  // Debug information to track the children structure
+  // Enhanced debugging information to track the children structure
   const hasChildren = Boolean(children && React.Children.count(children) > 0);
-  console.log(`FileUnitNode "${title}" - hasChildren: ${hasChildren}, childCount: ${React.Children.count(children || [])}`);
+  const childCount = React.Children.count(children || []);
+  
+  console.log(`FileUnitNode "${title}" - hasChildren: ${hasChildren}, childCount: ${childCount}`);
+  
+  // Log when searchTerm changes to see if props are updating
+  useEffect(() => {
+    if (searchTerm && searchTerm.trim() !== '') {
+      console.log(`FileUnitNode "${title}" - searchTerm changed to: "${searchTerm}"`);
+    }
+  }, [searchTerm, title]);
   
   return (
     <TreeNode 
@@ -33,6 +42,7 @@ const FileUnitNode: React.FC<FileUnitNodeProps> = ({
       statusFilter={statusFilter}
       isVisible={isVisible}
     >
+      {/* Explicitly pass all children */}
       {children}
     </TreeNode>
   );

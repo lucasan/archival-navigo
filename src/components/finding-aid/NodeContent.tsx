@@ -29,11 +29,12 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   matchesSearch,
   searchTerm
 }) => {
-  // Handle container click for expansion
-  const handleContainerClick = (e: React.MouseEvent) => {
+  // Explicit handler for the entire node click
+  const handleNodeClick = (e: React.MouseEvent) => {
     if (hasChildren) {
-      e.stopPropagation(); // Prevent bubbling
-      console.log(`Container click on ${title}`);
+      e.preventDefault();
+      e.stopPropagation();
+      console.log(`Node click on ${title} - toggling`);
       toggleExpand();
     }
   };
@@ -51,7 +52,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
           'bg-blue-50/50': isExpanded && hasChildren && type !== 'item',
         }
       )}
-      onClick={handleContainerClick}
+      onClick={handleNodeClick}
       style={hasChildren ? { cursor: 'pointer' } : undefined}
       role={hasChildren ? "button" : undefined}
       aria-expanded={hasChildren ? isExpanded : undefined}
@@ -66,7 +67,10 @@ export const NodeContent: React.FC<NodeContentProps> = ({
 
       {/* Thumbnail for items */}
       {type === 'item' && thumbnailUrl && (
-        <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-[100px] lg:h-[100px] flex-none overflow-hidden rounded-md border mr-1 sm:mr-2">
+        <div 
+          className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-[100px] lg:h-[100px] flex-none overflow-hidden rounded-md border mr-1 sm:mr-2"
+          onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
+        >
           <img 
             src={thumbnailUrl} 
             alt={`Thumbnail for ${title}`} 
@@ -77,7 +81,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
       )}
 
       {/* Title and content */}
-      <div className="flex-1 min-w-0 break-words">
+      <div className="flex-1 min-w-0 break-words" onClick={(e) => e.stopPropagation()}>
         {type === 'item' && externalUrl ? (
           <a 
             href={externalUrl} 
@@ -115,7 +119,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   );
 };
 
-// Helper component for node icons - FIXED TO PREVENT EVENT BUBBLING
+// Helper component for node icons with SIMPLIFIED click handling
 interface NodeIconProps {
   type: 'series' | 'container' | 'file-unit' | 'item';
   hasChildren: boolean;
@@ -128,7 +132,8 @@ const NodeIcon: React.FC<NodeIconProps> = ({ type, hasChildren, isExpanded, togg
     return (
       <button 
         onClick={(e) => {
-          e.stopPropagation(); // Prevent bubbling to ensure only one expand/collapse event
+          e.preventDefault();
+          e.stopPropagation(); // Critical to prevent double-firing
           console.log(`Icon button clicked for expansion`);
           toggleExpand();
         }}

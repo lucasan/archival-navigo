@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, FileUnitNodeProps } from './types';
@@ -34,7 +35,12 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
 
   // Initial expand state - default containers to open for better UX
   const [isExpanded, setIsExpanded] = useState(type === 'container');
+  const [forceRender, setForceRender] = useState(0); // Added to force re-render when needed
+  
+  // Check if we actually have children
   const hasChildren = Boolean(children && React.Children.count(children) > 0);
+  
+  console.log(`TreeNode "${title}" - hasChildren: ${hasChildren}, isExpanded: ${isExpanded}, expandAll: ${expandAll}`);
 
   // Process children for search and filter
   const childrenArray = React.Children.toArray(children) as React.ReactElement[];
@@ -114,11 +120,12 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     });
   });
 
-  // Use effect to respond to expandAll changes
+  // Force render when expandAll changes
   useEffect(() => {
     if (hasChildren) {
       console.log(`ExpandAll changed to ${expandAll} for ${title}`);
       setIsExpanded(expandAll);
+      setForceRender(prev => prev + 1); // Force re-render
     }
   }, [expandAll, hasChildren, title]);
   
@@ -137,81 +144,21 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     );
   }, [hasChildren, children, childrenArray, searchTerm, statusFilter]);
 
-  // Auto-expand logic
+  // Auto-expand logic - SIMPLIFIED for reliability
   useEffect(() => {
-    console.log(`Auto-expand check for ${title}, search: "${searchTerm}", filter: ${statusFilter}`);
-    
-    // Only auto-expand when actively searching or filtering
     if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
-      console.log(`Search/filter active for ${title}`);
-      
-      // If this node matches, expand it to show children
-      if ((matchesSearch && searchTerm && searchTerm.trim() !== '') || 
-          (matchesStatusFilter && statusFilter !== 'all' && type === 'file-unit')) {
-        console.log(`Node ${title} matches search/filter - expanding`);
+      // Auto-expand conditions
+      if (matchesSearch || hasVisibleDescendants() || hasDescendantItemMatchingSearch()) {
+        console.log(`EXPANDING ${title} due to search/filter match`);
         setIsExpanded(true);
-      } 
-      // If any descendant matches, expand this node
-      else if (hasVisibleDescendants()) {
-        console.log(`Node ${title} has visible descendants - expanding`);
-        setIsExpanded(true);
-      }
-      // Check if this is a container or file unit and has descendant items matching search
-      else if ((type === 'container' || type === 'file-unit') && hasDescendantItemMatchingSearch()) {
-        console.log(`Node ${title} has matching descendant items - expanding`);
-        setIsExpanded(true);
-      }
-      
-      // FORCE EXPANSION: Always expand containers when there's a search
-      if (type === 'container' && searchTerm && searchTerm.trim() !== '') {
-        // Check if any descendants at any level match the search
-        const hasAnyMatchingDescendant = (node: React.ReactElement): boolean => {
-          // Check if this node matches
-          if (node.props.title.toLowerCase().includes(searchTerm.toLowerCase())) {
-            return true;
-          }
-          
-          // No children to check
-          if (!node.props.children) return false;
-          
-          // Check children recursively
-          const nodeChildren = React.Children.toArray(node.props.children) as React.ReactElement[];
-          return nodeChildren.some(hasAnyMatchingDescendant);
-        };
-        
-        // If any descendant matches, force expansion
-        if (childrenArray.some(hasAnyMatchingDescendant)) {
-          console.log(`Container ${title} has some matching descendant - force expanding`);
-          setIsExpanded(true);
-        }
+        // Force a re-render to make sure the UI updates
+        setForceRender(prev => prev + 1);
       }
     }
-  }, [
-    searchTerm, 
-    statusFilter, 
-    matchesSearch, 
-    matchesStatusFilter, 
-    hasVisibleDescendants, 
-    type, 
-    hasMatchingItemWithThumbnail,
-    hasDescendantItemMatchingSearch,
-    childrenArray
-  ]);
+  }, [searchTerm, statusFilter, matchesSearch, hasVisibleDescendants, hasDescendantItemMatchingSearch, title]);
   
   // Determine if this node should be displayed
   const shouldDisplay = useMemo(() => {
-    // If this node matches the search or filter, always display it and its children
-    if ((matchesSearch && searchTerm.trim() !== '') ||
-        (type === 'file-unit' && matchesStatusFilter && statusFilter !== 'all')) {
-      return true;
-    }
-    
-    // Special case for nodes with matching items with thumbnails
-    if ((type === 'container' || type === 'file-unit') && 
-        (hasMatchingItemWithThumbnail() || hasDescendantItemMatchingSearch())) {
-      return true;
-    }
-    
     return shouldNodeDisplay(
       { 
         title, 
@@ -232,23 +179,16 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     type, 
     title, 
     seriesDescription,
-    matchesSearch, 
-    matchesStatusFilter, 
     hasVisibleDescendants, 
     children,
-    fileUnitStatus,
-    hasMatchingItemWithThumbnail,
-    hasDescendantItemMatchingSearch
+    fileUnitStatus
   ]);
   
-  // Handle node expansion toggle
+  // Handle node expansion toggle - SIMPLIFIED for reliability
   const toggleExpand = useCallback(() => {
     if (hasChildren) {
-      console.log(`TOGGLE EVENT: ${title} currently isExpanded=${isExpanded}`);
-      setIsExpanded(prev => {
-        console.log(`Changing ${title} expansion from ${prev} to ${!prev}`);
-        return !prev;
-      });
+      console.log(`TOGGLE EVENT: ${title} from ${isExpanded} to ${!isExpanded}`);
+      setIsExpanded(prevState => !prevState);
     }
   }, [hasChildren, isExpanded, title]);
 
@@ -283,12 +223,15 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
         />
       )}
 
+      {/* Render children - key based on forceRender to ensure re-render */}
       {hasChildren && (
         <div 
+          key={`children-${forceRender}`}
           className={cn(
             "ml-5 border-l pl-1 mt-1",
             isExpanded ? "block" : "hidden"
           )}
+          style={{ display: isExpanded ? 'block' : 'none' }} 
           data-expanded={isExpanded ? "true" : "false"}
         >
           {processedChildren}
