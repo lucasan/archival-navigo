@@ -1,14 +1,21 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { FolderOpen, Lock, Scan } from 'lucide-react';
 import { FileUnitStatus } from './types';
 
 interface StatusIconProps {
   status: FileUnitStatus;
   showLabel?: boolean;
+  showLabelOnHover?: boolean;
 }
 
-export const StatusIcon: React.FC<StatusIconProps> = ({ status, showLabel = false }) => {
+export const StatusIcon: React.FC<StatusIconProps> = ({ 
+  status, 
+  showLabel = false,
+  showLabelOnHover = false 
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   const renderIcon = () => {
     switch (status) {
       case 'open':
@@ -36,9 +43,13 @@ export const StatusIcon: React.FC<StatusIconProps> = ({ status, showLabel = fals
   };
 
   return (
-    <span className={`flex-none flex items-center text-sm gap-1 status-${status}`}>
+    <span 
+      className={`flex-none flex items-center text-sm gap-1 status-${status}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {renderIcon()}
-      {showLabel && (
+      {(showLabel || (showLabelOnHover && isHovered)) && (
         <span className="ml-1 text-xs hidden md:inline">
           {getStatusText()}
         </span>
