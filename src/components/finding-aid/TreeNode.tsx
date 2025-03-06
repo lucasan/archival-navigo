@@ -5,6 +5,7 @@ import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, Fil
 import { NodeContent } from './NodeContent';
 import { SeriesMetadata } from './SeriesMetadata';
 import { shouldNodeDisplay, childrenMatchSearch, isNodeOrDescendantVisible } from './treeNodeUtils';
+import { useTreeContext } from './TreeContext';
 
 // Main TreeNode component
 const TreeNode: React.FC<TreeNodeProps> = (props) => {
@@ -19,6 +20,9 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     statusFilter = 'all',
     isVisible = true,
   } = props;
+
+  // Get the global expand state from context
+  const { expandAll } = useTreeContext();
 
   // Type-specific properties with proper type narrowing
   const seriesDescription = type === 'series' ? (props as SeriesNodeProps).seriesDescription : undefined;
@@ -51,14 +55,21 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
                          (type === 'file-unit' && matchesStatusFilter && statusFilter !== 'all');
   
   // Modify children with search and filter props
-  const processedChildren = childrenArray.map((child) => {
-    return React.cloneElement(child, {
+  const processedChildren = React.Children.toArray(children).map((child) => {
+    return React.cloneElement(child as React.ReactElement, {
       searchTerm,
       statusFilter,
       // When a parent matches, force children to be visible regardless of their own match
-      isVisible: showAllChildren ? true : child.props.isVisible
+      isVisible: showAllChildren ? true : (child as React.ReactElement).props.isVisible
     });
   });
+
+  // Use effect to respond to expandAll changes
+  useEffect(() => {
+    if (hasChildren) {
+      setIsExpanded(expandAll);
+    }
+  }, [expandAll, hasChildren]);
   
   // Expand nodes when searching or filtering
   useEffect(() => {
