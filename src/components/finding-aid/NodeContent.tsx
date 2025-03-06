@@ -50,9 +50,9 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         toggleExpand={toggleExpand} 
       />
 
-      {/* Thumbnail for items */}
+      {/* Thumbnail for items - Improved for mobile */}
       {type === 'item' && thumbnailUrl && (
-        <div className="relative w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] md:w-[100px] md:h-[100px] flex-none overflow-hidden rounded-md border mr-2">
+        <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-[100px] lg:h-[100px] flex-none overflow-hidden rounded-md border mr-1 sm:mr-2">
           <img 
             src={thumbnailUrl} 
             alt={`Thumbnail for ${title}`} 
@@ -62,17 +62,17 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         </div>
       )}
 
-      {/* Title and content */}
+      {/* Title and content - Improved for mobile */}
       <div className="flex-1 min-w-0">
         {type === 'item' && externalUrl ? (
           <a 
             href={externalUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+            className="group inline-flex items-center gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base"
           >
             <span className="truncate">{title}</span>
-            <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity" />
+            <ExternalLink size={12} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity sm:size-14" />
           </a>
         ) : (
           <span className={cn(
@@ -82,7 +82,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
           )}>
             {title}
             {type === 'container' && containerType && containerNumber && (
-              <span className="text-muted-foreground ml-2 text-sm">
+              <span className="text-muted-foreground ml-1 sm:ml-2 text-xs sm:text-sm">
                 ({containerType} {containerNumber})
               </span>
             )}
@@ -92,7 +92,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
 
       {/* Status icon for file units */}
       {type === 'file-unit' && fileUnitStatus && (
-        <div className="ml-auto mt-1 md:mt-0">
+        <div className="ml-auto">
           <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
         </div>
       )}
