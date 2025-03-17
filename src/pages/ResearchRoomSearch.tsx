@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Search, Calendar, Check } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 // Mock search results data
 const mockSearchResults = [
@@ -18,7 +18,6 @@ const mockSearchResults = [
     type: "Textual Records",
     date: "1750-1889",
     digitized: "Partially Digitized",
-    matches: ["correspondence", "diaries", "politics", "diplomacy"],
     excerpt: "Collection of correspondence, diaries, and other papers of the Adams family of Massachusetts, including John Adams and John Quincy Adams."
   },
   {
@@ -27,7 +26,6 @@ const mockSearchResults = [
     type: "Photographs and other Graphic Materials",
     date: "1861-1865",
     digitized: "Digitized",
-    matches: ["battle", "soldiers", "Lincoln", "military"],
     excerpt: "Photographs documenting the Civil War, including images of military personnel, preparations for battle, and battlefield operations."
   },
   {
@@ -36,7 +34,6 @@ const mockSearchResults = [
     type: "Textual Records",
     date: "1892-1954",
     digitized: "Non Digitized",
-    matches: ["Ellis Island", "naturalization", "passenger lists"],
     excerpt: "Records documenting immigration to the United States, including passenger lists and naturalization papers."
   },
   {
@@ -45,7 +42,6 @@ const mockSearchResults = [
     type: "Textual Records",
     date: "1789-2023",
     digitized: "Digitized",
-    matches: ["government", "policy", "executive branch"],
     excerpt: "Collection of executive orders issued by presidents of the United States from George Washington to the present day."
   },
   {
@@ -54,7 +50,6 @@ const mockSearchResults = [
     type: "Data Files",
     date: "1958-2022",
     digitized: "Partially Digitized",
-    matches: ["Apollo", "space exploration", "astronauts"],
     excerpt: "Documentation of NASA's space programs including mission reports, technical drawings, and correspondence related to various space missions."
   }
 ];
@@ -82,10 +77,6 @@ const ResearchRoomSearch: React.FC = () => {
     digitized: true,
     nonDigitized: true,
     partiallyDigitized: true,
-    
-    // Date Range
-    dateFrom: '',
-    dateTo: '',
   });
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,9 +116,6 @@ const ResearchRoomSearch: React.FC = () => {
       digitized: true,
       nonDigitized: true,
       partiallyDigitized: true,
-      
-      dateFrom: '',
-      dateTo: '',
     });
   };
 
@@ -379,35 +367,6 @@ const ResearchRoomSearch: React.FC = () => {
                 
                 <Separator />
                 
-                {/* Date Range Filter Section */}
-                <div>
-                  <h3 className="font-medium mb-3">Date Range</h3>
-                  <div className="space-y-3">
-                    <div className="space-y-1">
-                      <Label htmlFor="date-from">From</Label>
-                      <Input 
-                        id="date-from" 
-                        type="text" 
-                        placeholder="Year (e.g., 1950)" 
-                        value={filters.dateFrom}
-                        onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="date-to">To</Label>
-                      <Input 
-                        id="date-to" 
-                        type="text" 
-                        placeholder="Year (e.g., 2000)" 
-                        value={filters.dateTo}
-                        onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-                
-                <Separator />
-                
                 {/* Apply Filters Button */}
                 <Button className="w-full">Apply Filters</Button>
               </div>
@@ -450,14 +409,6 @@ const ResearchRoomSearch: React.FC = () => {
                       <p className="text-muted-foreground mb-2">
                         {result.excerpt}
                       </p>
-                      
-                      {result.matches.length > 0 && (
-                        <div className="mt-1">
-                          <p className="text-xs font-medium text-muted-foreground">
-                            Matched terms: {result.matches.join(", ")}
-                          </p>
-                        </div>
-                      )}
                     </div>
                   </CardContent>
                 </Card>
