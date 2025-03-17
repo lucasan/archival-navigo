@@ -27,20 +27,29 @@ const SeriesIContent: React.FC<SeriesIContentProps> = ({ searchTerm, statusFilte
         title="Box 1" 
         containerType="Box" 
         containerNumber="1"
+        containerId="12345"
+        searchTerm={searchTerm}
+        statusFilter={statusFilter}
       >
         <FileUnitNode 
           title="File Unit 1: Family Letters" 
           status="digitized"
+          searchTerm={searchTerm}
+          statusFilter={statusFilter}
         >
           <ItemNode 
             title="Letter to Dolley Madison, June 15, 1789" 
             thumbnailUrl="/placeholder.svg"
             externalUrl="#"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
           />
           <ItemNode 
             title="Letter from Father, August 3, 1782" 
             thumbnailUrl="/placeholder.svg"
             externalUrl="#"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
           />
         </FileUnitNode>
       </ContainerNode>
@@ -49,15 +58,22 @@ const SeriesIContent: React.FC<SeriesIContentProps> = ({ searchTerm, statusFilte
         title="Box 2" 
         containerType="Box" 
         containerNumber="2"
+        containerId="67890"
+        searchTerm={searchTerm}
+        statusFilter={statusFilter}
       >
         <FileUnitNode 
           title="File Unit 2: Correspondence with Friends" 
           status="closed"
+          searchTerm={searchTerm}
+          statusFilter={statusFilter}
         >
           <ItemNode 
             title="Letter from Thomas Jefferson, May 12, 1790" 
             thumbnailUrl="/placeholder.svg"
             externalUrl="#"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
           />
         </FileUnitNode>
       </ContainerNode>
