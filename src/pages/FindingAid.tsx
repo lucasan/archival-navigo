@@ -45,7 +45,10 @@ const FindingAid: React.FC = () => {
           {/* Main Content (75%) */}
           <div className={`w-full lg:w-3/4 animate-slide-in order-first transition-all duration-300 ${sidebarVisible ? 'lg:w-3/4' : 'lg:w-full'}`}>
             {/* Overview Section */}
-            <CollectionOverview description={collectionData.description} />
+            <CollectionOverview 
+              description={collectionData.description} 
+              showTitle={false} 
+            />
 
             {/* Interactive Navigation Tabs */}
             <FindingAidTabs 
