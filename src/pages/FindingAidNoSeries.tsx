@@ -32,7 +32,7 @@ const FindingAidNoSeries: React.FC = () => {
       
       {/* Header Section */}
       <FindingAidHeader 
-        collectionName={`${collectionData.name} (No Series)`}
+        collectionName={collectionData.name}
         collectionId={collectionData.id}
         acquisitionDate={collectionData.acquisitionDate}
         sourceUrl={collectionData.sourceUrl}
