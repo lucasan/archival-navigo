@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
@@ -313,7 +312,7 @@ const FindingAidsListing: React.FC = () => {
       <NavigationHeader />
       
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Finding Aids Directory</h1>
+        <h1 className="text-3xl font-bold mb-6">Finding Aids</h1>
         
         {/* Alphabetical Glossary Menu */}
         <div className="mb-8 overflow-x-auto">
