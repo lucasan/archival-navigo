@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search, Filter } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { FileUnitStatus } from './types';
 
 interface SearchControlsProps {
@@ -32,7 +32,6 @@ const SearchControls: React.FC<SearchControlsProps> = ({
       </div>
       
       <div className="flex items-center gap-2 w-full sm:w-auto">
-        <Filter size={16} className="text-muted-foreground" />
         <span className="text-xs sm:text-sm font-medium">Status:</span>
         <select 
           className="bg-background border border-input rounded-md py-1.5 sm:py-2 px-2 sm:px-3 focus:ring-2 focus:ring-ring focus:outline-none text-xs sm:text-sm"

@@ -8,21 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Search, 
-  FileText, 
-  Calendar, 
-  Filter, 
-  Building, 
-  Package2, 
-  HardDrive, 
-  Map, 
-  Film, 
-  Image, 
-  AudioLines, 
-  Globe,
-  Check 
-} from 'lucide-react';
+import { Search, Calendar, Check } from 'lucide-react';
 
 // Mock search results data
 const mockSearchResults = [
@@ -87,6 +73,11 @@ const ResearchRoomSearch: React.FC = () => {
     textualRecords: true,
     webPages: false,
     
+    // Level of Description
+    levelFindingAid: true,
+    levelFileUnit: true,
+    levelItem: true,
+    
     // Digitized Status
     digitized: true,
     nonDigitized: true,
@@ -127,6 +118,10 @@ const ResearchRoomSearch: React.FC = () => {
       textualRecords: true,
       webPages: false,
       
+      levelFindingAid: true,
+      levelFileUnit: true,
+      levelItem: true,
+      
       digitized: true,
       nonDigitized: true,
       partiallyDigitized: true,
@@ -166,8 +161,7 @@ const ResearchRoomSearch: React.FC = () => {
           <div className="w-full lg:w-1/4">
             <div className="bg-white rounded-lg border p-4 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold flex items-center">
-                  <Filter className="mr-2 h-5 w-5" />
+                <h2 className="text-xl font-semibold">
                   Filters
                 </h2>
                 <Button variant="ghost" size="sm" onClick={resetFilters}>
@@ -188,8 +182,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('architecturalAndEngineering', checked === true)
                         }
                       />
-                      <Label htmlFor="architecturalAndEngineering" className="flex items-center">
-                        <Building className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="architecturalAndEngineering">
                         Architectural and Engineering Drawings
                       </Label>
                     </div>
@@ -202,8 +195,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('artifacts', checked === true)
                         }
                       />
-                      <Label htmlFor="artifacts" className="flex items-center">
-                        <Package2 className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="artifacts">
                         Artifacts
                       </Label>
                     </div>
@@ -216,8 +208,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('dataFiles', checked === true)
                         }
                       />
-                      <Label htmlFor="dataFiles" className="flex items-center">
-                        <HardDrive className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="dataFiles">
                         Data Files
                       </Label>
                     </div>
@@ -230,8 +221,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('mapsAndCharts', checked === true)
                         }
                       />
-                      <Label htmlFor="mapsAndCharts" className="flex items-center">
-                        <Map className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="mapsAndCharts">
                         Maps and Charts
                       </Label>
                     </div>
@@ -244,8 +234,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('movingImages', checked === true)
                         }
                       />
-                      <Label htmlFor="movingImages" className="flex items-center">
-                        <Film className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="movingImages">
                         Moving Images
                       </Label>
                     </div>
@@ -258,8 +247,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('photographs', checked === true)
                         }
                       />
-                      <Label htmlFor="photographs" className="flex items-center">
-                        <Image className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="photographs">
                         Photographs and other Graphic Materials
                       </Label>
                     </div>
@@ -272,8 +260,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('soundRecordings', checked === true)
                         }
                       />
-                      <Label htmlFor="soundRecordings" className="flex items-center">
-                        <AudioLines className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="soundRecordings">
                         Sound Recordings
                       </Label>
                     </div>
@@ -286,8 +273,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('textualRecords', checked === true)
                         }
                       />
-                      <Label htmlFor="textualRecords" className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="textualRecords">
                         Textual Records
                       </Label>
                     </div>
@@ -300,10 +286,50 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('webPages', checked === true)
                         }
                       />
-                      <Label htmlFor="webPages" className="flex items-center">
-                        <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <Label htmlFor="webPages">
                         Web Pages
                       </Label>
+                    </div>
+                  </div>
+                </div>
+                
+                <Separator />
+
+                {/* Level of Description Filter Section */}
+                <div>
+                  <h3 className="font-medium mb-3">Level of Description</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="levelFindingAid" 
+                        checked={filters.levelFindingAid} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('levelFindingAid', checked === true)
+                        }
+                      />
+                      <Label htmlFor="levelFindingAid">Finding Aid</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="levelFileUnit" 
+                        checked={filters.levelFileUnit} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('levelFileUnit', checked === true)
+                        }
+                      />
+                      <Label htmlFor="levelFileUnit">File Unit</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="levelItem" 
+                        checked={filters.levelItem} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('levelItem', checked === true)
+                        }
+                      />
+                      <Label htmlFor="levelItem">Item</Label>
                     </div>
                   </div>
                 </div>
@@ -322,8 +348,7 @@ const ResearchRoomSearch: React.FC = () => {
                           handleFilterChange('digitized', checked === true)
                         }
                       />
-                      <Label htmlFor="digitized" className="flex items-center">
-                        <Check className="h-4 w-4 mr-2 text-green-500" />
+                      <Label htmlFor="digitized">
                         Digitized
                       </Label>
                     </div>
@@ -417,21 +442,9 @@ const ResearchRoomSearch: React.FC = () => {
                       </div>
                       
                       <div className="flex items-center gap-4 mb-2">
-                        <div className="flex items-center gap-1">
-                          {/* Display appropriate icon based on record type */}
-                          {result.type === "Textual Records" && <FileText className="h-4 w-4 text-muted-foreground" />}
-                          {result.type === "Photographs and other Graphic Materials" && <Image className="h-4 w-4 text-muted-foreground" />}
-                          {result.type === "Data Files" && <HardDrive className="h-4 w-4 text-muted-foreground" />}
-                          <span className="text-sm text-muted-foreground">{result.type}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm text-muted-foreground">{result.date}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          {result.digitized === "Digitized" && <Check className="h-4 w-4 text-green-500" />}
-                          <span className="text-sm text-muted-foreground">{result.digitized}</span>
-                        </div>
+                        <span className="text-sm text-muted-foreground">{result.type}</span>
+                        <span className="text-sm text-muted-foreground">{result.date}</span>
+                        <span className="text-sm text-muted-foreground">{result.digitized}</span>
                       </div>
                       
                       <p className="text-muted-foreground mb-2">
