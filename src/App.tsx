@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import FindingAid from "./pages/FindingAid";
 import FindingAidNoSeries from "./pages/FindingAidNoSeries";
+import FindingAidNoContainers from "./pages/FindingAidNoContainers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/finding-aid" element={<FindingAid />} />
           <Route path="/finding-aid-no-series" element={<FindingAidNoSeries />} />
+          <Route path="/finding-aid-no-containers" element={<FindingAidNoContainers />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
