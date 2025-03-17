@@ -8,47 +8,66 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Search, FileText, Calendar, Filter } from 'lucide-react';
+import { 
+  Search, 
+  FileText, 
+  Calendar, 
+  Filter, 
+  Building, 
+  Package2, 
+  HardDrive, 
+  Map, 
+  Film, 
+  Image, 
+  AudioLines, 
+  Globe,
+  Check 
+} from 'lucide-react';
 
 // Mock search results data
 const mockSearchResults = [
   {
     id: 1,
     title: "Adams Family Papers",
-    type: "Textual",
+    type: "Textual Records",
     date: "1750-1889",
+    digitized: "Partially Digitized",
     matches: ["correspondence", "diaries", "politics", "diplomacy"],
     excerpt: "Collection of correspondence, diaries, and other papers of the Adams family of Massachusetts, including John Adams and John Quincy Adams."
   },
   {
     id: 2,
     title: "Civil War Photographs",
-    type: "Photographic",
+    type: "Photographs and other Graphic Materials",
     date: "1861-1865",
+    digitized: "Digitized",
     matches: ["battle", "soldiers", "Lincoln", "military"],
     excerpt: "Photographs documenting the Civil War, including images of military personnel, preparations for battle, and battlefield operations."
   },
   {
     id: 3,
     title: "Immigration Records Collection",
-    type: "Textual",
+    type: "Textual Records",
     date: "1892-1954",
+    digitized: "Non Digitized",
     matches: ["Ellis Island", "naturalization", "passenger lists"],
     excerpt: "Records documenting immigration to the United States, including passenger lists and naturalization papers."
   },
   {
     id: 4,
     title: "Presidential Executive Orders",
-    type: "FOIA",
+    type: "Textual Records",
     date: "1789-2023",
+    digitized: "Digitized",
     matches: ["government", "policy", "executive branch"],
     excerpt: "Collection of executive orders issued by presidents of the United States from George Washington to the present day."
   },
   {
     id: 5,
     title: "NASA Space Program Archives",
-    type: "Multi-format",
+    type: "Data Files",
     date: "1958-2022",
+    digitized: "Partially Digitized",
     matches: ["Apollo", "space exploration", "astronauts"],
     excerpt: "Documentation of NASA's space programs including mission reports, technical drawings, and correspondence related to various space missions."
   }
@@ -57,12 +76,23 @@ const mockSearchResults = [
 const ResearchRoomSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
-    textual: true,
-    photographic: true,
-    audiovisual: true,
-    electronic: true,
-    foia: true,
-    multiformat: true,
+    // Record Types
+    architecturalAndEngineering: false,
+    artifacts: false,
+    dataFiles: false,
+    mapsAndCharts: false,
+    movingImages: false,
+    photographs: false,
+    soundRecordings: false,
+    textualRecords: true,
+    webPages: false,
+    
+    // Digitized Status
+    digitized: true,
+    nonDigitized: true,
+    partiallyDigitized: true,
+    
+    // Date Range
     dateFrom: '',
     dateTo: '',
   });
@@ -83,6 +113,27 @@ const ResearchRoomSearch: React.FC = () => {
     console.log("Search term:", searchTerm);
     console.log("Filters:", filters);
     // Would trigger actual search here
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      architecturalAndEngineering: false,
+      artifacts: false,
+      dataFiles: false,
+      mapsAndCharts: false,
+      movingImages: false,
+      photographs: false,
+      soundRecordings: false,
+      textualRecords: true,
+      webPages: false,
+      
+      digitized: true,
+      nonDigitized: true,
+      partiallyDigitized: true,
+      
+      dateFrom: '',
+      dateTo: '',
+    });
   };
 
   return (
@@ -119,18 +170,7 @@ const ResearchRoomSearch: React.FC = () => {
                   <Filter className="mr-2 h-5 w-5" />
                   Filters
                 </h2>
-                <Button variant="ghost" size="sm" onClick={() => {
-                  setFilters({
-                    textual: true,
-                    photographic: true,
-                    audiovisual: true,
-                    electronic: true,
-                    foia: true,
-                    multiformat: true,
-                    dateFrom: '',
-                    dateTo: '',
-                  });
-                }}>
+                <Button variant="ghost" size="sm" onClick={resetFilters}>
                   Reset
                 </Button>
               </div>
@@ -142,63 +182,172 @@ const ResearchRoomSearch: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <Checkbox 
-                        id="textual" 
-                        checked={filters.textual} 
+                        id="architecturalAndEngineering" 
+                        checked={filters.architecturalAndEngineering} 
                         onCheckedChange={(checked) => 
-                          handleFilterChange('textual', checked === true)
+                          handleFilterChange('architecturalAndEngineering', checked === true)
                         }
                       />
-                      <Label htmlFor="textual">Textual</Label>
+                      <Label htmlFor="architecturalAndEngineering" className="flex items-center">
+                        <Building className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Architectural and Engineering Drawings
+                      </Label>
                     </div>
+                    
                     <div className="flex items-center space-x-2">
                       <Checkbox 
-                        id="photographic" 
-                        checked={filters.photographic} 
+                        id="artifacts" 
+                        checked={filters.artifacts} 
                         onCheckedChange={(checked) => 
-                          handleFilterChange('photographic', checked === true)
+                          handleFilterChange('artifacts', checked === true)
                         }
                       />
-                      <Label htmlFor="photographic">Photographic</Label>
+                      <Label htmlFor="artifacts" className="flex items-center">
+                        <Package2 className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Artifacts
+                      </Label>
                     </div>
+                    
                     <div className="flex items-center space-x-2">
                       <Checkbox 
-                        id="audiovisual" 
-                        checked={filters.audiovisual} 
+                        id="dataFiles" 
+                        checked={filters.dataFiles} 
                         onCheckedChange={(checked) => 
-                          handleFilterChange('audiovisual', checked === true)
+                          handleFilterChange('dataFiles', checked === true)
                         }
                       />
-                      <Label htmlFor="audiovisual">Audiovisual</Label>
+                      <Label htmlFor="dataFiles" className="flex items-center">
+                        <HardDrive className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Data Files
+                      </Label>
                     </div>
+                    
                     <div className="flex items-center space-x-2">
                       <Checkbox 
-                        id="electronic" 
-                        checked={filters.electronic} 
+                        id="mapsAndCharts" 
+                        checked={filters.mapsAndCharts} 
                         onCheckedChange={(checked) => 
-                          handleFilterChange('electronic', checked === true)
+                          handleFilterChange('mapsAndCharts', checked === true)
                         }
                       />
-                      <Label htmlFor="electronic">Electronic</Label>
+                      <Label htmlFor="mapsAndCharts" className="flex items-center">
+                        <Map className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Maps and Charts
+                      </Label>
                     </div>
+                    
                     <div className="flex items-center space-x-2">
                       <Checkbox 
-                        id="foia" 
-                        checked={filters.foia}
+                        id="movingImages" 
+                        checked={filters.movingImages} 
                         onCheckedChange={(checked) => 
-                          handleFilterChange('foia', checked === true)
+                          handleFilterChange('movingImages', checked === true)
                         }
                       />
-                      <Label htmlFor="foia">FOIA</Label>
+                      <Label htmlFor="movingImages" className="flex items-center">
+                        <Film className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Moving Images
+                      </Label>
                     </div>
+                    
                     <div className="flex items-center space-x-2">
                       <Checkbox 
-                        id="multiformat" 
-                        checked={filters.multiformat} 
+                        id="photographs" 
+                        checked={filters.photographs} 
                         onCheckedChange={(checked) => 
-                          handleFilterChange('multiformat', checked === true)
+                          handleFilterChange('photographs', checked === true)
                         }
                       />
-                      <Label htmlFor="multiformat">Multi-format</Label>
+                      <Label htmlFor="photographs" className="flex items-center">
+                        <Image className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Photographs and other Graphic Materials
+                      </Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="soundRecordings" 
+                        checked={filters.soundRecordings} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('soundRecordings', checked === true)
+                        }
+                      />
+                      <Label htmlFor="soundRecordings" className="flex items-center">
+                        <AudioLines className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Sound Recordings
+                      </Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="textualRecords" 
+                        checked={filters.textualRecords} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('textualRecords', checked === true)
+                        }
+                      />
+                      <Label htmlFor="textualRecords" className="flex items-center">
+                        <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Textual Records
+                      </Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="webPages" 
+                        checked={filters.webPages} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('webPages', checked === true)
+                        }
+                      />
+                      <Label htmlFor="webPages" className="flex items-center">
+                        <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
+                        Web Pages
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                {/* Digitized Status Filter Section */}
+                <div>
+                  <h3 className="font-medium mb-3">Digitized Status</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="digitized" 
+                        checked={filters.digitized} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('digitized', checked === true)
+                        }
+                      />
+                      <Label htmlFor="digitized" className="flex items-center">
+                        <Check className="h-4 w-4 mr-2 text-green-500" />
+                        Digitized
+                      </Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="nonDigitized" 
+                        checked={filters.nonDigitized} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('nonDigitized', checked === true)
+                        }
+                      />
+                      <Label htmlFor="nonDigitized">Non Digitized</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="partiallyDigitized" 
+                        checked={filters.partiallyDigitized} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('partiallyDigitized', checked === true)
+                        }
+                      />
+                      <Label htmlFor="partiallyDigitized">Partially Digitized</Label>
                     </div>
                   </div>
                 </div>
@@ -258,8 +407,8 @@ const ResearchRoomSearch: React.FC = () => {
                     <div className="flex flex-col">
                       <div className="mb-1">
                         <Link 
-                          to={result.type === "Textual" ? "/finding-aid" : 
-                               result.type === "FOIA" ? "/finding-aid-no-series" : 
+                          to={result.type === "Textual Records" ? "/finding-aid" : 
+                               result.type === "Textual" ? "/finding-aid-no-series" : 
                                "/finding-aid-no-containers"} 
                           className="text-xl font-semibold text-primary hover:underline block"
                         >
@@ -269,12 +418,19 @@ const ResearchRoomSearch: React.FC = () => {
                       
                       <div className="flex items-center gap-4 mb-2">
                         <div className="flex items-center gap-1">
-                          <FileText className="h-4 w-4 text-muted-foreground" />
+                          {/* Display appropriate icon based on record type */}
+                          {result.type === "Textual Records" && <FileText className="h-4 w-4 text-muted-foreground" />}
+                          {result.type === "Photographs and other Graphic Materials" && <Image className="h-4 w-4 text-muted-foreground" />}
+                          {result.type === "Data Files" && <HardDrive className="h-4 w-4 text-muted-foreground" />}
                           <span className="text-sm text-muted-foreground">{result.type}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
                           <span className="text-sm text-muted-foreground">{result.date}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {result.digitized === "Digitized" && <Check className="h-4 w-4 text-green-500" />}
+                          <span className="text-sm text-muted-foreground">{result.digitized}</span>
                         </div>
                       </div>
                       
