@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
@@ -13,19 +14,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 
-// Mock data for the Finding Aids
+// Mock data for the Finding Aids with more examples for "A"
 const mockFindingAids = [
   { 
     id: 1, 
     title: "Adams Family Papers", 
     type: "Textual", 
-    excerpt: "Collection of correspondence, diaries, and other papers of the Adams family of Massachusetts, including John Adams and John Quincy Adams." 
+    excerpt: "Collection of correspondence, diaries, and other papers of the Adams family of Massachusetts, including John Adams and John Quincy Adams. The collection spans multiple generations and provides insight into American politics, diplomacy, and social life from the late 18th century through the early 20th century. Includes original manuscripts, letterbooks, diaries, and personal correspondence between family members. The papers document John Adams's role in the American Revolution, his presidency, and John Quincy Adams's diplomatic career and presidency, as well as the activities of other family members." 
   },
   { 
     id: 2, 
-    title: "Bancroft Collection", 
+    title: "Architectural Drawings of Federal Buildings", 
     type: "Textual", 
-    excerpt: "Papers of historian George Bancroft, including his research materials for writing the history of the United States." 
+    excerpt: "Collection of architectural drawings, blueprints, and plans for federal buildings constructed throughout the United States from the 1850s through the 1950s. Includes designs for courthouses, post offices, custom houses, and other government facilities. The collection documents the evolution of federal architecture and the expansion of government services across the country." 
   },
   { 
     id: 3, 
@@ -170,6 +171,67 @@ const mockFindingAids = [
     title: "Zenger Trial Documents", 
     type: "FOIA", 
     excerpt: "Records from the 1735 trial of John Peter Zenger, a landmark case for freedom of the press in colonial America." 
+  },
+  // Additional 'A' items for pagination demonstration
+  { 
+    id: 27, 
+    title: "American Revolution Military Correspondence", 
+    type: "Textual", 
+    excerpt: "Collection of military correspondence from the American Revolutionary War, including letters between officers, battle reports, and strategic planning documents. The collection provides insights into military tactics, logistics, and the challenges faced by the Continental Army during the fight for independence." 
+  },
+  { 
+    id: 28, 
+    title: "Armstrong Space Program Records", 
+    type: "FOIA", 
+    excerpt: "Documents related to Neil Armstrong and the Apollo space program, including mission planning, training materials, and post-mission reports. The collection covers the development of the lunar landing missions and includes transcripts of communications between astronauts and mission control." 
+  },
+  { 
+    id: 29, 
+    title: "Appalachian Cultural Heritage Collection", 
+    type: "Textual", 
+    excerpt: "Documentation of Appalachian cultural traditions, music, crafts, and daily life from the 19th and 20th centuries. Includes oral histories, photographs, and recordings that capture the unique cultural heritage of the Appalachian region and its communities." 
+  },
+  { 
+    id: 30, 
+    title: "Agricultural Development Records", 
+    type: "Textual", 
+    excerpt: "Documentation of agricultural practices, innovations, and policies in the United States from the 1800s to the present. Includes reports on crop development, farming techniques, land use, and the evolution of agricultural technology and science throughout American history." 
+  },
+  { 
+    id: 31, 
+    title: "Atomic Energy Commission Records", 
+    type: "FOIA", 
+    excerpt: "Declassified documents from the Atomic Energy Commission detailing the development of nuclear energy and weapons technologies from the 1940s through the 1970s. Includes research reports, policy documents, and correspondence related to nuclear programs and regulation." 
+  },
+  { 
+    id: 32, 
+    title: "Alaska Purchase Documents", 
+    type: "Textual", 
+    excerpt: "Records related to the purchase of Alaska from Russia in 1867, including diplomatic correspondence, treaty documents, and congressional debates. The collection documents the negotiations led by Secretary of State William Seward and the political reactions to what was then called 'Seward's Folly.'" 
+  },
+  { 
+    id: 33, 
+    title: "Aviation Development Archives", 
+    type: "FOIA", 
+    excerpt: "Documents tracking the development of American aviation from early experiments to modern aerospace technology. Includes technical drawings, test flight records, and material on key innovations and milestones in the history of human flight." 
+  },
+  { 
+    id: 34, 
+    title: "Admiralty Court Records", 
+    type: "Textual", 
+    excerpt: "Collection of legal documents from American admiralty courts from the late 18th century through the 19th century. These records detail maritime disputes, piracy cases, salvage claims, and other legal matters related to shipping and oceanic commerce." 
+  },
+  { 
+    id: 35, 
+    title: "Astronaut Personal Records", 
+    type: "FOIA", 
+    excerpt: "Personal records, diaries, and correspondence of early NASA astronauts, providing insights into their training, missions, and personal reflections on space exploration. The collection includes materials from Mercury, Gemini, and Apollo program participants." 
+  },
+  { 
+    id: 36, 
+    title: "Abolition Movement Papers", 
+    type: "Textual", 
+    excerpt: "Documents from prominent abolitionists and anti-slavery organizations from the late 18th century through the Civil War. Includes correspondence, pamphlets, speeches, and organizational records detailing strategies and activities of the movement to end slavery in the United States." 
   }
 ];
 
@@ -210,11 +272,17 @@ const getAlphabeticalCounts = (findingAids: typeof mockFindingAids) => {
   return result;
 };
 
+// Function to truncate text to a specified length
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+};
+
 const FindingAidsListing: React.FC = () => {
   // Set "A" as the default selected letter
   const [selectedLetter, setSelectedLetter] = useState<string>("A");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 10;
   
   const alphabeticalCounts = getAlphabeticalCounts(mockFindingAids);
   
@@ -275,20 +343,24 @@ const FindingAidsListing: React.FC = () => {
             {currentItems.map(aid => (
               <Card key={aid.id} className="transition-shadow hover:shadow-md">
                 <CardContent className="p-4">
-                  <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4">
-                    <div className="md:w-1/5">
+                  <div className="flex flex-col gap-2">
+                    <div>
                       <Link 
                         to={aid.type === "Textual" ? "/finding-aid" : aid.type === "FOIA" ? "/finding-aid-no-series" : "/finding-aid-no-containers"} 
-                        className="text-lg font-semibold text-primary hover:underline"
+                        className="text-xl font-semibold text-primary hover:underline block"
                       >
                         {aid.title}
                       </Link>
-                      <div className="text-sm font-medium text-muted-foreground">
-                        {aid.type} Finding Aid
-                      </div>
                     </div>
-                    <div className="md:w-4/5">
-                      <p className="text-muted-foreground">{aid.excerpt}</p>
+                    <div>
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {aid.type} Finding Aid
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mt-2">
+                        {truncateText(aid.excerpt, 600)}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
