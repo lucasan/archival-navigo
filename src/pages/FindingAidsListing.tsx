@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
 import { 
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/pagination';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 
 // Mock data for the Finding Aids
 const mockFindingAids = [
@@ -188,18 +189,53 @@ const groupByFirstLetter = (findingAids: typeof mockFindingAids) => {
   return Object.entries(grouped).sort((a, b) => a[0].localeCompare(b[0]));
 };
 
+// Get all unique first letters from finding aids and count items per letter
+const getAlphabeticalCounts = (findingAids: typeof mockFindingAids) => {
+  const letterCounts: Record<string, number> = {};
+  
+  findingAids.forEach(aid => {
+    const firstLetter = aid.title.charAt(0).toUpperCase();
+    if (!letterCounts[firstLetter]) {
+      letterCounts[firstLetter] = 0;
+    }
+    letterCounts[firstLetter]++;
+  });
+  
+  // Create an array of all letters A-Z with counts (0 if no items)
+  const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
+  const result = alphabet.map(letter => ({
+    letter,
+    count: letterCounts[letter] || 0
+  }));
+  
+  return result;
+};
+
 const FindingAidsListing: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const itemsPerPage = 20;
   
+  const alphabeticalCounts = getAlphabeticalCounts(mockFindingAids);
+  
+  // Filter finding aids by selected letter if any
+  const filteredFindingAids = selectedLetter 
+    ? mockFindingAids.filter(aid => aid.title.charAt(0).toUpperCase() === selectedLetter)
+    : mockFindingAids;
+  
   // Calculate pagination
-  const totalItems = mockFindingAids.length;
+  const totalItems = filteredFindingAids.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   
   // Get current items
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = mockFindingAids.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredFindingAids.slice(indexOfFirstItem, indexOfLastItem);
+  
+  // Reset to page 1 when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedLetter]);
   
   // Group the current items
   const groupedItems = groupByFirstLetter(currentItems);
@@ -209,7 +245,51 @@ const FindingAidsListing: React.FC = () => {
       <NavigationHeader />
       
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Finding Aids Directory</h1>
+        <h1 className="text-3xl font-bold mb-6">Finding Aids Directory</h1>
+        
+        {/* Alphabetical Glossary Menu */}
+        <div className="mb-8 overflow-x-auto">
+          <div className="flex flex-wrap gap-2 py-2">
+            <Button
+              variant={selectedLetter === null ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedLetter(null)}
+              className="min-w-[4rem]"
+            >
+              All
+            </Button>
+            
+            {alphabeticalCounts.map(({ letter, count }) => (
+              <Button
+                key={letter}
+                variant={selectedLetter === letter ? "default" : "outline"}
+                size="sm"
+                disabled={count === 0}
+                onClick={() => setSelectedLetter(letter)}
+                className={`min-w-[4rem] ${count === 0 ? 'opacity-50' : ''}`}
+              >
+                {letter} ({count})
+              </Button>
+            ))}
+          </div>
+          <Separator className="mt-2 mb-6" />
+        </div>
+        
+        {selectedLetter && (
+          <div className="mb-4 flex items-center">
+            <h2 className="text-lg font-medium">
+              Showing finding aids starting with "{selectedLetter}"
+            </h2>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setSelectedLetter(null)}
+              className="ml-2"
+            >
+              Clear filter
+            </Button>
+          </div>
+        )}
         
         {groupedItems.map(([letter, aids]) => (
           <div key={letter} className="mb-8">
