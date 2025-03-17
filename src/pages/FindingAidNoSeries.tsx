@@ -27,6 +27,9 @@ const FindingAidNoSeries: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Navigation Header at the top */}
+      <NavigationHeader />
+      
       {/* Header Section */}
       <FindingAidHeader 
         collectionName={`${collectionData.name} (No Series)`}
@@ -35,9 +38,6 @@ const FindingAidNoSeries: React.FC = () => {
         sourceUrl={collectionData.sourceUrl}
         toggleSidebar={toggleSidebar}
       />
-      
-      {/* Navigation Header */}
-      <NavigationHeader />
 
       {/* Main Content Area */}
       <main className="container px-4 mx-auto py-4 sm:py-6 md:py-8">

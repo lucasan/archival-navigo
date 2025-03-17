@@ -21,7 +21,7 @@ const NavigationHeader: React.FC = () => {
                 : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
             )}
           >
-            With Series
+            Textual Finding Aid
           </Link>
           
           <ArrowLeftRight className="h-4 w-4 text-gray-400" />
@@ -35,7 +35,7 @@ const NavigationHeader: React.FC = () => {
                 : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
             )}
           >
-            Without Series
+            FOIA Finding Aid
           </Link>
         </div>
       </div>
