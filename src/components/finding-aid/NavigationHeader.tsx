@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowLeftRight } from 'lucide-react';
+import { ArrowLeftRight, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NavigationHeader: React.FC = () => {
@@ -64,6 +64,21 @@ const NavigationHeader: React.FC = () => {
             )}
           >
             FOIA FA with no Containers
+          </Link>
+          
+          <ArrowLeftRight className="h-4 w-4 text-gray-400" />
+          
+          <Link 
+            to="/research-room-search"
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors",
+              path === '/research-room-search'
+                ? "bg-white shadow-sm text-primary" 
+                : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
+            )}
+          >
+            <Search className="h-4 w-4 mr-1" />
+            Research Room Search
           </Link>
         </div>
       </div>
