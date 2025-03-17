@@ -266,50 +266,35 @@ const FindingAidsListing: React.FC = () => {
           <Separator className="mt-2 mb-6" />
         </div>
         
-        <div className="mb-4">
-          <h2 className="text-lg font-medium">
-            Showing finding aids starting with "{selectedLetter}"
-          </h2>
-        </div>
-        
         {filteredFindingAids.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">No finding aids start with the letter "{selectedLetter}".</p>
           </div>
         ) : (
-          groupedItems.map(([letter, aids]) => (
-            <div key={letter} className="mb-8">
-              <div className="sticky top-0 bg-background z-10 py-2">
-                <h2 className="text-2xl font-bold text-primary mb-2">{letter}</h2>
-                <Separator className="mb-4" />
-              </div>
-              
-              <div className="space-y-4">
-                {aids.map(aid => (
-                  <Card key={aid.id} className="transition-shadow hover:shadow-md">
-                    <CardContent className="p-4">
-                      <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4">
-                        <div className="md:w-1/5">
-                          <Link 
-                            to={aid.type === "Textual" ? "/finding-aid" : aid.type === "FOIA" ? "/finding-aid-no-series" : "/finding-aid-no-containers"} 
-                            className="text-lg font-semibold text-primary hover:underline"
-                          >
-                            {aid.title}
-                          </Link>
-                          <div className="text-sm font-medium text-muted-foreground">
-                            {aid.type} Finding Aid
-                          </div>
-                        </div>
-                        <div className="md:w-4/5">
-                          <p className="text-muted-foreground">{aid.excerpt}</p>
-                        </div>
+          <div className="space-y-4">
+            {currentItems.map(aid => (
+              <Card key={aid.id} className="transition-shadow hover:shadow-md">
+                <CardContent className="p-4">
+                  <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4">
+                    <div className="md:w-1/5">
+                      <Link 
+                        to={aid.type === "Textual" ? "/finding-aid" : aid.type === "FOIA" ? "/finding-aid-no-series" : "/finding-aid-no-containers"} 
+                        className="text-lg font-semibold text-primary hover:underline"
+                      >
+                        {aid.title}
+                      </Link>
+                      <div className="text-sm font-medium text-muted-foreground">
+                        {aid.type} Finding Aid
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          ))
+                    </div>
+                    <div className="md:w-4/5">
+                      <p className="text-muted-foreground">{aid.excerpt}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
         
         {totalPages > 1 && (
