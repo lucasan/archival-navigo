@@ -1,0 +1,46 @@
+
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { ArrowLeftRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const NavigationHeader: React.FC = () => {
+  const location = useLocation();
+  const isNoSeriesPage = location.pathname === '/finding-aid-no-series';
+  
+  return (
+    <div className="bg-gray-50 border-b border-gray-200">
+      <div className="container mx-auto px-4 py-2 flex justify-center">
+        <div className="flex items-center space-x-4 text-sm font-medium">
+          <Link 
+            to="/finding-aid"
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors",
+              !isNoSeriesPage 
+                ? "bg-white shadow-sm text-primary" 
+                : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
+            )}
+          >
+            With Series
+          </Link>
+          
+          <ArrowLeftRight className="h-4 w-4 text-gray-400" />
+          
+          <Link 
+            to="/finding-aid-no-series"
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors",
+              isNoSeriesPage 
+                ? "bg-white shadow-sm text-primary" 
+                : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
+            )}
+          >
+            Without Series
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default NavigationHeader;

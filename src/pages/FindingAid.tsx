@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
-import { Menu } from 'lucide-react';
 import FindingAidHeader from '@/components/finding-aid/FindingAidHeader';
+import NavigationHeader from '@/components/finding-aid/NavigationHeader';
 import FindingAidSidebar from '@/components/finding-aid/FindingAidSidebar';
 import CollectionOverview from '@/components/finding-aid/CollectionOverview';
 import FindingAidTabs from '@/components/finding-aid/FindingAidTabs';
@@ -34,6 +35,9 @@ const FindingAid: React.FC = () => {
         sourceUrl={collectionData.sourceUrl}
         toggleSidebar={toggleSidebar}
       />
+      
+      {/* Navigation Header */}
+      <NavigationHeader />
 
       {/* Main Content Area */}
       <main className="container px-4 mx-auto py-4 sm:py-6 md:py-8">
