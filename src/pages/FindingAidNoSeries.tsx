@@ -8,7 +8,6 @@ import FindingAidTabsNoSeries from '@/components/finding-aid/FindingAidTabsNoSer
 import { collectionData } from '@/components/finding-aid/constants';
 
 const FindingAidNoSeries: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("collection");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'closed' | 'digitized'>('all');
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -47,11 +46,8 @@ const FindingAidNoSeries: React.FC = () => {
             {/* Overview Section */}
             <CollectionOverview description={collectionData.description} />
 
-            {/* Interactive Navigation Tabs */}
+            {/* Collection Structure (without tabs now) */}
             <FindingAidTabsNoSeries 
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              accordionSections={collectionData.accordionSections}
               searchTerm={searchTerm}
               handleSearch={handleSearch}
               statusFilter={statusFilter}
@@ -59,7 +55,7 @@ const FindingAidNoSeries: React.FC = () => {
             />
           </div>
 
-          {/* Sidebar (25%) */}
+          {/* Sidebar (25%) - with series navigation removed */}
           <FindingAidSidebar 
             isVisible={sidebarVisible}
             highlights={collectionData.collectionHighlights}
