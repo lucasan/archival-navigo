@@ -13,6 +13,20 @@ const NavigationHeader: React.FC = () => {
       <div className="container mx-auto px-4 py-2 flex justify-center">
         <div className="flex items-center space-x-4 text-sm font-medium">
           <Link 
+            to="/finding-aids-listing"
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors",
+              path === '/finding-aids-listing'
+                ? "bg-white shadow-sm text-primary" 
+                : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
+            )}
+          >
+            Finding Aids Listing
+          </Link>
+          
+          <ArrowLeftRight className="h-4 w-4 text-gray-400" />
+          
+          <Link 
             to="/finding-aid"
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors",
