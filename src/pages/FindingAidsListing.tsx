@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
@@ -212,16 +211,17 @@ const getAlphabeticalCounts = (findingAids: typeof mockFindingAids) => {
 };
 
 const FindingAidsListing: React.FC = () => {
+  // Set "A" as the default selected letter
+  const [selectedLetter, setSelectedLetter] = useState<string>("A");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const itemsPerPage = 20;
   
   const alphabeticalCounts = getAlphabeticalCounts(mockFindingAids);
   
-  // Filter finding aids by selected letter if any
-  const filteredFindingAids = selectedLetter 
-    ? mockFindingAids.filter(aid => aid.title.charAt(0).toUpperCase() === selectedLetter)
-    : mockFindingAids;
+  // Filter finding aids by selected letter
+  const filteredFindingAids = mockFindingAids.filter(
+    aid => aid.title.charAt(0).toUpperCase() === selectedLetter
+  );
   
   // Calculate pagination
   const totalItems = filteredFindingAids.length;
@@ -250,15 +250,6 @@ const FindingAidsListing: React.FC = () => {
         {/* Alphabetical Glossary Menu */}
         <div className="mb-8 overflow-x-auto">
           <div className="flex flex-wrap gap-2 py-2">
-            <Button
-              variant={selectedLetter === null ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedLetter(null)}
-              className="min-w-[4rem]"
-            >
-              All
-            </Button>
-            
             {alphabeticalCounts.map(({ letter, count }) => (
               <Button
                 key={letter}
@@ -275,55 +266,51 @@ const FindingAidsListing: React.FC = () => {
           <Separator className="mt-2 mb-6" />
         </div>
         
-        {selectedLetter && (
-          <div className="mb-4 flex items-center">
-            <h2 className="text-lg font-medium">
-              Showing finding aids starting with "{selectedLetter}"
-            </h2>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setSelectedLetter(null)}
-              className="ml-2"
-            >
-              Clear filter
-            </Button>
-          </div>
-        )}
+        <div className="mb-4">
+          <h2 className="text-lg font-medium">
+            Showing finding aids starting with "{selectedLetter}"
+          </h2>
+        </div>
         
-        {groupedItems.map(([letter, aids]) => (
-          <div key={letter} className="mb-8">
-            <div className="sticky top-0 bg-background z-10 py-2">
-              <h2 className="text-2xl font-bold text-primary mb-2">{letter}</h2>
-              <Separator className="mb-4" />
-            </div>
-            
-            <div className="space-y-4">
-              {aids.map(aid => (
-                <Card key={aid.id} className="transition-shadow hover:shadow-md">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4">
-                      <div className="md:w-1/5">
-                        <Link 
-                          to={aid.type === "Textual" ? "/finding-aid" : aid.type === "FOIA" ? "/finding-aid-no-series" : "/finding-aid-no-containers"} 
-                          className="text-lg font-semibold text-primary hover:underline"
-                        >
-                          {aid.title}
-                        </Link>
-                        <div className="text-sm font-medium text-muted-foreground">
-                          {aid.type} Finding Aid
+        {filteredFindingAids.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">No finding aids start with the letter "{selectedLetter}".</p>
+          </div>
+        ) : (
+          groupedItems.map(([letter, aids]) => (
+            <div key={letter} className="mb-8">
+              <div className="sticky top-0 bg-background z-10 py-2">
+                <h2 className="text-2xl font-bold text-primary mb-2">{letter}</h2>
+                <Separator className="mb-4" />
+              </div>
+              
+              <div className="space-y-4">
+                {aids.map(aid => (
+                  <Card key={aid.id} className="transition-shadow hover:shadow-md">
+                    <CardContent className="p-4">
+                      <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4">
+                        <div className="md:w-1/5">
+                          <Link 
+                            to={aid.type === "Textual" ? "/finding-aid" : aid.type === "FOIA" ? "/finding-aid-no-series" : "/finding-aid-no-containers"} 
+                            className="text-lg font-semibold text-primary hover:underline"
+                          >
+                            {aid.title}
+                          </Link>
+                          <div className="text-sm font-medium text-muted-foreground">
+                            {aid.type} Finding Aid
+                          </div>
+                        </div>
+                        <div className="md:w-4/5">
+                          <p className="text-muted-foreground">{aid.excerpt}</p>
                         </div>
                       </div>
-                      <div className="md:w-4/5">
-                        <p className="text-muted-foreground">{aid.excerpt}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         
         {totalPages > 1 && (
           <div className="mt-8">
