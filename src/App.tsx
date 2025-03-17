@@ -9,6 +9,7 @@ import FindingAid from "./pages/FindingAid";
 import FindingAidNoSeries from "./pages/FindingAidNoSeries";
 import FindingAidNoContainers from "./pages/FindingAidNoContainers";
 import FindingAidsListing from "./pages/FindingAidsListing";
+import ResearchRoomSearch from "./pages/ResearchRoomSearch";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/finding-aid-no-series" element={<FindingAidNoSeries />} />
           <Route path="/finding-aid-no-containers" element={<FindingAidNoContainers />} />
           <Route path="/finding-aids-listing" element={<FindingAidsListing />} />
+          <Route path="/research-room-search" element={<ResearchRoomSearch />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
