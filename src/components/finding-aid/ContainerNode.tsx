@@ -6,6 +6,7 @@ interface ContainerNodeProps {
   title: string;
   containerType: string;
   containerNumber: string;
+  containerId?: string;
   children?: React.ReactNode;
   searchTerm?: string;
   statusFilter?: 'all' | 'open' | 'closed' | 'digitized';
@@ -16,15 +17,19 @@ const ContainerNode: React.FC<ContainerNodeProps> = ({
   title,
   containerType,
   containerNumber,
+  containerId,
   children,
   searchTerm = '',
   statusFilter,
   isVisible
 }) => {
+  // If containerId is provided, use it to override the title
+  const displayTitle = containerId ? `Container ID ${containerId}` : title;
+  
   return (
     <TreeNode 
       type="container" 
-      title={title} 
+      title={displayTitle} 
       containerType={containerType} 
       containerNumber={containerNumber}
       searchTerm={searchTerm}

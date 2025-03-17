@@ -17,6 +17,7 @@ const CollectionIIIContent: React.FC<CollectionIIIContentProps> = ({ searchTerm,
         title="Box 5" 
         containerType="Box" 
         containerNumber="5"
+        containerId="34567"
         searchTerm={searchTerm}
         statusFilter={statusFilter}
       >
@@ -40,6 +41,7 @@ const CollectionIIIContent: React.FC<CollectionIIIContentProps> = ({ searchTerm,
         title="Oversized Drawer 1" 
         containerType="Drawer" 
         containerNumber="1"
+        containerId="89012"
         searchTerm={searchTerm}
         statusFilter={statusFilter}
       >

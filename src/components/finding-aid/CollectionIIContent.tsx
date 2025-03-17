@@ -17,6 +17,7 @@ const CollectionIIContent: React.FC<CollectionIIContentProps> = ({ searchTerm, s
         title="Box 3" 
         containerType="Box" 
         containerNumber="3"
+        containerId="23456"
         searchTerm={searchTerm}
         statusFilter={statusFilter}
       >
@@ -47,6 +48,7 @@ const CollectionIIContent: React.FC<CollectionIIContentProps> = ({ searchTerm, s
         title="Box 4" 
         containerType="Box" 
         containerNumber="4"
+        containerId="78901"
         searchTerm={searchTerm}
         statusFilter={statusFilter}
       >
