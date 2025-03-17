@@ -13,8 +13,6 @@ interface CollectionIIIContentProps {
 const CollectionIIIContent: React.FC<CollectionIIIContentProps> = ({ searchTerm, statusFilter }) => {
   return (
     <div className="mb-6">
-      <h3 className="text-lg font-semibold mb-3">Financial Records, 1780-1836</h3>
-      
       <ContainerNode 
         title="Box 5" 
         containerType="Box" 

@@ -13,8 +13,6 @@ interface CollectionIIContentProps {
 const CollectionIIContent: React.FC<CollectionIIContentProps> = ({ searchTerm, statusFilter }) => {
   return (
     <div className="mb-6">
-      <h3 className="text-lg font-semibold mb-3">Political Documents, 1780-1817</h3>
-      
       <ContainerNode 
         title="Box 3" 
         containerType="Box" 
