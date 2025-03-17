@@ -1,19 +1,31 @@
 
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Index = () => {
+const Index: React.FC = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">
-      <div className="text-center max-w-2xl px-4 py-8 animate-fade-in">
-        <h1 className="text-4xl sm:text-5xl font-bold mb-6 tracking-tight">Archival Research Portal</h1>
-        <p className="text-xl text-muted-foreground mb-8">
-          Explore historical collections and access detailed finding aids for archival research
-        </p>
-        <Link to="/finding-aid">
-          <Button size="lg" className="px-8 py-6 text-lg">
-            View Finding Aid
-          </Button>
+    <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <h1 className="text-3xl font-bold text-center mb-12">Archival Finding Aid Demo</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Link 
+          to="/finding-aid" 
+          className="block p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow"
+        >
+          <h2 className="text-xl font-bold mb-2">Finding Aid with Series</h2>
+          <p className="text-gray-600">
+            View the standard finding aid with Series organization.
+          </p>
+        </Link>
+
+        <Link 
+          to="/finding-aid-no-series" 
+          className="block p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow"
+        >
+          <h2 className="text-xl font-bold mb-2">Finding Aid without Series</h2>
+          <p className="text-gray-600">
+            View the alternative finding aid without Series organization.
+          </p>
         </Link>
       </div>
     </div>
