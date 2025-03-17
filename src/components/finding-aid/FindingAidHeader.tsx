@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ExternalLink, Menu } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 interface FindingAidHeaderProps {
   collectionName: string;
@@ -17,6 +18,9 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
   sourceUrl,
   toggleSidebar
 }) => {
+  const location = useLocation();
+  const isFoiaPage = location.pathname === '/finding-aid-no-series';
+  
   return (
     <header className="border-b border-border bg-white shadow-sm animate-fade-in">
       <div className="container px-4 py-4 sm:py-6 md:py-8 mx-auto">
@@ -34,8 +38,20 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
         </div>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-xs sm:text-sm text-muted-foreground">
           <div className="flex flex-col sm:flex-row sm:gap-x-6 mb-2 md:mb-0">
-            <span className="mb-1 sm:mb-0">Collection ID: <span className="font-medium text-foreground">{collectionId}</span></span>
-            <span>Acquisition Date: <span className="font-medium text-foreground">{acquisitionDate}</span></span>
+            <span className="mb-1 sm:mb-0">
+              {isFoiaPage ? 'FOIA Number:' : 'Collection ID:'} 
+              <span className="font-medium text-foreground">
+                {isFoiaPage ? ' 1998-0001-F' : ` ${collectionId}`}
+              </span>
+            </span>
+            <span>
+              {isFoiaPage ? 'Processed by:' : 'Acquisition Date:'} 
+              <span className="font-medium text-foreground">
+                {isFoiaPage 
+                  ? ' Staff Archivists, February 1998. Previously restricted materials are added as they are released.' 
+                  : ` ${acquisitionDate}`}
+              </span>
+            </span>
           </div>
           <a 
             href={sourceUrl} 
