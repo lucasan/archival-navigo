@@ -118,10 +118,12 @@ export const NodeContent: React.FC<NodeContentProps> = ({
               'tree-node-file': type === 'file-unit',
               'bg-yellow-50 border border-yellow-200': directMatch,
               'bg-blue-50/50': isExpanded && hasChildren && !directMatch,
+              'cursor-pointer': hasChildren, // Always show pointer cursor for nodes with children
+              'hover:bg-slate-50/70': hasChildren && !isExpanded, // Subtle hover effect for collapsed nodes
+              'hover:bg-blue-50/30': hasChildren && isExpanded // Subtle hover effect for expanded nodes
             }
           )}
           onClick={handleNodeClick}
-          style={hasChildren ? { cursor: 'pointer' } : undefined}
           role={hasChildren ? "button" : undefined}
           aria-expanded={hasChildren ? isExpanded : undefined}
         >
