@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ReadMoreProps {
   text: string;
@@ -31,27 +30,32 @@ const ReadMore: React.FC<ReadMoreProps> = ({
   }
 
   return (
-    <Collapsible
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      className={cn("w-full", className)}
-    >
-      <p className={cn("text-sm md:text-base text-muted-foreground", textClassName)}>
-        {truncatedText}
-      </p>
+    <div className={cn("relative", className)}>
+      <div className={cn(
+        "overflow-hidden transition-all duration-300",
+        !isOpen && "max-h-[160px]"
+      )}>
+        <p className={cn("text-sm md:text-base text-muted-foreground", textClassName)}>
+          {isOpen ? text : truncatedText}
+        </p>
+      </div>
       
-      <CollapsibleTrigger asChild>
-        <Button
-          variant="link"
-          size="sm"
-          className={cn("mt-2 p-0 h-auto font-medium", buttonClassName)}
-        >
-          {isOpen ? "Read Less" : "Read More"}
-        </Button>
-      </CollapsibleTrigger>
+      {!isOpen && (
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+      )}
       
-      <CollapsibleContent className="animate-accordion-down" />
-    </Collapsible>
+      <Button
+        variant="link"
+        size="sm"
+        onClick={() => setIsOpen(!isOpen)}
+        className={cn(
+          "mt-1 p-0 h-auto font-medium relative z-10",
+          buttonClassName
+        )}
+      >
+        {isOpen ? "Read Less" : "Read More"}
+      </Button>
+    </div>
   );
 };
 
