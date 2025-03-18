@@ -337,15 +337,12 @@ const SearchResultCard = ({ result }) => {
       case 'finding-aid':
         return '/finding-aid';
       case 'series':
-        return '/finding-aid#' + title.toLowerCase().replace(/\s+/g, '-');
       case 'file-unit':
-        return '/finding-aid-no-containers';
       case 'item':
-        return externalUrl || '#';
+        return naid ? `https://catalog.archives.gov/id/${naid}` : '#';
       case 'page-media':
       case 'page-daily-diary':
       case 'page-photo-contact-sheet':
-      case 'page-finding-aid':
       case 'page-gallery':
       case 'page-exhibit':
         return '#';
@@ -353,6 +350,8 @@ const SearchResultCard = ({ result }) => {
         return '#';
     }
   };
+  
+  const isExternalLink = type !== 'finding-aid';
   
   const isFindingAidRelated = ['finding-aid', 'series', 'file-unit', 'item'].includes(type);
   
@@ -371,20 +370,28 @@ const SearchResultCard = ({ result }) => {
           </div>
           
           <div className="mb-1">
-            <Link 
-              to={getLinkDestination()}
-              className="text-xl font-semibold text-primary hover:underline block"
-              target={type === 'item' && externalUrl ? '_blank' : undefined}
-            >
-              {title}
-              {type === 'item' && externalUrl && 
+            {isExternalLink ? (
+              <a 
+                href={getLinkDestination()}
+                className="text-xl font-semibold text-primary hover:underline block"
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                {title}
                 <ExternalLink size={14} className="inline-flex ml-1 opacity-70" />
-              }
-            </Link>
+              </a>
+            ) : (
+              <Link 
+                to={getLinkDestination()}
+                className="text-xl font-semibold text-primary hover:underline block"
+              >
+                {title}
+              </Link>
+            )}
           </div>
           
           {excerpt && (
-            <p className="text-muted-foreground mb-3 text-sm">{excerpt}</p>
+            <p className="text-sm text-muted-foreground mb-3">{excerpt}</p>
           )}
           
           {isFindingAidRelated && (
