@@ -8,6 +8,8 @@ export interface TreeNodeBase {
   children?: React.ReactNode;
   thumbnailUrl?: string;
   externalUrl?: string;
+  naid?: string;
+  scopeContent?: string;
   level?: number;
   searchTerm?: string;
   statusFilter?: FileUnitStatus | 'all';
@@ -41,6 +43,8 @@ export interface FileUnitNodeProps extends TreeNodeBase {
 
 export interface ItemNodeProps extends TreeNodeBase {
   type: 'item';
+  naid?: string;
+  scopeContent?: string;
 }
 
 export type TreeNodeProps = SeriesNodeProps | ContainerNodeProps | FileUnitNodeProps | ItemNodeProps;

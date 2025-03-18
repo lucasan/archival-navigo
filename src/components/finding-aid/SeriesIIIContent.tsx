@@ -40,7 +40,8 @@ const SeriesIIIContent: React.FC<SeriesIIIContentProps> = ({ searchTerm, statusF
           <ItemNode 
             title="Montpelier Estate Ledger, 1810-1820" 
             thumbnailUrl="/placeholder.svg"
-            externalUrl="#"
+            naid="345678"
+            scopeContent="Bound ledger containing detailed financial records of Madison's Montpelier plantation, including expenses for slave purchases, crop sales, and household maintenance."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
@@ -61,7 +62,14 @@ const SeriesIIIContent: React.FC<SeriesIIIContentProps> = ({ searchTerm, statusF
           searchTerm={searchTerm}
           statusFilter={statusFilter}
         >
-          {/* Empty children element to satisfy the prop requirement */}
+          <ItemNode 
+            title="Presidential Salary Account, 1809-1817" 
+            thumbnailUrl="/placeholder.svg"
+            naid="890123"
+            scopeContent="Record of Madison's presidential salary payments and his personal expenditures while in office, including entertaining costs and travel expenses."
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
+          />
         </FileUnitNode>
       </ContainerNode>
     </SeriesSection>

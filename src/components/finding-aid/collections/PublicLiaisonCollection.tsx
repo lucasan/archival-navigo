@@ -41,14 +41,16 @@ const PublicLiaisonCollection: React.FC<PublicLiaisonCollectionProps> = ({
           <ItemNode 
             title="Conference Agenda and Briefing Materials" 
             thumbnailUrl="/placeholder.svg" 
-            externalUrl="#vietnamese-conference-materials"
+            naid="286186090"
+            scopeContent="Printed agenda, participant list, and briefing papers for the National Vietnamese American Community Conference held at the White House on May 2, 1992. Includes speech drafts and background information."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
           <ItemNode 
             title="Attendee List and Correspondence" 
             thumbnailUrl="/placeholder.svg" 
-            externalUrl="#vietnamese-conference-attendees"
+            naid="286186091"
+            scopeContent="Complete list of conference attendees with contact information, biographical notes, and pre-conference correspondence with community leaders. Includes handwritten annotations by White House staff."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
@@ -76,21 +78,24 @@ const PublicLiaisonCollection: React.FC<PublicLiaisonCollectionProps> = ({
           <ItemNode 
             title="Tour Schedule and Coordination Documents" 
             thumbnailUrl="/placeholder.svg" 
-            externalUrl="#holocaust-tour-schedule"
+            naid="286186054"
+            scopeContent="Schedule and logistics documents for the Interfaith Council tour of the Holocaust Memorial Museum construction site on August 7, 1991. Includes security protocols and coordination with Secret Service."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
           <ItemNode 
             title="Interfaith Council Meeting Notes" 
             thumbnailUrl="/placeholder.svg" 
-            externalUrl="#holocaust-meeting-notes"
+            naid="286186055"
+            scopeContent="Handwritten and typed notes from the Interfaith Council meeting held after the museum tour, documenting discussions about religious representation in Holocaust commemoration and educational programs."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
           <ItemNode 
             title="Memorial Council Background Information" 
             thumbnailUrl="/placeholder.svg" 
-            externalUrl="#holocaust-council-background"
+            naid="286186056"
+            scopeContent="Background materials on the U.S. Holocaust Memorial Council, including its legislative history, mission statement, and current membership. Prepared for White House staff preparing for the Council visit."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />

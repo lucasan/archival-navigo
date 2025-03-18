@@ -93,14 +93,16 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
             <ItemNode 
               title="Legal Brief - Turnock v. Ragsdale" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#turnock-brief"
+              naid="286185848"
+              scopeContent="Legal brief submitted to the Supreme Court regarding abortion regulations in Illinois. Contains detailed legal arguments about the constitutionality of state requirements for abortion clinics."
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
             <ItemNode 
               title="Court Opinion Document" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#turnock-opinion"
+              naid="286185850"
+              scopeContent="Copy of the court's official published opinion with handwritten notes from Lee Liberman analyzing key legal points and potential policy implications."
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
@@ -116,21 +118,24 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
             <ItemNode 
               title="Supreme Court Brief - Webster Case" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#webster-brief"
+              naid="286185851"
+              scopeContent="Official Supreme Court brief from the Webster case that established precedent for state regulations of abortion services and facilities. Includes marginalia from White House staff."
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
             <ItemNode 
               title="Webster v. Reproductive Health Services Analysis" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#webster-analysis"
+              naid="286185852"
+              scopeContent="Internal legal analysis by the White House Counsel's Office detailing the implications of the Webster decision on federal abortion policy and potential legislative responses."
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
             <ItemNode 
               title="Policy Memorandum - Supreme Court Cases" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#policy-memo"
+              naid="286185855"
+              scopeContent="Confidential policy memorandum outlining the Bush Administration's strategy regarding abortion cases before the Supreme Court, including talking points for public statements."
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
@@ -146,14 +151,16 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
             <ItemNode 
               title="State Legislation Overview" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#state-legislation"
+              naid="286185856"
+              scopeContent="Comprehensive review of abortion legislation across all 50 states as of 1990, categorized by type of restriction and constitutional status after Webster."
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
             <ItemNode 
               title="Comparative Analysis of State Regulations" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#state-analysis"
+              naid="286185857"
+              scopeContent="Research document comparing different regulatory approaches to abortion across states, with special attention to waiting periods, parental consent, and facility requirements."
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />

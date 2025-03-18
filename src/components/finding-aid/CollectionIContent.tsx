@@ -30,14 +30,16 @@ const CollectionIContent: React.FC<CollectionIContentProps> = ({ searchTerm, sta
           <ItemNode 
             title="Letter to Dolley Madison, June 15, 1789" 
             thumbnailUrl="/placeholder.svg"
-            externalUrl="#"
+            naid="123456"
+            scopeContent="Four-page letter written by James Madison to his wife Dolley discussing domestic matters and local politics during his time in New York attending the First Congress."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
           <ItemNode 
             title="Letter from Father, August 3, 1782" 
             thumbnailUrl="/placeholder.svg"
-            externalUrl="#"
+            naid="123457"
+            scopeContent="Two-page letter from James Madison Sr. to his son discussing plantation management and family affairs in Virginia during the Revolutionary War."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
@@ -61,7 +63,8 @@ const CollectionIContent: React.FC<CollectionIContentProps> = ({ searchTerm, sta
           <ItemNode 
             title="Letter from Thomas Jefferson, May 12, 1790" 
             thumbnailUrl="/placeholder.svg"
-            externalUrl="#"
+            naid="123458"
+            scopeContent="Three-page letter from Thomas Jefferson discussing political philosophy and the drafting of the Bill of Rights, with particular attention to religious liberty."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
