@@ -120,7 +120,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
               'tree-node-container': type === 'container',
               'tree-node-file': type === 'file-unit',
               'bg-yellow-50 border border-yellow-200': directMatch,
-              'bg-blue-50/50': isExpanded && hasChildren && type !== 'item' && !directMatch,
+              'bg-blue-50/50': isExpanded && hasChildren && !directMatch,
             }
           )}
           onClick={handleNodeClick}
