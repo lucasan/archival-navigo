@@ -69,17 +69,19 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
           </div>
         )}
         
-        <div className="flex justify-end">
-          <a 
-            href={sourceUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs sm:text-sm hover:text-primary transition-colors"
-          >
-            View Original Source
-            <ExternalLink size={14} className="inline" />
-          </a>
-        </div>
+        {!isFoiaPage && (
+          <div className="flex justify-end">
+            <a 
+              href={sourceUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs sm:text-sm hover:text-primary transition-colors"
+            >
+              View Original Source
+              <ExternalLink size={14} className="inline" />
+            </a>
+          </div>
+        )}
       </div>
     </header>
   );
