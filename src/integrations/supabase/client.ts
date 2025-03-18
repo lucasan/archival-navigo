@@ -76,7 +76,9 @@ export const getBushFaFoiaDataPaginated = async (from: number, to: number, searc
     });
     
     if (error) throw error;
-    return { data: data || [], error: null, count: data ? data.length : 0 };
+    // Fix the TypeScript error by ensuring data is an array before accessing length
+    const safeData = Array.isArray(data) ? data : [];
+    return { data: safeData, error: null, count: safeData.length };
   } catch (error) {
     console.error('Error fetching paginated bush_fa.foia data:', error);
     return { data: null, error: error as Error, count: 0 };
