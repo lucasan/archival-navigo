@@ -120,7 +120,7 @@ const ResourceTypeLabel = ({ type }) => {
 };
 
 const SearchResultCard = ({ result }) => {
-  const { title, type, date, digitized, naid, containerId, thumbnailUrl, externalUrl, status, seriesExtent, parentCollection } = result;
+  const { title, type, date, digitized, naid, containerId, thumbnailUrl, externalUrl, status, seriesExtent, parentCollection, excerpt } = result;
   
   const getLinkDestination = () => {
     switch (type) {
@@ -159,10 +159,14 @@ const SearchResultCard = ({ result }) => {
             </Link>
           </div>
           
-          <div className="flex flex-wrap items-center gap-3 mb-2">
-            {date && <span className="text-sm text-muted-foreground">{date}</span>}
-            {digitized && <span className="text-sm text-muted-foreground">{digitized}</span>}
-            {seriesExtent && <span className="text-sm text-muted-foreground">Extent: {seriesExtent}</span>}
+          {excerpt && (
+            <p className="text-muted-foreground mb-3 text-sm">{excerpt}</p>
+          )}
+          
+          <div className="flex flex-wrap items-center gap-3 mb-3 text-xs text-muted-foreground">
+            {date && <span>{date}</span>}
+            {digitized && <span>{digitized}</span>}
+            {seriesExtent && <span>Extent: {seriesExtent}</span>}
             {type === 'file-unit' && status && (
               <div className="flex items-center gap-1">
                 <StatusIcon status={status} showLabel={true} />
