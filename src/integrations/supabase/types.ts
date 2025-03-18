@@ -41,7 +41,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_bush_fa_foia_data: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown[]
+      }
+      get_bush_fa_foia_data_paginated: {
+        Args: {
+          p_from: number
+          p_to: number
+          p_search?: string
+        }
+        Returns: unknown[]
+      }
+      get_schema_info: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

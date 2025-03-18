@@ -22,41 +22,31 @@ export const useFOIAData = ({ searchQuery, currentPage }: UseFOIADataParams) => 
     try {
       console.log(`%c${baseLog} Pagination range:`, "background: #222; color: #4CAF50;", { from, to, page: currentPage, itemsPerPage: ITEMS_PER_PAGE });
       
-      let queryResponse = await supabase
-        .from('foia')
-        .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .range(from, to);
-        
-      if (queryResponse.error || !queryResponse.data) {
-        console.log(`%c${baseLog} Standard query failed, trying RPC fallback:`, "background: #222; color: #4CAF50;", queryResponse.error);
-        
-        const rpcResponse = await getBushFaFoiaDataPaginated(from, to, searchQuery);
-          
-        if (rpcResponse.error) {
-          console.error(`%c${baseLog} RPC fallback failed:`, "background: #222; color: #ff6347;", rpcResponse.error);
-          toast.error(`Failed to load data: ${rpcResponse.error.message}`);
-          throw rpcResponse.error;
-        }
-        
-        return { 
-          records: rpcResponse.data || [], 
-          totalCount: rpcResponse.count
-        };
+      // Skip direct querying of 'foia' table and use the RPC directly
+      console.log(`%c${baseLog} Using RPC to access bush_fa.foia schema:`, "background: #222; color: #4CAF50;");
+      
+      const rpcResponse = await getBushFaFoiaDataPaginated(from, to, searchQuery);
+      
+      if (rpcResponse.error) {
+        console.error(`%c${baseLog} RPC call failed:`, "background: #222; color: #ff6347;", rpcResponse.error);
+        toast.error(`Failed to load data: ${rpcResponse.error.message}`);
+        throw rpcResponse.error;
       }
       
-      const { data, count } = queryResponse;
+      // Count total records via another RPC call for accurate pagination
+      const countQuery = await supabase.rpc('get_bush_fa_foia_data');
+      const totalCount = countQuery.data ? countQuery.data.length : 0;
       
       console.log(`%c${baseLog} Final response data:`, "background: #222; color: #4CAF50;", { 
-        dataReceived: Boolean(data), 
-        dataLength: data?.length || 0, 
-        count, 
-        firstItem: data && data.length > 0 ? data[0] : null
+        dataReceived: Boolean(rpcResponse.data), 
+        dataLength: rpcResponse.data?.length || 0,
+        totalCount,
+        firstItem: rpcResponse.data && rpcResponse.data.length > 0 ? rpcResponse.data[0] : null
       });
       
       return { 
-        records: data || [], 
-        totalCount: count || 0
+        records: rpcResponse.data || [], 
+        totalCount: totalCount
       };
     } catch (error) {
       console.error(`%c${baseLog} Unexpected error:`, "background: #222; color: #ff6347;", error);
