@@ -107,7 +107,7 @@ const Index: React.FC = () => {
         </div>
         
         <div className="text-center text-sm text-slate-500">
-          <p>Bush Presidential Library Finding Aid Prototype System</p>
+          <p>Bush Presidential Library Finding Aid Prototypes</p>
         </div>
       </div>
     </div>
