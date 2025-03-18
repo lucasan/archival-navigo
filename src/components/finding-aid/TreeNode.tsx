@@ -28,6 +28,10 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   const seriesExtent = type === 'series' ? (props as SeriesNodeProps).seriesExtent : undefined;
   const seriesArrangement = type === 'series' ? (props as SeriesNodeProps).seriesArrangement : undefined;
   const seriesDate = type === 'series' ? (props as SeriesNodeProps).seriesDate : undefined;
+  const seriesAccessRestriction = type === 'series' ? (props as SeriesNodeProps).seriesAccessRestriction : undefined;
+  const seriesSpecificAccessRestriction = type === 'series' ? (props as SeriesNodeProps).seriesSpecificAccessRestriction : undefined;
+  const seriesUseRestriction = type === 'series' ? (props as SeriesNodeProps).seriesUseRestriction : undefined;
+  const seriesSpecificUseRestriction = type === 'series' ? (props as SeriesNodeProps).seriesSpecificUseRestriction : undefined;
   const containerNumber = type === 'container' ? (props as ContainerNodeProps).containerNumber : undefined;
   const containerType = type === 'container' ? (props as ContainerNodeProps).containerType : undefined;
   const fileUnitStatus = type === 'file-unit' ? (props as FileUnitNodeProps).fileUnitStatus || 'open' : undefined;
@@ -257,6 +261,10 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
           extent={seriesExtent}
           arrangement={seriesArrangement}
           date={seriesDate}
+          accessRestriction={seriesAccessRestriction}
+          specificAccessRestriction={seriesSpecificAccessRestriction}
+          useRestriction={seriesUseRestriction}
+          specificUseRestriction={seriesSpecificUseRestriction}
         />
       )}
 
