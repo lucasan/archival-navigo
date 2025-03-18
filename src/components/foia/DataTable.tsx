@@ -76,7 +76,7 @@ const DataTable: React.FC<DataTableProps> = ({
               records.map((record) => (
                 <TableRow key={record.id}>
                   <TableCell className="font-medium">{record.foia_number || 'N/A'}</TableCell>
-                  <TableCell>{record.scope || record.title || 'N/A'}</TableCell>
+                  <TableCell>{record.title || 'N/A'}</TableCell>
                 </TableRow>
               ))
             )}
