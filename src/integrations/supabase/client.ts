@@ -54,7 +54,7 @@ export const getBushFaFoiaDataPaginated = async (from: number, to: number, searc
     });
     
     if (error) throw error;
-    return { data, error: null, count: data?.length || 0 };
+    return { data, error: null, count: data ? data.length : 0 };
   } catch (error) {
     console.error('Error fetching paginated bush_fa.foia data:', error);
     return { data: null, error: error as Error, count: 0 };
