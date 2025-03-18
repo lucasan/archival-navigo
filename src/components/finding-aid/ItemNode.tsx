@@ -26,14 +26,14 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     ? `https://catalog.archives.gov/id/${naid}`
     : externalUrl || '#';
     
-  // Add debug logging to check if scopeContent is present
-  console.log(`ItemNode "${title}" scopeContent:`, scopeContent);
+  // Make sure we're using a valid thumbnail URL or the placeholder
+  const validThumbnailUrl = thumbnailUrl || '/placeholder.svg';
 
   return (
     <TreeNode 
       type="item" 
       title={title} 
-      thumbnailUrl={thumbnailUrl}
+      thumbnailUrl={validThumbnailUrl}
       externalUrl={finalExternalUrl}
       naid={naid}
       scopeContent={scopeContent}

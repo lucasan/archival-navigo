@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle, Archive, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -46,9 +47,6 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   const directMatch = searchTerm && 
                      searchTerm.trim() !== '' && 
                      title.toLowerCase().includes(searchTerm.toLowerCase());
-                     
-  // Add debug logging to check scopeContent value
-  console.log(`Node "${title}" (type: ${type}), scopeContent:`, scopeContent);
 
   return (
     <div>
@@ -170,10 +168,11 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         </div>
       </div>
       
-      {/* Scope Content for items - display below the main content */}
+      {/* Scope Content for items - display below the main content with improved styling */}
       {type === 'item' && scopeContent && (
-        <div className="pl-7 pr-2 mt-1 mb-2 text-sm text-slate-700">
-          {scopeContent}
+        <div className="mt-2 mb-3 ml-7 mr-2 p-3 bg-slate-50 border border-slate-200 rounded-md text-sm text-slate-700 shadow-sm">
+          <h4 className="font-medium text-slate-800 mb-1 text-sm">Scope and Content Note:</h4>
+          <p className="leading-relaxed">{scopeContent}</p>
         </div>
       )}
     </div>
@@ -210,7 +209,7 @@ const NodeIcon: React.FC<NodeIconProps> = ({ type, hasChildren, isExpanded, togg
   } else {
     return (
       <span className="w-5 h-5 flex-none flex items-center justify-center">
-        {type === 'item' && <File size={16} className="text-muted-foreground" />}
+        {type === 'item' && <File size={16} className="text-slate-500" />}
         {type === 'container' && <Package size={16} className="text-muted-foreground" />}
       </span>
     );
