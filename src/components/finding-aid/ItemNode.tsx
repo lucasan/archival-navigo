@@ -25,6 +25,9 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   const finalExternalUrl = naid && !externalUrl 
     ? `https://catalog.archives.gov/id/${naid}`
     : externalUrl || '#';
+    
+  // Add debug logging to check if scopeContent is present
+  console.log(`ItemNode "${title}" scopeContent:`, scopeContent);
 
   return (
     <TreeNode 

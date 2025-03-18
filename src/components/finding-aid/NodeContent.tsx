@@ -47,6 +47,9 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   const directMatch = searchTerm && 
                      searchTerm.trim() !== '' && 
                      title.toLowerCase().includes(searchTerm.toLowerCase());
+                     
+  // Add debug logging to check scopeContent value
+  console.log(`Node "${title}" (type: ${type}), scopeContent:`, scopeContent);
 
   return (
     <div>
