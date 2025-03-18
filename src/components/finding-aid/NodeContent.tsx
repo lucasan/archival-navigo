@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle, Archive, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -217,4 +216,3 @@ const NodeIcon: React.FC<NodeIconProps> = ({ type, hasChildren, isExpanded, togg
     );
   }
 };
-

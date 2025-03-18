@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, FileUnitNodeProps } from './types';
+import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, FileUnitNodeProps, ItemNodeProps } from './types';
 import { NodeContent } from './NodeContent';
 import { SeriesMetadata } from './SeriesMetadata';
 import { shouldNodeDisplay, childrenMatchSearch, isNodeOrDescendantVisible } from './treeNodeUtils';
@@ -18,6 +18,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     searchTerm = '',
     statusFilter = 'all',
     isVisible = true,
+    scopeContent,
   } = props;
 
   // Get the global expand state from context
@@ -37,6 +38,9 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   const fileUnitStatus = type === 'file-unit' ? (props as FileUnitNodeProps).fileUnitStatus || 'open' : undefined;
   const naid = type === 'file-unit' ? (props as FileUnitNodeProps).naid : undefined;
   const containerId = type === 'file-unit' ? (props as FileUnitNodeProps).containerId : undefined;
+  
+  // Get the scopeContent specifically for item type
+  const itemScopeContent = type === 'item' ? scopeContent : undefined;
 
   // Initial expand state - default containers to open for better UX
   const [isExpanded, setIsExpanded] = useState(type === 'container');
@@ -253,6 +257,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
         hasChildren={hasChildren}
         matchesSearch={matchesSearch}
         searchTerm={searchTerm}
+        scopeContent={itemScopeContent}
       />
 
       {type === 'series' && (
