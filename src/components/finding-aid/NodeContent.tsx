@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle, Archive, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -131,25 +130,26 @@ export const NodeContent: React.FC<NodeContentProps> = ({
             
             {/* NAID and Container ID for file units */}
             {type === 'file-unit' && (naid || containerId) && (
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground mt-1">
+              <div className="flex flex-col gap-y-1 text-xs text-muted-foreground mt-1">
                 {naid && (
-                  <div className="flex items-center gap-1 w-full">
-                    <Archive size={14} className="text-slate-400" />
-                    <span className="flex items-center justify-between w-full">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-1">
+                      <Archive size={14} className="text-slate-400" />
                       <span>
                         NAID: <span className="font-medium text-slate-700">{naid}</span>
                       </span>
-                      <a 
-                        href={`https://catalog.archives.gov/id/${naid}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline inline-flex items-center ml-auto"
-                        onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
-                      >
-                        <span>View in NAC</span>
-                        <ExternalLink size={10} className="ml-0.5 opacity-70" />
-                      </a>
-                    </span>
+                    </div>
+                    {/* Move the NAC link to its own line below NAID */}
+                    <a 
+                      href={`https://catalog.archives.gov/id/${naid}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline inline-flex items-center ml-5 mt-0.5"
+                      onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
+                    >
+                      <span>View in NAC</span>
+                      <ExternalLink size={10} className="ml-0.5 opacity-70" />
+                    </a>
                   </div>
                 )}
                 {containerId && (
