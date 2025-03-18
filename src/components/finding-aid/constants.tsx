@@ -7,9 +7,9 @@ export const collectionData = {
   acquisitionDate: "05/12/2023",
   sourceUrl: "https://example.org/archive/madison-papers",
   description: [
-    "The James Madison Papers is a comprehensive collection documenting the life and career of the fourth president of the United States. The collection spans from 1723 to 1836 and includes correspondence, personal notes, drafts of speeches and legislation, and financial documents.",
-    "Madison served as Secretary of State (1801-1809) and then as President (1809-1817), during which he led the nation through the War of 1812. This collection provides remarkable insight into the early American republic, the drafting of the Constitution and Bill of Rights, and Madison's pivotal role in shaping American political philosophy.",
-    "The papers are organized into series based on Madison's career phases and document types, with special attention to his extensive correspondence with figures such as Thomas Jefferson, Alexander Hamilton, and his wife Dolley Madison."
+    "This collection consists of a wide array of polling data from Market Opinion Research at the state and local levels for the several presidential primaries and campaigns in which George H. W. Bush was involved. This includes his unsuccessful bid for the Republican presidential nomination in 1980; his election that same year and re-election in 1984 as Ronald Reagan's Vice President; his election as President in 1988; and his unsuccessful re-election bid in 1992.",
+    "In addition, polling data related to issues of concern to the people of the United States are presented including the public's perceptions of the President's job performance, the general state of the Union, the economy, reactions to candidate/presidential speeches, crime, drugs, health care, education, taxation, the Federal budget deficit, Iran-Contra, and the Persian Gulf crisis and ensuing war.",
+    "The holdings also contain studies of the media treatment of President Bush, debate preparation materials, reports on issues of local importance throughout the United States, talking points for Republican operatives, and campaign trip schedules for President George H. W. Bush and Vice President Dan Quayle."
   ],
   collectionHighlights: [
     { text: "Complete set of Madison's Constitutional Convention notes" },
