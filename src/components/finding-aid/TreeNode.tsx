@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { TreeNodeProps, FileUnitStatus, SeriesNodeProps, ContainerNodeProps, FileUnitNodeProps } from './types';
@@ -32,6 +31,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   const containerNumber = type === 'container' ? (props as ContainerNodeProps).containerNumber : undefined;
   const containerType = type === 'container' ? (props as ContainerNodeProps).containerType : undefined;
   const fileUnitStatus = type === 'file-unit' ? (props as FileUnitNodeProps).fileUnitStatus || 'open' : undefined;
+  const naid = type === 'file-unit' ? (props as FileUnitNodeProps).naid : undefined;
+  const containerId = type === 'file-unit' ? (props as FileUnitNodeProps).containerId : undefined;
 
   // Initial expand state - default containers to open for better UX
   const [isExpanded, setIsExpanded] = useState(type === 'container');
@@ -241,6 +242,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
         containerType={containerType}
         containerNumber={containerNumber}
         fileUnitStatus={fileUnitStatus}
+        naid={naid}
+        containerId={containerId}
         toggleExpand={toggleExpand}
         isExpanded={isExpanded}
         hasChildren={hasChildren}

@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle } from 'lucide-react';
+import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle, Archive, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TreeNodeBase } from './types';
 import { StatusIcon } from './StatusIcon';
@@ -8,6 +9,8 @@ interface NodeContentProps extends TreeNodeBase {
   containerNumber?: string;
   containerType?: string;
   fileUnitStatus?: 'open' | 'closed' | 'digitized';
+  naid?: string;
+  containerId?: string;
   toggleExpand: () => void;
   isExpanded: boolean;
   hasChildren: boolean;
@@ -22,6 +25,8 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   containerType,
   containerNumber,
   fileUnitStatus,
+  naid,
+  containerId,
   toggleExpand,
   isExpanded,
   hasChildren,
@@ -105,19 +110,39 @@ export const NodeContent: React.FC<NodeContentProps> = ({
             <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity mt-0.5" />
           </a>
         ) : (
-          <span className={cn(
-            "break-words w-full inline-block",
-            directMatch && "font-semibold text-amber-700",
-            type === 'series' && "font-bold text-base sm:text-lg",
-            type === 'container' && "font-medium",
-          )}>
-            {title}
-            {type === 'container' && containerType && containerNumber && (
-              <span className="text-muted-foreground ml-1 sm:ml-2 text-xs sm:text-sm">
-                ({containerType} {containerNumber})
-              </span>
+          <div className="space-y-1">
+            <span className={cn(
+              "break-words w-full inline-block",
+              directMatch && "font-semibold text-amber-700",
+              type === 'series' && "font-bold text-base sm:text-lg",
+              type === 'container' && "font-medium",
+            )}>
+              {title}
+              {type === 'container' && containerType && containerNumber && (
+                <span className="text-muted-foreground ml-1 sm:ml-2 text-xs sm:text-sm">
+                  ({containerType} {containerNumber})
+                </span>
+              )}
+            </span>
+            
+            {/* NAID and Container ID for file units */}
+            {type === 'file-unit' && (naid || containerId) && (
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground mt-1">
+                {naid && (
+                  <div className="flex items-center gap-1">
+                    <Archive size={14} className="text-slate-400" />
+                    <span>NAID: <span className="font-medium text-slate-700">{naid}</span></span>
+                  </div>
+                )}
+                {containerId && (
+                  <div className="flex items-center gap-1">
+                    <Tag size={14} className="text-slate-400" />
+                    <span>Container: <span className="font-medium text-slate-700">{containerId}</span></span>
+                  </div>
+                )}
+              </div>
             )}
-          </span>
+          </div>
         )}
       </div>
 

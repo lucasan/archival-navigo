@@ -6,6 +6,8 @@ import { FileUnitStatus } from './types';
 interface FileUnitNodeProps {
   title: string;
   status: FileUnitStatus;
+  naid?: string;
+  containerId?: string;
   children?: React.ReactNode;
   searchTerm?: string;
   statusFilter?: 'all' | FileUnitStatus;
@@ -15,6 +17,8 @@ interface FileUnitNodeProps {
 const FileUnitNode: React.FC<FileUnitNodeProps> = ({
   title,
   status,
+  naid,
+  containerId,
   children,
   searchTerm,
   statusFilter,
@@ -38,6 +42,8 @@ const FileUnitNode: React.FC<FileUnitNodeProps> = ({
       type="file-unit" 
       title={title} 
       fileUnitStatus={status}
+      naid={naid}
+      containerId={containerId}
       searchTerm={searchTerm}
       statusFilter={statusFilter}
       isVisible={isVisible}

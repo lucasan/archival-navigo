@@ -82,6 +82,8 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
           <FileUnitNode 
             title="Black History Month, 2/25/91 [OA 6855] [2]" 
             status="open"
+            naid="415892573"
+            containerId="13747"
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           >
@@ -111,6 +113,8 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
           <FileUnitNode 
             title="Somalia Address 12/31/92 [OA 7583]" 
             status="digitized"
+            naid="323154355"
+            containerId="13842"
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           >
@@ -133,6 +137,8 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
           <FileUnitNode 
             title="Australian Parliament 1/2/92 [OA 8332] [3]" 
             status="digitized"
+            naid="323153744"
+            containerId="13788"
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           >
@@ -162,6 +168,8 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
           <FileUnitNode 
             title="Sydney--Luncheon Cruise Toast 1/1/92 [OA 8332] [2]" 
             status="closed"
+            naid="323153740"
+            containerId="13788"
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           >

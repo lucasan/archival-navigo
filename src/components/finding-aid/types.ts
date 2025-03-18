@@ -31,6 +31,8 @@ export interface ContainerNodeProps extends TreeNodeBase {
 export interface FileUnitNodeProps extends TreeNodeBase {
   type: 'file-unit';
   fileUnitStatus?: FileUnitStatus;
+  naid?: string;
+  containerId?: string;
 }
 
 export interface ItemNodeProps extends TreeNodeBase {
