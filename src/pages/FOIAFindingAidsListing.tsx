@@ -3,12 +3,9 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
 import { ITEMS_PER_PAGE, useFOIAData } from '@/hooks/useFOIAData';
-import { useSchemaInfo } from '@/hooks/useSchemaInfo';
-import { useDirectCheck } from '@/hooks/useDirectCheck';
 import SearchBar from '@/components/foia/SearchBar';
 import DataTable from '@/components/foia/DataTable';
 import PaginationControls from '@/components/foia/PaginationControls';
-import StatusAlerts from '@/components/foia/StatusAlerts';
 
 const FOIAFindingAidsListing: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,8 +14,6 @@ const FOIAFindingAidsListing: React.FC = () => {
   
   const [searchInput, setSearchInput] = useState(searchQuery);
   
-  const schemaInfo = useSchemaInfo();
-  const { directCheckDone, directData, directCheckError, runDirectCheck } = useDirectCheck();
   const { data, isLoading, isError, error, refetch } = useFOIAData({ searchQuery, currentPage });
 
   const handleSearch = (e: React.FormEvent) => {
@@ -48,15 +43,6 @@ const FOIAFindingAidsListing: React.FC = () => {
       
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">FOIA Finding Aids Listing</h1>
-        
-        <StatusAlerts 
-          schemaInfo={schemaInfo}
-          directCheckDone={directCheckDone}
-          directData={directData}
-          directCheckError={directCheckError}
-          refetch={refetch}
-          onRetryDirectCheck={runDirectCheck}
-        />
         
         <SearchBar 
           searchInput={searchInput}
