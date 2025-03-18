@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { FileDown, List, Star } from 'lucide-react';
+import { FileDown, List } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CollectionHighlight {
@@ -73,24 +73,6 @@ const FindingAidSidebar: React.FC<FindingAidSidebarProps> = ({
             </nav>
           </ScrollArea>
         </aside>
-
-        {highlights.length > 0 && (
-          <aside className="bg-white rounded-lg border shadow-sm p-4 md:p-5 transition-all hover:shadow-md">
-            <div className="flex items-center gap-2 mb-2 md:mb-3">
-              <Star className="h-4 w-4 text-amber-500" />
-              <h3 className="text-base md:text-lg font-semibold">Collection Highlights</h3>
-            </div>
-            <ScrollArea className="h-[180px] pr-2">
-              <ul className="space-y-2 text-xs md:text-sm">
-                {highlights.map((highlight, index) => (
-                  <li key={index} className="py-1.5 px-2 bg-amber-50 rounded-md border border-amber-100">
-                    {highlight.text}
-                  </li>
-                ))}
-              </ul>
-            </ScrollArea>
-          </aside>
-        )}
       </div>
     </div>
   );
