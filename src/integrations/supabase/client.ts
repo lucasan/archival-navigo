@@ -9,7 +9,29 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Create type definitions for our custom RPC functions
+type RPCFunctions = {
+  get_bush_fa_foia_data: () => Promise<any[]>;
+  get_bush_fa_foia_data_paginated: (params: { 
+    p_from: number; 
+    p_to: number; 
+    p_search: string | null;
+  }) => Promise<any[]>;
+  get_schema_info: () => Promise<any>;
+}
+
+// Extend the Supabase client type
+type SupabaseClientWithRPC = ReturnType<typeof createClient<Database>> & {
+  rpc<T extends keyof RPCFunctions>(
+    fn: T,
+    ...args: Parameters<RPCFunctions[T]> extends [infer P] ? [P] : []
+  ): ReturnType<ReturnType<typeof createClient>['rpc']>;
+};
+
+export const supabase = createClient<Database>(
+  SUPABASE_URL, 
+  SUPABASE_PUBLISHABLE_KEY
+) as SupabaseClientWithRPC;
 
 /**
  * NOTE: To use custom schema tables (outside of 'public'), 
@@ -34,7 +56,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 export const getBushFaFoiaData = async () => {
   try {
     // Try to call the RPC function
-    const { data, error } = await supabase.rpc('get_bush_fa_foia_data' as any);
+    const { data, error } = await supabase.rpc('get_bush_fa_foia_data');
     
     if (error) throw error;
     return { data, error: null };
@@ -47,14 +69,14 @@ export const getBushFaFoiaData = async () => {
 export const getBushFaFoiaDataPaginated = async (from: number, to: number, search?: string) => {
   try {
     // Try to call the RPC function
-    const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated' as any, { 
+    const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', { 
       p_from: from, 
       p_to: to,
       p_search: search || null
     });
     
     if (error) throw error;
-    return { data, error: null, count: data ? data.length : 0 };
+    return { data: data || [], error: null, count: data ? data.length : 0 };
   } catch (error) {
     console.error('Error fetching paginated bush_fa.foia data:', error);
     return { data: null, error: error as Error, count: 0 };
