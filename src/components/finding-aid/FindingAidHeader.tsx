@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ExternalLink, Menu } from 'lucide-react';
+import { ExternalLink, Menu, CloudOff } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 interface FindingAidHeaderProps {
@@ -90,6 +90,13 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
                 {` ${acquisitionDate}`}
               </span>
             </span>
+          </div>
+        )}
+        
+        {isTextualFindingAid && (
+          <div className="flex items-center gap-2 text-amber-600 text-sm mb-3">
+            <CloudOff size={16} className="inline" />
+            <span className="font-medium">Not Yet Available Online</span>
           </div>
         )}
         
