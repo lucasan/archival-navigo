@@ -111,14 +111,23 @@ export const NodeContent: React.FC<NodeContentProps> = ({
           </a>
         ) : (
           <div className="space-y-1">
-            <span className={cn(
-              "break-words w-full inline-block",
-              directMatch && "font-semibold text-amber-700",
-              type === 'series' && "font-bold text-base sm:text-lg",
-              type === 'container' && "font-medium",
-            )}>
-              {title}
-            </span>
+            <div className="flex items-start justify-between">
+              <span className={cn(
+                "break-words inline-block",
+                directMatch && "font-semibold text-amber-700",
+                type === 'series' && "font-bold text-base sm:text-lg",
+                type === 'container' && "font-medium",
+              )}>
+                {title}
+              </span>
+              
+              {/* Status icon for file units - moved to title line */}
+              {type === 'file-unit' && fileUnitStatus && (
+                <div className="flex-none ml-2">
+                  <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
+                </div>
+              )}
+            </div>
             
             {/* NAID and Container ID for file units */}
             {type === 'file-unit' && (naid || containerId) && (
@@ -154,13 +163,6 @@ export const NodeContent: React.FC<NodeContentProps> = ({
           </div>
         )}
       </div>
-
-      {/* Status icon for file units */}
-      {type === 'file-unit' && fileUnitStatus && (
-        <div className="ml-auto flex-none">
-          <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
-        </div>
-      )}
     </div>
   );
 };
