@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 interface SeriesMetadataProps {
   description?: string;
@@ -32,11 +32,11 @@ export const SeriesMetadata: React.FC<SeriesMetadataProps> = ({
 
   return (
     <div className="mt-2 mb-4 ml-3 md:ml-5 pl-1 text-xs sm:text-sm text-muted-foreground border-l">
-      {/* Restrictions banner moved to the top */}
+      {/* Restrictions notice with updated styling */}
       {hasRestrictions && (
-        <Alert className="mb-3 bg-amber-50 border-amber-200">
-          <AlertTriangle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-700 text-xs">
+        <Alert className="mb-3 bg-blue-50/30 border-blue-100">
+          <Info className="h-4 w-4 text-blue-500" />
+          <AlertDescription className="text-slate-700 text-xs">
             {accessRestriction && (
               <div className="mt-1">
                 <span className="font-medium">Access: </span>
@@ -83,4 +83,3 @@ export const SeriesMetadata: React.FC<SeriesMetadataProps> = ({
     </div>
   );
 };
-
