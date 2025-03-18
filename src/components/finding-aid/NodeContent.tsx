@@ -50,68 +50,99 @@ export const NodeContent: React.FC<NodeContentProps> = ({
 
   return (
     <div>
-      <div 
-        className={cn(
-          'tree-node flex flex-wrap md:flex-nowrap items-center gap-2 w-full p-1.5 rounded-md transition-colors',
+      {type === 'item' ? (
+        // Two-column layout for items
+        <div className={cn(
+          'tree-node flex items-start gap-4 w-full p-2 rounded-md transition-colors',
           {
-            'tree-node-series': type === 'series',
-            'tree-node-container': type === 'container',
-            'tree-node-file': type === 'file-unit',
-            'tree-node-item': type === 'item',
+            'tree-node-item': true,
             'bg-yellow-50 border border-yellow-200': directMatch,
-            'bg-blue-50/50': isExpanded && hasChildren && type !== 'item' && !directMatch,
           }
-        )}
-        onClick={handleNodeClick}
-        style={hasChildren ? { cursor: 'pointer' } : undefined}
-        role={hasChildren ? "button" : undefined}
-        aria-expanded={hasChildren ? isExpanded : undefined}
-      >
-        {/* Node icon/expand button */}
-        <NodeIcon 
-          type={type} 
-          hasChildren={hasChildren} 
-          isExpanded={isExpanded} 
-          toggleExpand={toggleExpand} 
-        />
-
-        {/* Search match indicator */}
-        {directMatch && (
-          <Sparkle size={16} className="text-amber-500 flex-none animate-pulse" />
-        )}
-
-        {/* Thumbnail for items */}
-        {type === 'item' && thumbnailUrl && (
-          <div 
-            className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-[100px] lg:h-[100px] flex-none overflow-hidden rounded-md border mr-1 sm:mr-2"
-            onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
-          >
-            <img 
-              src={thumbnailUrl} 
-              alt={`Thumbnail for ${title}`} 
-              className="w-full h-full object-cover transition-transform hover:scale-105"
-              loading="lazy"
-            />
+        )}>
+          {/* Left column: Thumbnail */}
+          <div className="flex-none">
+            {thumbnailUrl && (
+              <div 
+                className="relative w-20 h-20 sm:w-24 sm:h-24 overflow-hidden rounded-md border"
+              >
+                <img 
+                  src={thumbnailUrl} 
+                  alt={`Thumbnail for ${title}`} 
+                  className="w-full h-full object-cover transition-transform hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+            )}
           </div>
-        )}
-
-        {/* Title and content */}
-        <div className="flex-1 min-w-0 break-words">
-          {type === 'item' && externalUrl ? (
-            <a 
-              href={externalUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className={cn(
-                "group inline-flex items-start gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words",
+          
+          {/* Right column: Title and Scope Content */}
+          <div className="flex-1 min-w-0 space-y-2">
+            {/* Title with external link */}
+            {externalUrl ? (
+              <a 
+                href={externalUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={cn(
+                  "group inline-flex items-start gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words",
+                  directMatch && "font-semibold text-amber-700"
+                )}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="break-words">{title}</span>
+                <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity mt-0.5" />
+              </a>
+            ) : (
+              <span className={cn(
+                "break-words font-medium",
                 directMatch && "font-semibold text-amber-700"
-              )}
-              onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
-            >
-              <span className="break-words">{title}</span>
-              <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity mt-0.5" />
-            </a>
-          ) : (
+              )}>
+                {title}
+              </span>
+            )}
+            
+            {/* Scope Content Note */}
+            {scopeContent && (
+              <div className="bg-slate-50 border border-slate-200 rounded-md p-2.5 text-sm text-slate-700 shadow-sm">
+                <h4 className="font-medium text-slate-800 mb-1 text-sm">Scope and Content Note:</h4>
+                <p className="leading-relaxed">{scopeContent}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        // Standard layout for all other node types
+        <div 
+          className={cn(
+            'tree-node flex flex-wrap md:flex-nowrap items-center gap-2 w-full p-1.5 rounded-md transition-colors',
+            {
+              'tree-node-series': type === 'series',
+              'tree-node-container': type === 'container',
+              'tree-node-file': type === 'file-unit',
+              'bg-yellow-50 border border-yellow-200': directMatch,
+              'bg-blue-50/50': isExpanded && hasChildren && type !== 'item' && !directMatch,
+            }
+          )}
+          onClick={handleNodeClick}
+          style={hasChildren ? { cursor: 'pointer' } : undefined}
+          role={hasChildren ? "button" : undefined}
+          aria-expanded={hasChildren ? isExpanded : undefined}
+        >
+          {/* Node icon/expand button */}
+          <NodeIcon 
+            type={type} 
+            hasChildren={hasChildren} 
+            isExpanded={isExpanded} 
+            toggleExpand={toggleExpand} 
+          />
+
+          {/* Search match indicator */}
+          {directMatch && (
+            <Sparkle size={16} className="text-amber-500 flex-none animate-pulse" />
+          )}
+
+          {/* Title and content */}
+          <div className="flex-1 min-w-0 break-words">
             <div className="space-y-1">
               <div className="flex items-start justify-between">
                 <span className={cn(
@@ -164,15 +195,7 @@ export const NodeContent: React.FC<NodeContentProps> = ({
                 </div>
               )}
             </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Scope Content for items - display below the main content with improved styling */}
-      {type === 'item' && scopeContent && (
-        <div className="mt-2 mb-3 ml-7 mr-2 p-3 bg-slate-50 border border-slate-200 rounded-md text-sm text-slate-700 shadow-sm">
-          <h4 className="font-medium text-slate-800 mb-1 text-sm">Scope and Content Note:</h4>
-          <p className="leading-relaxed">{scopeContent}</p>
+          </div>
         </div>
       )}
     </div>
