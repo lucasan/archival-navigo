@@ -50,25 +50,60 @@ const FOIAFindingAidsListing: React.FC = () => {
   // State to track direct table check
   const [directCheckDone, setDirectCheckDone] = useState(false);
   const [directData, setDirectData] = useState<FOIARecord[] | null>(null);
+  const [directCheckError, setDirectCheckError] = useState<string | null>(null);
 
   // Direct check of the table (for debugging)
   useEffect(() => {
     const checkTableDirectly = async () => {
       try {
-        console.log("Performing direct table check...");
+        console.log("%c[DEBUG] Performing direct table check...", "background: #222; color: #bada55");
+        
+        // First, check the connection
+        const { data: connCheck, error: connError } = await supabase.from('foia').select('count(*)', { count: 'exact', head: true });
+        console.log("%c[DEBUG] Connection check:", "background: #222; color: #bada55", { connCheck, connError });
+        
+        if (connError) {
+          console.error('%c[ERROR] Connection check failed:', "background: #222; color: #ff6347", connError);
+          setDirectCheckError(`Connection error: ${connError.message}`);
+        }
+        
+        // Log Supabase client details (anonymizing key)
+        const supabaseUrl = (supabase as any).supabaseUrl;
+        console.log("%c[DEBUG] Supabase config:", "background: #222; color: #bada55", { 
+          url: supabaseUrl,
+          hasKey: Boolean((supabase as any).supabaseKey)
+        });
+        
+        // Try to query all columns with count
         const { data, error, count } = await supabase
           .from('foia')
-          .select('*');
+          .select('*', { count: 'exact' });
+        
+        // Log the raw query response
+        console.log("%c[DEBUG] Direct query response:", "background: #222; color: #bada55", { data, error, count });
         
         if (error) {
-          console.error('Direct check error:', error);
+          console.error('%c[ERROR] Direct check error:', "background: #222; color: #ff6347", error);
           toast.error(`Direct check failed: ${error.message}`);
+          setDirectCheckError(`Query error: ${error.message}`);
         } else {
-          console.log("Direct check result:", data, "Count:", data?.length);
+          // Log data characteristics
+          console.log("%c[DEBUG] Result type:", "background: #222; color: #bada55", Array.isArray(data) ? 'Array' : typeof data);
+          console.log("%c[DEBUG] Result count:", "background: #222; color: #bada55", data?.length);
+          
+          if (Array.isArray(data) && data.length > 0) {
+            // Log the structure of the first record to verify schema
+            console.log("%c[DEBUG] First record structure:", "background: #222; color: #bada55", Object.keys(data[0]));
+            console.log("%c[DEBUG] First record data:", "background: #222; color: #bada55", data[0]);
+          } else {
+            console.log("%c[DEBUG] No records found in direct query", "background: #222; color: #ff6347");
+          }
+          
           setDirectData(data as FOIARecord[]);
         }
       } catch (e) {
-        console.error('Unexpected error in direct check:', e);
+        console.error('%c[ERROR] Unexpected error in direct check:', "background: #222; color: #ff6347", e);
+        setDirectCheckError(`Unexpected error: ${(e as Error).message}`);
       } finally {
         setDirectCheckDone(true);
       }
@@ -79,42 +114,72 @@ const FOIAFindingAidsListing: React.FC = () => {
 
   // Function to fetch FOIA records from Supabase with search and pagination
   const fetchFOIARecords = async () => {
-    console.log("Fetching FOIA records with range calculation...");
+    const baseLog = "[DEBUG FETCH]";
+    console.log(`%c${baseLog} Starting fetch with pagination and filters:`, "background: #222; color: #4CAF50");
+    
     // Calculate the range for pagination
     const from = (currentPage - 1) * ITEMS_PER_PAGE;
     const to = from + ITEMS_PER_PAGE - 1;
     
     try {
-      console.log(`Pagination: from=${from}, to=${to}`);
+      console.log(`%c${baseLog} Pagination range:`, "background: #222; color: #4CAF50", { from, to, page: currentPage, itemsPerPage: ITEMS_PER_PAGE });
+      
+      // Build base query
       let query = supabase
         .from('foia')
         .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' });
       
+      console.log(`%c${baseLog} Base query created with select columns`, "background: #222; color: #4CAF50");
+      
       // Apply search filter if search query exists
       if (searchQuery) {
-        console.log(`Applying search filter: ${searchQuery}`);
-        query = query.or(`foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%`);
+        const searchFilter = `foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%`;
+        console.log(`%c${baseLog} Applying search filter:`, "background: #222; color: #4CAF50", { searchQuery, searchFilter });
+        query = query.or(searchFilter);
       }
       
-      // Apply pagination
+      // Log the query before executing (approximation of what's being sent)
+      console.log(`%c${baseLog} Final query parts:`, "background: #222; color: #4CAF50", {
+        table: 'foia',
+        select: 'id, foia_number, title, processed_by, scope, created_at',
+        count: 'exact',
+        order: 'created_at (desc)',
+        range: `${from}-${to}`,
+        filters: searchQuery ? `or(foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%)` : 'none'
+      });
+      
+      // Apply pagination and execute
+      const startTime = performance.now();
       const { data, error, count } = await query
         .order('created_at', { ascending: false })
         .range(from, to);
+      const endTime = performance.now();
+      
+      console.log(`%c${baseLog} Query execution time:`, "background: #222; color: #4CAF50", `${Math.round(endTime - startTime)}ms`);
       
       if (error) {
-        console.error('Error fetching FOIA records:', error);
+        console.error(`%c${baseLog} Error fetching FOIA records:`, "background: #222; color: #ff6347", error);
         toast.error(`Failed to load data: ${error.message}`);
         throw error;
       }
       
-      console.log("Fetched data:", data, "Total count:", count);
+      console.log(`%c${baseLog} Response data:`, "background: #222; color: #4CAF50", { 
+        dataReceived: Boolean(data), 
+        dataLength: data?.length || 0, 
+        count, 
+        firstItem: data && data.length > 0 ? data[0] : null
+      });
+      
+      if (data && data.length === 0 && count && count > 0) {
+        console.warn(`%c${baseLog} Warning: Total count is ${count} but returned 0 records - check pagination!`, "background: #ff9800; color: #000");
+      }
       
       return { 
         records: data as FOIARecord[], 
         totalCount: count || 0
       };
     } catch (error) {
-      console.error('Unexpected error fetching FOIA records:', error);
+      console.error(`%c${baseLog} Unexpected error:`, "background: #222; color: #ff6347", error);
       toast.error('Failed to load data. Please try again later.');
       throw error;
     }
@@ -204,20 +269,66 @@ const FOIAFindingAidsListing: React.FC = () => {
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Database Connectivity Check</AlertTitle>
             <AlertDescription>
-              Direct database check: {directData ? `Found ${directData.length} records` : 'No records found'}
-              {directData && directData.length > 0 && (
-                <p className="text-sm mt-2">
-                  First record: {directData[0].foia_number || 'N/A'} - {directData[0].scope || directData[0].title || 'N/A'}
-                </p>
+              {directCheckError ? (
+                <div className="text-red-500">
+                  Error: {directCheckError}
+                </div>
+              ) : (
+                <>
+                  Direct database check: {directData ? `Found ${directData.length} records` : 'No records found'}
+                  {directData && directData.length > 0 && (
+                    <p className="text-sm mt-2">
+                      First record: {directData[0].foia_number || 'N/A'} - {directData[0].scope || directData[0].title || 'N/A'}
+                    </p>
+                  )}
+                </>
               )}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="mt-2" 
-                onClick={() => refetch()}
-              >
-                Retry Query
-              </Button>
+              <div className="flex gap-2 mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => {
+                    setDirectCheckDone(false);
+                    setDirectData(null);
+                    setDirectCheckError(null);
+                    // Re-run the direct check
+                    setTimeout(() => {
+                      const checkTableDirectly = async () => {
+                        try {
+                          console.log("%c[DEBUG] Re-running direct table check...", "background: #222; color: #bada55");
+                          const { data, error } = await supabase
+                            .from('foia')
+                            .select('*');
+                          
+                          if (error) {
+                            console.error('%c[ERROR] Direct check error:', "background: #222; color: #ff6347", error);
+                            setDirectCheckError(`Query error: ${error.message}`);
+                          } else {
+                            console.log("%c[DEBUG] Direct check re-run result:", "background: #222; color: #bada55", { data, count: data?.length });
+                            setDirectData(data as FOIARecord[]);
+                          }
+                        } catch (e) {
+                          console.error('%c[ERROR] Unexpected error in direct check:', "background: #222; color: #ff6347", e);
+                          setDirectCheckError(`Unexpected error: ${(e as Error).message}`);
+                        } finally {
+                          setDirectCheckDone(true);
+                        }
+                      };
+                      
+                      checkTableDirectly();
+                    }, 100);
+                  }}
+                >
+                  Retry Direct Check
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => refetch()}
+                >
+                  Retry Query
+                </Button>
+              </div>
             </AlertDescription>
           </Alert>
         )}
