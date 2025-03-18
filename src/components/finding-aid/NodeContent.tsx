@@ -101,12 +101,9 @@ export const NodeContent: React.FC<NodeContentProps> = ({
               </span>
             )}
             
-            {/* Scope Content Note */}
+            {/* Scope Content Note - removed the heading and container styling */}
             {scopeContent && (
-              <div className="bg-slate-50 border border-slate-200 rounded-md p-2.5 text-sm text-slate-700 shadow-sm">
-                <h4 className="font-medium text-slate-800 mb-1 text-sm">Scope and Content Note:</h4>
-                <p className="leading-relaxed">{scopeContent}</p>
-              </div>
+              <p className="text-sm text-slate-700 leading-relaxed">{scopeContent}</p>
             )}
           </div>
         </div>
