@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
 import { Card, CardContent } from '@/components/ui/card';
@@ -310,6 +310,7 @@ const SearchResultCard = ({ result }) => {
 
 const ResearchRoomSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [randomizedResults, setRandomizedResults] = useState([...mockSearchResults]);
   const [filters, setFilters] = useState({
     // Record Type filters
     architecturalAndEngineering: false,
@@ -340,6 +341,17 @@ const ResearchRoomSearch: React.FC = () => {
     pageTypeGallery: false,
     pageTypeExhibits: false,
   });
+
+  useEffect(() => {
+    const shuffledResults = [...mockSearchResults];
+    
+    for (let i = shuffledResults.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledResults[i], shuffledResults[j]] = [shuffledResults[j], shuffledResults[i]];
+    }
+    
+    setRandomizedResults(shuffledResults);
+  }, [searchTerm, filters]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -717,7 +729,7 @@ const ResearchRoomSearch: React.FC = () => {
           <div className="w-full lg:w-3/4">
             <div className="mb-4">
               <p className="text-muted-foreground">
-                Showing {mockSearchResults.length} results for{" "}
+                Showing {randomizedResults.length} results for{" "}
                 <span className="font-medium text-foreground">
                   {searchTerm || "all finding aids"}
                 </span>
@@ -725,7 +737,7 @@ const ResearchRoomSearch: React.FC = () => {
             </div>
             
             <div className="space-y-4">
-              {mockSearchResults.map((result) => (
+              {randomizedResults.map((result) => (
                 <SearchResultCard key={result.id} result={result} />
               ))}
             </div>
