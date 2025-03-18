@@ -49,7 +49,7 @@ const NavigationHeader: React.FC = () => {
                 : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
             )}
           >
-            FOIA FA with no Containers
+            FOIA Finding Aid
           </Link>
           
           <ArrowLeftRight className="h-4 w-4 text-gray-400" />
