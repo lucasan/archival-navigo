@@ -18,6 +18,7 @@ export const useFOIAData = ({ searchQuery, currentPage }: UseFOIADataParams) => 
     
     try {
       // Skip direct querying of 'foia' table and use the RPC directly
+      // Only pass the required parameters to avoid function selection ambiguity
       const rpcResponse = await getBushFaFoiaDataPaginated(from, to, searchQuery);
       
       if (rpcResponse.error) {

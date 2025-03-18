@@ -67,8 +67,10 @@ export const getBushFaFoiaData = async () => {
 };
 
 export const getBushFaFoiaDataPaginated = async (from: number, to: number, search?: string) => {
+  console.log('Calling RPC with params:', { p_from: from, p_to: to, p_search: search || null });
+  
   try {
-    // Try to call the RPC function
+    // Use the version with only three parameters to avoid ambiguity
     const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', { 
       p_from: from, 
       p_to: to,
