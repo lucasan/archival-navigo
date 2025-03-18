@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search, AlertCircle, Database } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, getBushFaFoiaData, getBushFaFoiaDataPaginated } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { 
   Table,
@@ -54,6 +55,7 @@ const FOIAFindingAidsListing: React.FC = () => {
         console.log("%c[SCHEMA DEBUG] Checking database schema...", "background: #4b0082; color: #ffffff; font-weight: bold;");
         
         try {
+          // This needs to be an RPC function we create
           const { data, error } = await supabase.rpc('get_schema_info');
           console.log("%c[SCHEMA DEBUG] RPC result:", "background: #4b0082; color: #ffffff;", { data, error });
           setSchemaInfo({ rpcResult: data, rpcError: error });
@@ -61,6 +63,7 @@ const FOIAFindingAidsListing: React.FC = () => {
           console.log("%c[SCHEMA DEBUG] RPC not available:", "background: #4b0082; color: #ffffff;", e);
         }
         
+        // Check if the standard table is accessible
         const { data: foiaCount, error: foiaError } = await supabase
           .from('foia')
           .select('*', { count: 'exact', head: true });
@@ -89,6 +92,7 @@ const FOIAFindingAidsListing: React.FC = () => {
         console.log("%c[DEBUG] Performing direct table check...", "background: #222; color: #bada55; font-weight: bold;");
         
         console.log("%c[DEBUG] Trying standard table access", "background: #222; color: #bada55;");
+        // Access the public.foia table directly
         const { data, error, count } = await supabase
           .from('foia')
           .select('*', { count: 'exact' });
@@ -107,8 +111,8 @@ const FOIAFindingAidsListing: React.FC = () => {
           try {
             console.log("%c[DEBUG] Trying RPC fallback", "background: #222; color: #bada55;");
             
-            const { data: rpcData, error: rpcError } = await supabase
-              .rpc('get_bush_fa_foia_data');
+            // Try using the RPC helper function
+            const { data: rpcData, error: rpcError } = await getBushFaFoiaData();
               
             console.log("%c[DEBUG] RPC fallback response:", "background: #222; color: #bada55;", { 
               data: rpcData, 
@@ -158,21 +162,18 @@ const FOIAFindingAidsListing: React.FC = () => {
     try {
       console.log(`%c${baseLog} Pagination range:`, "background: #222; color: #4CAF50;", { from, to, page: currentPage, itemsPerPage: ITEMS_PER_PAGE });
       
+      // First try using the standard foia table in public schema
       let queryResponse = await supabase
         .from('foia')
         .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' })
         .order('created_at', { ascending: false })
         .range(from, to);
         
-      if (queryResponse.error && !queryResponse.data) {
+      if (queryResponse.error || !queryResponse.data) {
         console.log(`%c${baseLog} Standard query failed, trying RPC fallback:`, "background: #222; color: #4CAF50;", queryResponse.error);
         
-        const rpcResponse = await supabase
-          .rpc('get_bush_fa_foia_data_paginated', { 
-            p_from: from, 
-            p_to: to,
-            p_search: searchQuery || null
-          });
+        // If direct query fails, use the RPC helper function
+        const rpcResponse = await getBushFaFoiaDataPaginated(from, to, searchQuery);
           
         if (rpcResponse.error) {
           console.error(`%c${baseLog} RPC fallback failed:`, "background: #222; color: #ff6347;", rpcResponse.error);
@@ -181,8 +182,8 @@ const FOIAFindingAidsListing: React.FC = () => {
         }
         
         return { 
-          records: rpcResponse.data as FOIARecord[], 
-          totalCount: rpcResponse.data?.length || 0
+          records: rpcResponse.data || [], 
+          totalCount: rpcResponse.count
         };
       }
       
@@ -333,8 +334,7 @@ const FOIAFindingAidsListing: React.FC = () => {
                             setDirectCheckError(`Query error: ${error.message}`);
                             
                             try {
-                              const { data: rpcData, error: rpcError } = await supabase
-                                .rpc('get_bush_fa_foia_data');
+                              const { data: rpcData, error: rpcError } = await getBushFaFoiaData();
                                 
                               if (!rpcError && rpcData) {
                                 setDirectData(rpcData as FOIARecord[]);

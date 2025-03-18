@@ -26,3 +26,37 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
  * - get_schema_info():
  *   Returns schema information for debugging
  */
+
+/**
+ * Helper for cross-schema access to bush_fa.foia
+ * Note: This is a fallback that uses RPC when available
+ */
+export const getBushFaFoiaData = async () => {
+  try {
+    // Try to call the RPC function
+    const { data, error } = await supabase.rpc('get_bush_fa_foia_data');
+    
+    if (error) throw error;
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error fetching bush_fa.foia data:', error);
+    return { data: null, error: error as Error };
+  }
+};
+
+export const getBushFaFoiaDataPaginated = async (from: number, to: number, search?: string) => {
+  try {
+    // Try to call the RPC function
+    const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', { 
+      p_from: from, 
+      p_to: to,
+      p_search: search || null
+    });
+    
+    if (error) throw error;
+    return { data, error: null, count: data?.length || 0 };
+  } catch (error) {
+    console.error('Error fetching paginated bush_fa.foia data:', error);
+    return { data: null, error: error as Error, count: 0 };
+  }
+};
