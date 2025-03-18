@@ -189,6 +189,105 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
             />
           </FileUnitNode>
         </SeriesSection>
+        
+        {/* New Series: Mary Kate Grant's Subject Files */}
+        <SeriesSection
+          id="mary-kate-grant"
+          title="Mary Kate Grant's Subject Files"
+          description="Subject files maintained by speechwriter Mary Kate Grant, arranged by topic."
+          extent="4 linear feet (10 boxes)"
+          arrangement="Alphabetical by subject"
+          date="1989-1991"
+          searchTerm={searchTerm}
+          statusFilter={statusFilter}
+          hideMetadata={true}
+        >
+          <FileUnitNode 
+            title="National Energy Strategy 7/24/91 [OA 4424]" 
+            status="open"
+            naid="323154707"
+            containerId="13882"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
+          >
+            <ItemNode 
+              title="Energy Policy Briefing Documents" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#energy-briefing"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+            <ItemNode 
+              title="Energy Strategy Speech Draft" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#energy-draft"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+          </FileUnitNode>
+          
+          <FileUnitNode 
+            title="NASA 4/28/89 [OA 4423]" 
+            status="digitized"
+            naid="323154705"
+            containerId="13882"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
+          >
+            <ItemNode 
+              title="Space Program Notes" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#nasa-notes"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+            <ItemNode 
+              title="NASA Funding Speech Draft" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#nasa-draft"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+            <ItemNode 
+              title="Space Exploration Vision Statement" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#space-vision"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+          </FileUnitNode>
+          
+          <FileUnitNode 
+            title="Visit to Greece and Turkey 7/91 [OA 4424]" 
+            status="closed"
+            naid="323154678"
+            containerId="13880"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
+          >
+            <ItemNode 
+              title="Mediterranean Foreign Policy Briefing" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#mediterranean-briefing"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+            <ItemNode 
+              title="Greece State Dinner Toast" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#greece-toast"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+            <ItemNode 
+              title="Turkey Visit Talking Points" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#turkey-talking-points"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+          </FileUnitNode>
+        </SeriesSection>
       </div>
     </div>
   );
