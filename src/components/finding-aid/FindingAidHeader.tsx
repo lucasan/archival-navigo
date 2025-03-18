@@ -19,7 +19,7 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
   toggleSidebar
 }) => {
   const location = useLocation();
-  const isFoiaPage = location.pathname === '/finding-aid-no-series';
+  const isFoiaPage = location.pathname === '/finding-aid-no-containers';
   
   return (
     <header className="border-b border-border bg-white shadow-sm animate-fade-in">
@@ -41,14 +41,14 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
             <span className="mb-1 sm:mb-0">
               {isFoiaPage ? 'FOIA Number:' : 'Collection ID:'} 
               <span className="font-medium text-foreground">
-                {isFoiaPage ? ' 1998-0001-F' : ` ${collectionId}`}
+                {isFoiaPage ? ' 1998-0099-F' : ` ${collectionId}`}
               </span>
             </span>
             <span>
               {isFoiaPage ? 'Processed by:' : 'Acquisition Date:'} 
               <span className="font-medium text-foreground">
                 {isFoiaPage 
-                  ? ' Staff Archivists, February 1998. Previously restricted materials are added as they are released.' 
+                  ? ' Staff Archivists, March - September 1998. Previously restricted materials are added as they are released.' 
                   : ` ${acquisitionDate}`}
               </span>
             </span>
