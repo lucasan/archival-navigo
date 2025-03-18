@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Search } from 'lucide-react';
+import { Search, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { 
@@ -22,6 +22,8 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import NavigationHeader from '../components/finding-aid/NavigationHeader';
 import { toast } from "sonner";
 
@@ -45,21 +47,52 @@ const FOIAFindingAidsListing: React.FC = () => {
   
   // State for search input (to prevent immediate searching on every keystroke)
   const [searchInput, setSearchInput] = useState(searchQuery);
+  // State to track direct table check
+  const [directCheckDone, setDirectCheckDone] = useState(false);
+  const [directData, setDirectData] = useState<FOIARecord[] | null>(null);
+
+  // Direct check of the table (for debugging)
+  useEffect(() => {
+    const checkTableDirectly = async () => {
+      try {
+        console.log("Performing direct table check...");
+        const { data, error, count } = await supabase
+          .from('foia')
+          .select('*');
+        
+        if (error) {
+          console.error('Direct check error:', error);
+          toast.error(`Direct check failed: ${error.message}`);
+        } else {
+          console.log("Direct check result:", data, "Count:", data?.length);
+          setDirectData(data as FOIARecord[]);
+        }
+      } catch (e) {
+        console.error('Unexpected error in direct check:', e);
+      } finally {
+        setDirectCheckDone(true);
+      }
+    };
+    
+    checkTableDirectly();
+  }, []);
 
   // Function to fetch FOIA records from Supabase with search and pagination
   const fetchFOIARecords = async () => {
-    console.log("Fetching FOIA records...");
+    console.log("Fetching FOIA records with range calculation...");
     // Calculate the range for pagination
     const from = (currentPage - 1) * ITEMS_PER_PAGE;
     const to = from + ITEMS_PER_PAGE - 1;
     
     try {
+      console.log(`Pagination: from=${from}, to=${to}`);
       let query = supabase
         .from('foia')
         .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' });
       
       // Apply search filter if search query exists
       if (searchQuery) {
+        console.log(`Applying search filter: ${searchQuery}`);
         query = query.or(`foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%`);
       }
       
@@ -88,7 +121,7 @@ const FOIAFindingAidsListing: React.FC = () => {
   };
 
   // Use React Query to fetch data
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['foiaRecords', searchQuery, currentPage],
     queryFn: fetchFOIARecords
   });
@@ -164,6 +197,30 @@ const FOIAFindingAidsListing: React.FC = () => {
       
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">FOIA Finding Aids Listing</h1>
+        
+        {/* Debug info */}
+        {directCheckDone && (
+          <Alert className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Database Connectivity Check</AlertTitle>
+            <AlertDescription>
+              Direct database check: {directData ? `Found ${directData.length} records` : 'No records found'}
+              {directData && directData.length > 0 && (
+                <p className="text-sm mt-2">
+                  First record: {directData[0].foia_number || 'N/A'} - {directData[0].scope || directData[0].title || 'N/A'}
+                </p>
+              )}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="mt-2" 
+                onClick={() => refetch()}
+              >
+                Retry Query
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
         
         {/* Search bar */}
         <form onSubmit={handleSearch} className="mb-6">
