@@ -9,6 +9,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Search, Archive, Layers, File, FileText, ExternalLink, FileVideo, FileImage, Calendar, Album, Newspaper } from 'lucide-react';
 import { StatusIcon } from '@/components/finding-aid/StatusIcon';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+
+const ITEMS_PER_PAGE = 10;
 
 const mockSearchResults = [
   {
@@ -125,6 +128,124 @@ const mockSearchResults = [
     thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=WW2+Exhibit",
     excerpt: "Online exhibit showcasing how Americans at home supported the war effort through rationing, victory gardens, and factory work.",
     sectionCount: "5 sections"
+  },
+  {
+    id: 12,
+    title: "Roosevelt New Deal Programs",
+    type: "finding-aid",
+    date: "1933-1945",
+    digitized: "Digitized",
+    naid: "12345987",
+    excerpt: "Records related to various New Deal programs implemented during the Roosevelt administration to combat the Great Depression."
+  },
+  {
+    id: 13,
+    title: "Series II: Manhattan Project Documents",
+    type: "series",
+    date: "1942-1946",
+    digitized: "Non Digitized", 
+    naid: "87654321",
+    excerpt: "Classified documents related to the development of the atomic bomb during World War II.",
+    seriesExtent: "126 files",
+    parentCollection: {
+      title: "Atomic Energy Commission Records",
+      id: 14
+    }
+  },
+  {
+    id: 14,
+    title: "Declaration of Independence",
+    type: "item",
+    date: "1776",
+    digitized: "Digitized",
+    naid: "23456123",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=Declaration",
+    excerpt: "Original manuscript of the Declaration of Independence, signed by the Continental Congress on July 4, 1776.",
+    externalUrl: "https://catalog.archives.gov/",
+    parentCollection: {
+      title: "Founding Documents",
+      id: 15
+    }
+  },
+  {
+    id: 15,
+    title: "Apollo 13 Mission Audio",
+    type: "page-media",
+    fileType: "audio",
+    date: "1970",
+    digitized: "Digitized",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=Apollo+13",
+    excerpt: "Audio recordings from the Apollo 13 mission, including the famous 'Houston, we've had a problem' transmission.",
+    duration: "1:32:45"
+  },
+  {
+    id: 16,
+    title: "NASA Photograph Collection",
+    type: "page-gallery",
+    date: "1958-2023",
+    digitized: "Digitized",
+    naid: "34565432",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=NASA+Photos",
+    excerpt: "Collection of photographs from NASA missions, including space shuttle launches, lunar landings, and planetary exploration.",
+    itemCount: "350 items"
+  },
+  {
+    id: 17,
+    title: "Cold War Diplomatic Cables",
+    type: "file-unit",
+    date: "1947-1991",
+    digitized: "Digitized",
+    naid: "45678123",
+    containerId: "D-291-07",
+    excerpt: "Diplomatic communications between the U.S. State Department and various embassies during the Cold War period.",
+    parentCollection: {
+      title: "Department of State Records",
+      id: 18
+    }
+  },
+  {
+    id: 18,
+    title: "JFK Assassination Records",
+    type: "finding-aid",
+    date: "1963-1979",
+    digitized: "Digitized",
+    naid: "98765432",
+    excerpt: "Collection of materials related to the assassination of President John F. Kennedy and subsequent investigations."
+  },
+  {
+    id: 19,
+    title: "Women's Suffrage Movement",
+    type: "page-exhibit",
+    date: "1848-1920",
+    digitized: "Digitized",
+    naid: "87654987",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=Suffrage",
+    excerpt: "Online exhibit documenting the women's suffrage movement in the United States, culminating in the 19th Amendment.",
+    sectionCount: "7 sections"
+  },
+  {
+    id: 20,
+    title: "Vietnam War Peace Negotiations",
+    type: "file-unit",
+    date: "1968-1973",
+    digitized: "Non Digitized",
+    status: "open",
+    naid: "12398765",
+    containerId: "F-587-03",
+    excerpt: "Records of peace negotiations between the United States and North Vietnam, including the Paris Peace Accords.",
+    parentCollection: {
+      title: "Vietnam War Collection",
+      id: 21
+    }
+  },
+  {
+    id: 21,
+    title: "President Nixon's Daily Diary: August 8, 1974",
+    type: "page-daily-diary",
+    date: "1974-08-08",
+    digitized: "Digitized",
+    naid: "65432198",
+    excerpt: "Daily diary documenting President Nixon's final day in office, including his resignation announcement and departure from the White House."
   }
 ];
 
@@ -306,6 +427,7 @@ const SearchResultCard = ({ result }) => {
 const ResearchRoomSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [randomizedResults, setRandomizedResults] = useState([...mockSearchResults]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     // Record Type filters
     architecturalAndEngineering: false,
@@ -346,6 +468,7 @@ const ResearchRoomSearch: React.FC = () => {
     }
     
     setRandomizedResults(shuffledResults);
+    setCurrentPage(1);
   }, [searchTerm, filters]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -397,6 +520,54 @@ const ResearchRoomSearch: React.FC = () => {
       pageTypeGallery: false,
       pageTypeExhibits: false,
     });
+  };
+
+  const totalPages = Math.ceil(randomizedResults.length / ITEMS_PER_PAGE);
+  const paginatedResults = randomizedResults.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push(null);
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push(null);
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push(null);
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push(null);
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
   };
 
   return (
@@ -724,18 +895,63 @@ const ResearchRoomSearch: React.FC = () => {
           <div className="w-full lg:w-3/4">
             <div className="mb-4">
               <p className="text-muted-foreground">
-                Showing {randomizedResults.length} results for{" "}
+                Showing {paginatedResults.length} of {randomizedResults.length} results for{" "}
                 <span className="font-medium text-foreground">
                   {searchTerm || "all finding aids"}
                 </span>
               </p>
             </div>
             
-            <div className="space-y-4">
-              {randomizedResults.map((result) => (
+            <div className="space-y-4 mb-8">
+              {paginatedResults.map((result) => (
                 <SearchResultCard key={result.id} result={result} />
               ))}
             </div>
+            
+            {totalPages > 1 && (
+              <Pagination className="mt-8">
+                <PaginationContent>
+                  {currentPage > 1 && (
+                    <PaginationItem>
+                      <PaginationPrevious href="#" onClick={(e) => {
+                        e.preventDefault();
+                        goToPage(currentPage - 1);
+                      }} />
+                    </PaginationItem>
+                  )}
+                  
+                  {getPageNumbers().map((page, index) => (
+                    page === null ? (
+                      <PaginationItem key={`ellipsis-${index}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={`page-${page}`}>
+                        <PaginationLink 
+                          href="#" 
+                          isActive={currentPage === page}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            goToPage(page as number);
+                          }}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  ))}
+                  
+                  {currentPage < totalPages && (
+                    <PaginationItem>
+                      <PaginationNext href="#" onClick={(e) => {
+                        e.preventDefault();
+                        goToPage(currentPage + 1);
+                      }} />
+                    </PaginationItem>
+                  )}
+                </PaginationContent>
+              </Pagination>
+            )}
           </div>
         </div>
       </main>
