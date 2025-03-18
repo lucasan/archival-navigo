@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search, X, RotateCcw } from 'lucide-react';
+import { Search, RotateCcw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -61,11 +61,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
             </div>
           </div>
         </form>
-        {searchInput && (
-          <div className="mt-2 text-xs text-slate-500 animate-fade-in">
-            Searching for "{searchInput}"
-          </div>
-        )}
+        {/* Added fixed height container to prevent layout jumps */}
+        <div className="h-6 mt-2">
+          {searchInput && (
+            <div className="text-xs text-slate-500 animate-fade-in">
+              Searching for "{searchInput}"
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
