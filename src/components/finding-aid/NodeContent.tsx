@@ -120,7 +120,8 @@ export const NodeContent: React.FC<NodeContentProps> = ({
               'bg-blue-50/50': isExpanded && hasChildren && !directMatch,
               'cursor-pointer': hasChildren, // Always show pointer cursor for nodes with children
               'hover:bg-slate-50/70': hasChildren && !isExpanded, // Subtle hover effect for collapsed nodes
-              'hover:bg-blue-50/30': hasChildren && isExpanded // Subtle hover effect for expanded nodes
+              'hover:bg-blue-50/30': hasChildren && isExpanded, // Subtle hover effect for expanded nodes
+              'font-bold': type === 'series' && hasChildren // Make series title bolder to indicate it's clickable
             }
           )}
           onClick={handleNodeClick}
@@ -195,6 +196,13 @@ export const NodeContent: React.FC<NodeContentProps> = ({
               )}
             </div>
           </div>
+
+          {/* For series nodes, add a more obvious expand indicator */}
+          {type === 'series' && hasChildren && (
+            <span className="text-xs text-slate-500 px-2 py-1 bg-slate-100 rounded ml-auto">
+              {isExpanded ? "Collapse" : "Expand"}
+            </span>
+          )}
         </div>
       )}
     </div>
