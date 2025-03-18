@@ -318,6 +318,79 @@ const ResearchRoomSearch: React.FC = () => {
               
               <div className="space-y-6">
                 <div>
+                  <h3 className="font-medium mb-3">Page Type</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="pageTypeMedia" 
+                        checked={filters.pageTypeMedia} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('pageTypeMedia', checked === true)
+                        }
+                      />
+                      <Label htmlFor="pageTypeMedia">Media</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="pageTypeDailyDiary" 
+                        checked={filters.pageTypeDailyDiary} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('pageTypeDailyDiary', checked === true)
+                        }
+                      />
+                      <Label htmlFor="pageTypeDailyDiary">Daily Diary</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="pageTypePhotoContactSheet" 
+                        checked={filters.pageTypePhotoContactSheet} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('pageTypePhotoContactSheet', checked === true)
+                        }
+                      />
+                      <Label htmlFor="pageTypePhotoContactSheet">Photo Contact Sheet</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="pageTypeFindingAid" 
+                        checked={filters.pageTypeFindingAid} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('pageTypeFindingAid', checked === true)
+                        }
+                      />
+                      <Label htmlFor="pageTypeFindingAid">Finding Aid</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="pageTypeGallery" 
+                        checked={filters.pageTypeGallery} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('pageTypeGallery', checked === true)
+                        }
+                      />
+                      <Label htmlFor="pageTypeGallery">Gallery</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="pageTypeExhibits" 
+                        checked={filters.pageTypeExhibits} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('pageTypeExhibits', checked === true)
+                        }
+                      />
+                      <Label htmlFor="pageTypeExhibits">Exhibits</Label>
+                    </div>
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <div>
                   <h3 className="font-medium mb-3">Record Type</h3>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
@@ -486,79 +559,6 @@ const ResearchRoomSearch: React.FC = () => {
                         }
                       />
                       <Label htmlFor="levelItem">Item</Label>
-                    </div>
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div>
-                  <h3 className="font-medium mb-3">Page Type</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="pageTypeMedia" 
-                        checked={filters.pageTypeMedia} 
-                        onCheckedChange={(checked) => 
-                          handleFilterChange('pageTypeMedia', checked === true)
-                        }
-                      />
-                      <Label htmlFor="pageTypeMedia">Media</Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="pageTypeDailyDiary" 
-                        checked={filters.pageTypeDailyDiary} 
-                        onCheckedChange={(checked) => 
-                          handleFilterChange('pageTypeDailyDiary', checked === true)
-                        }
-                      />
-                      <Label htmlFor="pageTypeDailyDiary">Daily Diary</Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="pageTypePhotoContactSheet" 
-                        checked={filters.pageTypePhotoContactSheet} 
-                        onCheckedChange={(checked) => 
-                          handleFilterChange('pageTypePhotoContactSheet', checked === true)
-                        }
-                      />
-                      <Label htmlFor="pageTypePhotoContactSheet">Photo Contact Sheet</Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="pageTypeFindingAid" 
-                        checked={filters.pageTypeFindingAid} 
-                        onCheckedChange={(checked) => 
-                          handleFilterChange('pageTypeFindingAid', checked === true)
-                        }
-                      />
-                      <Label htmlFor="pageTypeFindingAid">Finding Aid</Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="pageTypeGallery" 
-                        checked={filters.pageTypeGallery} 
-                        onCheckedChange={(checked) => 
-                          handleFilterChange('pageTypeGallery', checked === true)
-                        }
-                      />
-                      <Label htmlFor="pageTypeGallery">Gallery</Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="pageTypeExhibits" 
-                        checked={filters.pageTypeExhibits} 
-                        onCheckedChange={(checked) => 
-                          handleFilterChange('pageTypeExhibits', checked === true)
-                        }
-                      />
-                      <Label htmlFor="pageTypeExhibits">Exhibits</Label>
                     </div>
                   </div>
                 </div>
