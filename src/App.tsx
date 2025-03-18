@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import FindingAid from "./pages/FindingAid";
-import FindingAidNoSeries from "./pages/FindingAidNoSeries";
 import FindingAidNoContainers from "./pages/FindingAidNoContainers";
 import FindingAidsListing from "./pages/FindingAidsListing";
 import ResearchRoomSearch from "./pages/ResearchRoomSearch";
@@ -23,7 +22,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/finding-aid" element={<FindingAid />} />
-          <Route path="/finding-aid-no-series" element={<FindingAidNoSeries />} />
           <Route path="/finding-aid-no-containers" element={<FindingAidNoContainers />} />
           <Route path="/finding-aids-listing" element={<FindingAidsListing />} />
           <Route path="/research-room-search" element={<ResearchRoomSearch />} />

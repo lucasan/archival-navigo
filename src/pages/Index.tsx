@@ -19,7 +19,7 @@ const Index: React.FC = () => {
         </Link>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Link 
           to="/finding-aid" 
           className="block p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow"
@@ -27,16 +27,6 @@ const Index: React.FC = () => {
           <h2 className="text-xl font-bold mb-2">Finding Aid with Series</h2>
           <p className="text-gray-600">
             View the standard finding aid with Series organization.
-          </p>
-        </Link>
-
-        <Link 
-          to="/finding-aid-no-series" 
-          className="block p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow"
-        >
-          <h2 className="text-xl font-bold mb-2">FOIA Finding Aid</h2>
-          <p className="text-gray-600">
-            View the alternative finding aid without Series organization.
           </p>
         </Link>
         

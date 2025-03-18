@@ -41,20 +41,6 @@ const NavigationHeader: React.FC = () => {
           <ArrowLeftRight className="h-4 w-4 text-gray-400" />
           
           <Link 
-            to="/finding-aid-no-series"
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors",
-              path === '/finding-aid-no-series'
-                ? "bg-white shadow-sm text-primary" 
-                : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
-            )}
-          >
-            FOIA Finding Aid
-          </Link>
-          
-          <ArrowLeftRight className="h-4 w-4 text-gray-400" />
-          
-          <Link 
             to="/finding-aid-no-containers"
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-colors",
