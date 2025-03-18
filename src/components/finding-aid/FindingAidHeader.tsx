@@ -96,12 +96,12 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
         {!isFoiaPage && (
           <div className="flex justify-end">
             <a 
-              href={sourceUrl} 
+              href={isTextualFindingAid ? "https://catalog.archives.gov/id/578954" : sourceUrl} 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs sm:text-sm hover:text-primary transition-colors"
             >
-              View Original Source
+              {isTextualFindingAid ? "View in National Archives Catalog" : "View Original Source"}
               <ExternalLink size={14} className="inline" />
             </a>
           </div>
