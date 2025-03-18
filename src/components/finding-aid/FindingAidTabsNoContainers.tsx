@@ -1,6 +1,6 @@
 
 import React from 'react';
-import CollectionStructureNoContainers from './CollectionStructureNoContainers';
+import CollectionStructure from './CollectionStructureNoContainers';
 
 interface FindingAidTabsNoContainersProps {
   searchTerm: string;
@@ -16,7 +16,7 @@ const FindingAidTabsNoContainers: React.FC<FindingAidTabsNoContainersProps> = ({
   handleStatusFilter
 }) => {
   return (
-    <CollectionStructureNoContainers 
+    <CollectionStructure 
       searchTerm={searchTerm}
       handleSearch={handleSearch}
       statusFilter={statusFilter}
