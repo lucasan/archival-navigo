@@ -52,7 +52,7 @@ const FOIAFindingAidsListing: React.FC = () => {
       <NavigationHeader />
       
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">FOIA Finding Aids Listing</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-slate-800">FOIA Finding Aids</h1>
         
         <SearchBar 
           searchInput={searchInput}
@@ -61,20 +61,22 @@ const FOIAFindingAidsListing: React.FC = () => {
           clearSearch={clearSearch}
         />
         
-        <DataTable 
-          records={data?.records || []}
-          isLoading={isLoading}
-          isError={isError}
-          error={error as Error}
-          totalCount={data?.totalCount || 0}
-          searchQuery={searchQuery}
-        />
-        
-        <PaginationControls 
-          currentPage={currentPage}
-          totalPages={totalPages}
-          goToPage={goToPage}
-        />
+        <div className="bg-white rounded-lg shadow-md p-6 border border-slate-200">
+          <DataTable 
+            records={data?.records || []}
+            isLoading={isLoading}
+            isError={isError}
+            error={error as Error}
+            totalCount={data?.totalCount || 0}
+            searchQuery={searchQuery}
+          />
+          
+          <PaginationControls 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            goToPage={goToPage}
+          />
+        </div>
       </div>
     </div>
   );
