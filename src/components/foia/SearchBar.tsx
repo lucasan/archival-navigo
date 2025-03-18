@@ -48,7 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 <X size={16} />
               </button>
             )}
-            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex gap-1">
+            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex gap-3">
               {searchInput && (
                 <Button 
                   type="button"
@@ -76,35 +76,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
             Searching for "{searchInput}"
           </div>
         )}
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button 
-            onClick={() => {
-              setSearchInput('Budget Policy');
-              document.forms[0].dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-            }}
-            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-xs rounded-full text-slate-700 transition-colors"
-          >
-            Budget Policy
-          </button>
-          <button 
-            onClick={() => {
-              setSearchInput('Foreign Affairs');
-              document.forms[0].dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-            }}
-            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-xs rounded-full text-slate-700 transition-colors"
-          >
-            Foreign Affairs
-          </button>
-          <button 
-            onClick={() => {
-              setSearchInput('National Security');
-              document.forms[0].dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-            }}
-            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-xs rounded-full text-slate-700 transition-colors"
-          >
-            National Security
-          </button>
-        </div>
       </div>
     </div>
   );
