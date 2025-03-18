@@ -10,3 +10,19 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // import { supabase } from "@/integrations/supabase/client";
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+/**
+ * NOTE: To use custom schema tables (outside of 'public'), 
+ * you should create RPC functions on the Supabase server:
+ * 
+ * Example RPC Functions to create in Supabase:
+ * 
+ * - get_bush_fa_foia_data(): 
+ *   Returns all records from bush_fa.foia table
+ * 
+ * - get_bush_fa_foia_data_paginated(p_from int, p_to int, p_search text): 
+ *   Returns paginated records from bush_fa.foia with optional search
+ * 
+ * - get_schema_info():
+ *   Returns schema information for debugging
+ */

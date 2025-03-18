@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -27,10 +26,8 @@ import { Button } from "@/components/ui/button";
 import NavigationHeader from '../components/finding-aid/NavigationHeader';
 import { toast } from "sonner";
 
-// Define how many items to show per page
 const ITEMS_PER_PAGE = 50;
 
-// Define the type for our FOIA data based on the Supabase schema
 interface FOIARecord {
   id: number;
   foia_number: string | null;
@@ -45,42 +42,38 @@ const FOIAFindingAidsListing: React.FC = () => {
   const searchQuery = searchParams.get('q') || '';
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   
-  // State for search input (to prevent immediate searching on every keystroke)
   const [searchInput, setSearchInput] = useState(searchQuery);
-  
-  // State to track direct table check
   const [directCheckDone, setDirectCheckDone] = useState(false);
   const [directData, setDirectData] = useState<FOIARecord[] | null>(null);
   const [directCheckError, setDirectCheckError] = useState<string | null>(null);
   const [schemaInfo, setSchemaInfo] = useState<any>(null);
 
-  // Check database schema information
   useEffect(() => {
     const checkDatabaseSchema = async () => {
       try {
         console.log("%c[SCHEMA DEBUG] Checking database schema...", "background: #4b0082; color: #ffffff; font-weight: bold;");
         
-        // Try to query schema info using RPC (if available)
         try {
-          const { data, error } = await supabase.rpc('get_schemas');
+          const { data, error } = await supabase.rpc('get_schema_info');
           console.log("%c[SCHEMA DEBUG] RPC result:", "background: #4b0082; color: #ffffff;", { data, error });
           setSchemaInfo({ rpcResult: data, rpcError: error });
         } catch (e) {
           console.log("%c[SCHEMA DEBUG] RPC not available:", "background: #4b0082; color: #ffffff;", e);
         }
         
-        // Get database tables (no schema prefix)
-        const { data: tables, error: tablesError } = await supabase
+        const { data: foiaCount, error: foiaError } = await supabase
           .from('foia')
-          .select('count(*)', { count: 'exact', head: true });
+          .select('*', { count: 'exact', head: true });
           
-        console.log("%c[SCHEMA DEBUG] Table check:", "background: #4b0082; color: #ffffff;", { 
-          tables, 
-          error: tablesError,
-          count: tables?.length
+        console.log("%c[SCHEMA DEBUG] Foia table check:", "background: #4b0082; color: #ffffff;", { 
+          count: foiaCount, 
+          error: foiaError
         });
         
-        setSchemaInfo(prev => ({ ...prev, tableCheck: { tables, error: tablesError } }));
+        setSchemaInfo(prev => ({ 
+          ...prev, 
+          tableCheck: { foia: { count: foiaCount, error: foiaError } } 
+        }));
       } catch (e) {
         console.error("%c[SCHEMA DEBUG] Schema check error:", "background: #4b0082; color: #ff6347;", e);
         setSchemaInfo(prev => ({ ...prev, error: (e as Error).message }));
@@ -90,16 +83,11 @@ const FOIAFindingAidsListing: React.FC = () => {
     checkDatabaseSchema();
   }, []);
 
-  // Direct check of the table (for debugging)
   useEffect(() => {
     const checkTableDirectly = async () => {
       try {
         console.log("%c[DEBUG] Performing direct table check...", "background: #222; color: #bada55; font-weight: bold;");
         
-        // Log the raw client details
-        console.log("%c[DEBUG] Supabase client:", "background: #222; color: #bada55;", supabase);
-        
-        // Try to fetch actual data (without schema prefix as TypeScript requires)
         console.log("%c[DEBUG] Trying standard table access", "background: #222; color: #bada55;");
         const { data, error, count } = await supabase
           .from('foia')
@@ -116,35 +104,31 @@ const FOIAFindingAidsListing: React.FC = () => {
           toast.error(`Direct check failed: ${error.message}`);
           setDirectCheckError(`Query error: ${error.message}`);
           
-          // Try a more direct approach using raw SQL if available
           try {
-            console.log("%c[DEBUG] Trying SQL fallback", "background: #222; color: #bada55;");
+            console.log("%c[DEBUG] Trying RPC fallback", "background: #222; color: #bada55;");
             
-            // Check if bush_fa.foia exists using raw SQL query
-            const { data: sqlData, error: sqlError } = await supabase
-              .rpc('query_bush_fa_foia');
+            const { data: rpcData, error: rpcError } = await supabase
+              .rpc('get_bush_fa_foia_data');
               
-            console.log("%c[DEBUG] SQL fallback response:", "background: #222; color: #bada55;", { 
-              data: sqlData, 
-              error: sqlError
+            console.log("%c[DEBUG] RPC fallback response:", "background: #222; color: #bada55;", { 
+              data: rpcData, 
+              error: rpcError
             });
             
-            if (!sqlError && sqlData) {
-              setDirectData(sqlData as FOIARecord[]);
+            if (!rpcError && rpcData) {
+              setDirectData(rpcData as FOIARecord[]);
             } else {
-              setDirectCheckError(`SQL fallback error: ${sqlError?.message || 'No data returned'}`);
+              setDirectCheckError(`RPC fallback error: ${rpcError?.message || 'No data returned'}`);
             }
-          } catch (sqlErr) {
-            console.error('%c[ERROR] SQL fallback error:', "background: #222; color: #ff6347;", sqlErr);
-            setDirectCheckError(`SQL fallback error: ${(sqlErr as Error).message}`);
+          } catch (rpcErr) {
+            console.error('%c[ERROR] RPC fallback error:', "background: #222; color: #ff6347;", rpcErr);
+            setDirectCheckError(`RPC fallback error: ${(rpcErr as Error).message}`);
           }
         } else {
-          // Log data characteristics
           console.log("%c[DEBUG] Result type:", "background: #222; color: #bada55;", Array.isArray(data) ? 'Array' : typeof data);
           console.log("%c[DEBUG] Result count:", "background: #222; color: #bada55;", data?.length);
           
           if (Array.isArray(data) && data.length > 0) {
-            // Log the structure of the first record to verify schema
             console.log("%c[DEBUG] First record structure:", "background: #222; color: #bada55;", Object.keys(data[0]));
             console.log("%c[DEBUG] First record data:", "background: #222; color: #bada55;", data[0]);
           } else {
@@ -164,59 +148,45 @@ const FOIAFindingAidsListing: React.FC = () => {
     checkTableDirectly();
   }, []);
 
-  // Function to fetch FOIA records from Supabase with search and pagination
   const fetchFOIARecords = async () => {
     const baseLog = "[DEBUG FETCH]";
     console.log(`%c${baseLog} Starting fetch with pagination and filters:`, "background: #222; color: #4CAF50; font-weight: bold;");
     
-    // Calculate the range for pagination
     const from = (currentPage - 1) * ITEMS_PER_PAGE;
     const to = from + ITEMS_PER_PAGE - 1;
     
     try {
       console.log(`%c${baseLog} Pagination range:`, "background: #222; color: #4CAF50;", { from, to, page: currentPage, itemsPerPage: ITEMS_PER_PAGE });
       
-      // Build base query - using the correct table name as defined in the Database type
-      let query = supabase
+      let queryResponse = await supabase
         .from('foia')
-        .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' });
-      
-      console.log(`%c${baseLog} Base query created with select columns`, "background: #222; color: #4CAF50;");
-      
-      // Apply search filter if search query exists
-      if (searchQuery) {
-        const searchFilter = `foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%`;
-        console.log(`%c${baseLog} Applying search filter:`, "background: #222; color: #4CAF50;", { searchQuery, searchFilter });
-        query = query.or(searchFilter);
-      }
-      
-      // Log the query before executing (approximation of what's being sent)
-      console.log(`%c${baseLog} Query for foia:`, "background: #222; color: #4CAF50;", {
-        table: 'foia',
-        select: 'id, foia_number, title, processed_by, scope, created_at',
-        count: 'exact',
-        order: 'created_at (desc)',
-        range: `${from}-${to}`,
-        filters: searchQuery ? `or(foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%)` : 'none'
-      });
-      
-      // Apply pagination and execute
-      const startTime = performance.now();
-      const result = await query
+        .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' })
         .order('created_at', { ascending: false })
         .range(from, to);
-      const endTime = performance.now();
-      
-      console.log(`%c${baseLog} Query execution time:`, "background: #222; color: #4CAF50;", `${Math.round(endTime - startTime)}ms`);
-      console.log(`%c${baseLog} Result:`, "background: #222; color: #4CAF50;", result);
-      
-      if (result.error) {
-        console.error(`%c${baseLog} Query error:`, "background: #222; color: #ff6347;", result.error);
-        toast.error(`Failed to load data: ${result.error.message}`);
-        throw result.error;
+        
+      if (queryResponse.error && !queryResponse.data) {
+        console.log(`%c${baseLog} Standard query failed, trying RPC fallback:`, "background: #222; color: #4CAF50;", queryResponse.error);
+        
+        const rpcResponse = await supabase
+          .rpc('get_bush_fa_foia_data_paginated', { 
+            p_from: from, 
+            p_to: to,
+            p_search: searchQuery || null
+          });
+          
+        if (rpcResponse.error) {
+          console.error(`%c${baseLog} RPC fallback failed:`, "background: #222; color: #ff6347;", rpcResponse.error);
+          toast.error(`Failed to load data: ${rpcResponse.error.message}`);
+          throw rpcResponse.error;
+        }
+        
+        return { 
+          records: rpcResponse.data as FOIARecord[], 
+          totalCount: rpcResponse.data?.length || 0
+        };
       }
       
-      const { data, count } = result;
+      const { data, count } = queryResponse;
       
       console.log(`%c${baseLog} Final response data:`, "background: #222; color: #4CAF50;", { 
         dataReceived: Boolean(data), 
@@ -236,13 +206,11 @@ const FOIAFindingAidsListing: React.FC = () => {
     }
   };
 
-  // Use React Query to fetch data
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['foiaRecords', searchQuery, currentPage],
     queryFn: fetchFOIARecords
   });
 
-  // Handle search submission
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams(searchParams);
@@ -251,47 +219,40 @@ const FOIAFindingAidsListing: React.FC = () => {
     } else {
       params.delete('q');
     }
-    params.set('page', '1'); // Reset to first page on new search
+    params.set('page', '1');
     setSearchParams(params);
   };
 
-  // Calculate pagination information
   const totalPages = data ? Math.ceil(data.totalCount / ITEMS_PER_PAGE) : 0;
   
-  // Generate page numbers for pagination
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
     
     if (totalPages <= maxVisiblePages) {
-      // Show all pages if there are few pages
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Complex pagination logic for many pages
       if (currentPage <= 3) {
-        // Near the start
         for (let i = 1; i <= 4; i++) {
           pages.push(i);
         }
-        pages.push(null); // Ellipsis
+        pages.push(null);
         pages.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
-        // Near the end
         pages.push(1);
-        pages.push(null); // Ellipsis
+        pages.push(null);
         for (let i = totalPages - 3; i <= totalPages; i++) {
           pages.push(i);
         }
       } else {
-        // Middle pages
         pages.push(1);
-        pages.push(null); // Ellipsis
+        pages.push(null);
         for (let i = currentPage - 1; i <= currentPage + 1; i++) {
           pages.push(i);
         }
-        pages.push(null); // Ellipsis
+        pages.push(null);
         pages.push(totalPages);
       }
     }
@@ -299,7 +260,6 @@ const FOIAFindingAidsListing: React.FC = () => {
     return pages;
   };
 
-  // Change page function
   const goToPage = (page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', page.toString());
@@ -314,7 +274,6 @@ const FOIAFindingAidsListing: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">FOIA Finding Aids Listing</h1>
         
-        {/* Schema Debug Info */}
         {schemaInfo && (
           <Alert className="mb-6 bg-purple-50">
             <Database className="h-4 w-4" />
@@ -333,7 +292,6 @@ const FOIAFindingAidsListing: React.FC = () => {
           </Alert>
         )}
         
-        {/* Debug info */}
         {directCheckDone && (
           <Alert className="mb-6">
             <AlertCircle className="h-4 w-4" />
@@ -361,13 +319,11 @@ const FOIAFindingAidsListing: React.FC = () => {
                     setDirectCheckDone(false);
                     setDirectData(null);
                     setDirectCheckError(null);
-                    // Re-run the direct check
                     setTimeout(() => {
                       const checkTableDirectly = async () => {
                         try {
                           console.log("%c[DEBUG] Re-running direct table check...", "background: #222; color: #bada55");
                           
-                          // Try standard table access
                           const { data, error } = await supabase
                             .from('foia')
                             .select('*');
@@ -375,6 +331,19 @@ const FOIAFindingAidsListing: React.FC = () => {
                           if (error) {
                             console.error('%c[ERROR] Direct check error:', "background: #222; color: #ff6347", error);
                             setDirectCheckError(`Query error: ${error.message}`);
+                            
+                            try {
+                              const { data: rpcData, error: rpcError } = await supabase
+                                .rpc('get_bush_fa_foia_data');
+                                
+                              if (!rpcError && rpcData) {
+                                setDirectData(rpcData as FOIARecord[]);
+                              } else {
+                                setDirectCheckError(`RPC fallback error: ${rpcError?.message || 'No data returned'}`);
+                              }
+                            } catch (rpcErr) {
+                              setDirectCheckError(`RPC fallback error: ${(rpcErr as Error).message}`);
+                            }
                           } else {
                             console.log("%c[DEBUG] Direct check re-run result:", "background: #222; color: #bada55", { 
                               data, 
@@ -408,7 +377,6 @@ const FOIAFindingAidsListing: React.FC = () => {
           </Alert>
         )}
         
-        {/* Search bar */}
         <form onSubmit={handleSearch} className="mb-6">
           <div className="relative max-w-md">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -430,7 +398,6 @@ const FOIAFindingAidsListing: React.FC = () => {
           </div>
         </form>
         
-        {/* Loading and error states */}
         {isLoading && <p className="text-gray-500">Loading records...</p>}
         {isError && (
           <div className="text-red-500 mb-4">
@@ -439,7 +406,6 @@ const FOIAFindingAidsListing: React.FC = () => {
           </div>
         )}
         
-        {/* Records table */}
         {!isLoading && !isError && data && (
           <>
             <div className="mb-4">
@@ -476,11 +442,9 @@ const FOIAFindingAidsListing: React.FC = () => {
               </Table>
             </div>
             
-            {/* Pagination */}
             {totalPages > 1 && (
               <Pagination>
                 <PaginationContent>
-                  {/* Previous page button */}
                   {currentPage > 1 && (
                     <PaginationItem>
                       <PaginationPrevious href="#" onClick={(e) => {
@@ -490,7 +454,6 @@ const FOIAFindingAidsListing: React.FC = () => {
                     </PaginationItem>
                   )}
                   
-                  {/* Page numbers */}
                   {getPageNumbers().map((page, index) => (
                     page === null ? (
                       <PaginationItem key={`ellipsis-${index}`}>
@@ -512,7 +475,6 @@ const FOIAFindingAidsListing: React.FC = () => {
                     )
                   ))}
                   
-                  {/* Next page button */}
                   {currentPage < totalPages && (
                     <PaginationItem>
                       <PaginationNext href="#" onClick={(e) => {
