@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Search, AlertCircle } from 'lucide-react';
+import { Search, AlertCircle, Database } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { 
@@ -47,62 +47,123 @@ const FOIAFindingAidsListing: React.FC = () => {
   
   // State for search input (to prevent immediate searching on every keystroke)
   const [searchInput, setSearchInput] = useState(searchQuery);
+  
   // State to track direct table check
   const [directCheckDone, setDirectCheckDone] = useState(false);
   const [directData, setDirectData] = useState<FOIARecord[] | null>(null);
   const [directCheckError, setDirectCheckError] = useState<string | null>(null);
+  const [schemaInfo, setSchemaInfo] = useState<any>(null);
+
+  // Check database schema information
+  useEffect(() => {
+    const checkDatabaseSchema = async () => {
+      try {
+        console.log("%c[SCHEMA DEBUG] Checking database schema...", "background: #4b0082; color: #ffffff; font-weight: bold;");
+        
+        // First try to get list of schemas
+        const { data: schemas, error: schemasError } = await supabase.rpc('get_schemas');
+        console.log("%c[SCHEMA DEBUG] Available schemas:", "background: #4b0082; color: #ffffff;", { schemas, error: schemasError });
+        
+        if (schemasError) {
+          console.log("%c[SCHEMA DEBUG] Error getting schemas, checking tables directly", "background: #4b0082; color: #ffffff;");
+          // If that fails, try to get list of tables
+          const { data: tables, error: tablesError } = await supabase.from('information_schema.tables').select('*');
+          console.log("%c[SCHEMA DEBUG] Tables info:", "background: #4b0082; color: #ffffff;", { tables, error: tablesError });
+          
+          setSchemaInfo({ tables, error: tablesError });
+        } else {
+          setSchemaInfo({ schemas, error: schemasError });
+        }
+      } catch (e) {
+        console.error("%c[SCHEMA DEBUG] Schema check error:", "background: #4b0082; color: #ff6347;", e);
+        setSchemaInfo({ error: (e as Error).message });
+      }
+    };
+    
+    checkDatabaseSchema();
+  }, []);
 
   // Direct check of the table (for debugging)
   useEffect(() => {
     const checkTableDirectly = async () => {
       try {
-        console.log("%c[DEBUG] Performing direct table check...", "background: #222; color: #bada55");
+        console.log("%c[DEBUG] Performing direct table check...", "background: #222; color: #bada55; font-weight: bold;");
         
-        // First, check the connection
-        const { data: connCheck, error: connError } = await supabase.from('foia').select('count(*)', { count: 'exact', head: true });
-        console.log("%c[DEBUG] Connection check:", "background: #222; color: #bada55", { connCheck, connError });
+        // Log the raw client details
+        console.log("%c[DEBUG] Supabase client:", "background: #222; color: #bada55;", supabase);
         
-        if (connError) {
-          console.error('%c[ERROR] Connection check failed:', "background: #222; color: #ff6347", connError);
-          setDirectCheckError(`Connection error: ${connError.message}`);
+        // First, check for specific table in various schemas
+        const schemas = ['public', 'bush_fa'];
+        let tableFound = false;
+        let tableData = null;
+        let tableError = null;
+        
+        for (const schema of schemas) {
+          console.log(`%c[DEBUG] Trying to access table in schema: ${schema}`, "background: #222; color: #bada55;");
+          
+          // Try with fully qualified name
+          const { data: checkData, error: checkError } = await supabase
+            .from(`${schema}.foia`)
+            .select('count(*)', { count: 'exact', head: true });
+            
+          console.log(`%c[DEBUG] Check result for ${schema}.foia:`, "background: #222; color: #bada55;", { data: checkData, error: checkError });
+          
+          if (!checkError) {
+            console.log(`%c[DEBUG] Table found in schema: ${schema}`, "background: #222; color: #bada55;");
+            tableFound = true;
+            
+            // Try to fetch actual data from this schema
+            const { data, error, count } = await supabase
+              .from(`${schema}.foia`)
+              .select('*', { count: 'exact' });
+              
+            tableData = data;
+            tableError = error;
+            break;
+          }
         }
         
-        // Log Supabase client details (anonymizing key)
-        const supabaseUrl = (supabase as any).supabaseUrl;
-        console.log("%c[DEBUG] Supabase config:", "background: #222; color: #bada55", { 
-          url: supabaseUrl,
-          hasKey: Boolean((supabase as any).supabaseKey)
-        });
-        
-        // Try to query all columns with count
-        const { data, error, count } = await supabase
-          .from('foia')
-          .select('*', { count: 'exact' });
+        if (!tableFound) {
+          // Fall back to default schema access
+          console.log("%c[DEBUG] Falling back to default table access", "background: #222; color: #bada55;");
+          
+          // Try to query all columns with count
+          const { data, error, count } = await supabase
+            .from('foia')
+            .select('*', { count: 'exact' });
+            
+          tableData = data;
+          tableError = error;
+        }
         
         // Log the raw query response
-        console.log("%c[DEBUG] Direct query response:", "background: #222; color: #bada55", { data, error, count });
+        console.log("%c[DEBUG] Direct query response:", "background: #222; color: #bada55;", { 
+          data: tableData, 
+          error: tableError, 
+          tableFound 
+        });
         
-        if (error) {
-          console.error('%c[ERROR] Direct check error:', "background: #222; color: #ff6347", error);
-          toast.error(`Direct check failed: ${error.message}`);
-          setDirectCheckError(`Query error: ${error.message}`);
+        if (tableError) {
+          console.error('%c[ERROR] Direct check error:', "background: #222; color: #ff6347;", tableError);
+          toast.error(`Direct check failed: ${tableError.message}`);
+          setDirectCheckError(`Query error: ${tableError.message}`);
         } else {
           // Log data characteristics
-          console.log("%c[DEBUG] Result type:", "background: #222; color: #bada55", Array.isArray(data) ? 'Array' : typeof data);
-          console.log("%c[DEBUG] Result count:", "background: #222; color: #bada55", data?.length);
+          console.log("%c[DEBUG] Result type:", "background: #222; color: #bada55;", Array.isArray(tableData) ? 'Array' : typeof tableData);
+          console.log("%c[DEBUG] Result count:", "background: #222; color: #bada55;", tableData?.length);
           
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(tableData) && tableData.length > 0) {
             // Log the structure of the first record to verify schema
-            console.log("%c[DEBUG] First record structure:", "background: #222; color: #bada55", Object.keys(data[0]));
-            console.log("%c[DEBUG] First record data:", "background: #222; color: #bada55", data[0]);
+            console.log("%c[DEBUG] First record structure:", "background: #222; color: #bada55;", Object.keys(tableData[0]));
+            console.log("%c[DEBUG] First record data:", "background: #222; color: #bada55;", tableData[0]);
           } else {
-            console.log("%c[DEBUG] No records found in direct query", "background: #222; color: #ff6347");
+            console.log("%c[DEBUG] No records found in direct query", "background: #222; color: #ff6347;");
           }
           
-          setDirectData(data as FOIARecord[]);
+          setDirectData(tableData as FOIARecord[]);
         }
       } catch (e) {
-        console.error('%c[ERROR] Unexpected error in direct check:', "background: #222; color: #ff6347", e);
+        console.error('%c[ERROR] Unexpected error in direct check:', "background: #222; color: #ff6347;", e);
         setDirectCheckError(`Unexpected error: ${(e as Error).message}`);
       } finally {
         setDirectCheckDone(true);
@@ -115,71 +176,89 @@ const FOIAFindingAidsListing: React.FC = () => {
   // Function to fetch FOIA records from Supabase with search and pagination
   const fetchFOIARecords = async () => {
     const baseLog = "[DEBUG FETCH]";
-    console.log(`%c${baseLog} Starting fetch with pagination and filters:`, "background: #222; color: #4CAF50");
+    console.log(`%c${baseLog} Starting fetch with pagination and filters:`, "background: #222; color: #4CAF50; font-weight: bold;");
     
     // Calculate the range for pagination
     const from = (currentPage - 1) * ITEMS_PER_PAGE;
     const to = from + ITEMS_PER_PAGE - 1;
     
     try {
-      console.log(`%c${baseLog} Pagination range:`, "background: #222; color: #4CAF50", { from, to, page: currentPage, itemsPerPage: ITEMS_PER_PAGE });
+      console.log(`%c${baseLog} Pagination range:`, "background: #222; color: #4CAF50;", { from, to, page: currentPage, itemsPerPage: ITEMS_PER_PAGE });
       
-      // Build base query
-      let query = supabase
-        .from('foia')
-        .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' });
+      // Try different schema approaches
+      const schemas = ['public', 'bush_fa', ''];
+      let queryResult = null;
       
-      console.log(`%c${baseLog} Base query created with select columns`, "background: #222; color: #4CAF50");
-      
-      // Apply search filter if search query exists
-      if (searchQuery) {
-        const searchFilter = `foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%`;
-        console.log(`%c${baseLog} Applying search filter:`, "background: #222; color: #4CAF50", { searchQuery, searchFilter });
-        query = query.or(searchFilter);
+      for (const schema of schemas) {
+        // Build table name with schema if provided
+        const tableName = schema ? `${schema}.foia` : 'foia';
+        console.log(`%c${baseLog} Trying to query table: ${tableName}`, "background: #222; color: #4CAF50;");
+        
+        // Build base query
+        let query = supabase
+          .from(tableName)
+          .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' });
+        
+        console.log(`%c${baseLog} Base query created with select columns`, "background: #222; color: #4CAF50;");
+        
+        // Apply search filter if search query exists
+        if (searchQuery) {
+          const searchFilter = `foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%`;
+          console.log(`%c${baseLog} Applying search filter:`, "background: #222; color: #4CAF50;", { searchQuery, searchFilter });
+          query = query.or(searchFilter);
+        }
+        
+        // Log the query before executing (approximation of what's being sent)
+        console.log(`%c${baseLog} Query for ${tableName}:`, "background: #222; color: #4CAF50;", {
+          table: tableName,
+          select: 'id, foia_number, title, processed_by, scope, created_at',
+          count: 'exact',
+          order: 'created_at (desc)',
+          range: `${from}-${to}`,
+          filters: searchQuery ? `or(foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%)` : 'none'
+        });
+        
+        // Apply pagination and execute
+        const startTime = performance.now();
+        const result = await query
+          .order('created_at', { ascending: false })
+          .range(from, to);
+        const endTime = performance.now();
+        
+        console.log(`%c${baseLog} Query execution time for ${tableName}:`, "background: #222; color: #4CAF50;", `${Math.round(endTime - startTime)}ms`);
+        console.log(`%c${baseLog} Result for ${tableName}:`, "background: #222; color: #4CAF50;", result);
+        
+        if (!result.error) {
+          queryResult = result;
+          console.log(`%c${baseLog} Successfully queried ${tableName}`, "background: #222; color: #4CAF50;");
+          break;
+        } else {
+          console.error(`%c${baseLog} Error querying ${tableName}:`, "background: #222; color: #ff6347;", result.error);
+        }
       }
       
-      // Log the query before executing (approximation of what's being sent)
-      console.log(`%c${baseLog} Final query parts:`, "background: #222; color: #4CAF50", {
-        table: 'foia',
-        select: 'id, foia_number, title, processed_by, scope, created_at',
-        count: 'exact',
-        order: 'created_at (desc)',
-        range: `${from}-${to}`,
-        filters: searchQuery ? `or(foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%)` : 'none'
-      });
-      
-      // Apply pagination and execute
-      const startTime = performance.now();
-      const { data, error, count } = await query
-        .order('created_at', { ascending: false })
-        .range(from, to);
-      const endTime = performance.now();
-      
-      console.log(`%c${baseLog} Query execution time:`, "background: #222; color: #4CAF50", `${Math.round(endTime - startTime)}ms`);
-      
-      if (error) {
-        console.error(`%c${baseLog} Error fetching FOIA records:`, "background: #222; color: #ff6347", error);
-        toast.error(`Failed to load data: ${error.message}`);
-        throw error;
+      if (!queryResult || queryResult.error) {
+        const finalError = queryResult?.error || new Error("Failed to query any table version");
+        console.error(`%c${baseLog} All query attempts failed:`, "background: #222; color: #ff6347;", finalError);
+        toast.error(`Failed to load data: ${finalError.message}`);
+        throw finalError;
       }
       
-      console.log(`%c${baseLog} Response data:`, "background: #222; color: #4CAF50", { 
+      const { data, count } = queryResult;
+      
+      console.log(`%c${baseLog} Final response data:`, "background: #222; color: #4CAF50;", { 
         dataReceived: Boolean(data), 
         dataLength: data?.length || 0, 
         count, 
         firstItem: data && data.length > 0 ? data[0] : null
       });
       
-      if (data && data.length === 0 && count && count > 0) {
-        console.warn(`%c${baseLog} Warning: Total count is ${count} but returned 0 records - check pagination!`, "background: #ff9800; color: #000");
-      }
-      
       return { 
         records: data as FOIARecord[], 
         totalCount: count || 0
       };
     } catch (error) {
-      console.error(`%c${baseLog} Unexpected error:`, "background: #222; color: #ff6347", error);
+      console.error(`%c${baseLog} Unexpected error:`, "background: #222; color: #ff6347;", error);
       toast.error('Failed to load data. Please try again later.');
       throw error;
     }
@@ -263,6 +342,25 @@ const FOIAFindingAidsListing: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">FOIA Finding Aids Listing</h1>
         
+        {/* Schema Debug Info */}
+        {schemaInfo && (
+          <Alert className="mb-6 bg-purple-50">
+            <Database className="h-4 w-4" />
+            <AlertTitle>Database Schema Information</AlertTitle>
+            <AlertDescription>
+              <div className="text-xs overflow-auto max-h-32">
+                {schemaInfo.error ? (
+                  <div className="text-red-500">
+                    Error retrieving schema: {schemaInfo.error}
+                  </div>
+                ) : (
+                  <pre>{JSON.stringify(schemaInfo, null, 2)}</pre>
+                )}
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+        
         {/* Debug info */}
         {directCheckDone && (
           <Alert className="mb-6">
@@ -296,16 +394,35 @@ const FOIAFindingAidsListing: React.FC = () => {
                       const checkTableDirectly = async () => {
                         try {
                           console.log("%c[DEBUG] Re-running direct table check...", "background: #222; color: #bada55");
-                          const { data, error } = await supabase
-                            .from('foia')
-                            .select('*');
                           
-                          if (error) {
-                            console.error('%c[ERROR] Direct check error:', "background: #222; color: #ff6347", error);
-                            setDirectCheckError(`Query error: ${error.message}`);
+                          // Try with custom schema
+                          const { data: bushData, error: bushError } = await supabase
+                            .from('bush_fa.foia')
+                            .select('*');
+                            
+                          console.log("%c[DEBUG] bush_fa.foia result:", "background: #222; color: #bada55", { 
+                            data: bushData, 
+                            error: bushError 
+                          });
+                          
+                          if (!bushError && bushData) {
+                            setDirectData(bushData as FOIARecord[]);
                           } else {
-                            console.log("%c[DEBUG] Direct check re-run result:", "background: #222; color: #bada55", { data, count: data?.length });
-                            setDirectData(data as FOIARecord[]);
+                            // Try default table
+                            const { data, error } = await supabase
+                              .from('foia')
+                              .select('*');
+                            
+                            if (error) {
+                              console.error('%c[ERROR] Direct check error:', "background: #222; color: #ff6347", error);
+                              setDirectCheckError(`Query error: ${error.message}`);
+                            } else {
+                              console.log("%c[DEBUG] Direct check re-run result:", "background: #222; color: #bada55", { 
+                                data, 
+                                count: data?.length 
+                              });
+                              setDirectData(data as FOIARecord[]);
+                            }
                           }
                         } catch (e) {
                           console.error('%c[ERROR] Unexpected error in direct check:', "background: #222; color: #ff6347", e);
