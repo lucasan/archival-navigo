@@ -57,7 +57,6 @@ export const SeriesMetadata: React.FC<SeriesMetadataProps> = ({
       
       {description && (
         <div className="mb-2">
-          <span className="font-medium text-foreground">Scope and Content Note: </span>
           {description}
         </div>
       )}
