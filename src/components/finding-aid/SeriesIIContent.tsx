@@ -76,54 +76,84 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
         statusFilter={statusFilter}
       >
         <ContainerNode 
-          title="Container ID 56789" 
+          title="Container ID 45272" 
           containerType="Box" 
           containerNumber="1"
-          containerId="56789"
+          containerId="45272"
           searchTerm={searchTerm}
           statusFilter={statusFilter}
         >
           <FileUnitNode 
-            title="Ethics in Government [1 of 3]" 
-            status="closed"
-            naid="486123789"
+            title="Abortion (Turnock V. Ragsdale) (Illinois Case)" 
+            status="open"
+            naid="286185847"
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           >
             <ItemNode 
-              title="Executive Branch Ethics Reform Proposal" 
+              title="Legal Brief - Turnock v. Ragsdale" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#ethics-reform-proposal"
+              externalUrl="#turnock-brief"
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
             <ItemNode 
-              title="White House Ethics Guidance Memo" 
+              title="Court Opinion Document" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#ethics-guidance-memo"
+              externalUrl="#turnock-opinion"
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
           </FileUnitNode>
           
           <FileUnitNode 
-            title="Conflicts of Interest Guidelines" 
+            title="Abortion (Webster v. Reproductive Health Services) [1]" 
             status="open"
-            naid="486123791"
+            naid="286185849"
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           >
             <ItemNode 
-              title="Federal Conflicts of Interest Statutes Summary" 
+              title="Supreme Court Brief - Webster Case" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#conflicts-statutes-summary"
+              externalUrl="#webster-brief"
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
             <ItemNode 
-              title="Recusal Procedures for White House Staff" 
+              title="Webster v. Reproductive Health Services Analysis" 
               thumbnailUrl="/placeholder.svg" 
-              externalUrl="#recusal-procedures"
+              externalUrl="#webster-analysis"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+            <ItemNode 
+              title="Policy Memorandum - Supreme Court Cases" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#policy-memo"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+          </FileUnitNode>
+          
+          <FileUnitNode 
+            title="Abortion (State Laws)" 
+            status="open"
+            naid="286185853"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
+          >
+            <ItemNode 
+              title="State Legislation Overview" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#state-legislation"
+              searchTerm={searchTerm}
+              statusFilter={statusFilter}
+            />
+            <ItemNode 
+              title="Comparative Analysis of State Regulations" 
+              thumbnailUrl="/placeholder.svg" 
+              externalUrl="#state-analysis"
               searchTerm={searchTerm}
               statusFilter={statusFilter}
             />
