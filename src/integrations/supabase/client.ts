@@ -76,15 +76,27 @@ export const getBushFaFoiaDataPaginated = async (
   orderDirection: string = 'desc'
 ) => {
   try {
-    // Make sure orderDirection is lowercase for the RPC function parameter
-    const direction = orderDirection.toLowerCase();
+    // Ensure everything is correctly formatted for the RPC function
+    // Use only lowercase for direction to avoid SQL syntax issues
+    const direction = orderDirection ? orderDirection.toLowerCase() : 'desc';
+    const validOrderBy = ['created_at', 'foia_number', 'title', 'scope'].includes(orderBy) 
+      ? orderBy 
+      : 'created_at';
     
-    // Try to call the RPC function
+    console.log('Calling RPC with params:', {
+      p_from: from,
+      p_to: to,
+      p_search: search || null,
+      p_order_by: validOrderBy,
+      p_order_direction: direction
+    });
+    
+    // Call the RPC function
     const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', { 
       p_from: from, 
       p_to: to,
       p_search: search || null,
-      p_order_by: orderBy,
+      p_order_by: validOrderBy,
       p_order_direction: direction
     });
     
