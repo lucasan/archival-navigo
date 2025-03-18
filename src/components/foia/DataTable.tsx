@@ -8,7 +8,15 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { FOIARecord } from './types';
+
+interface FOIARecord {
+  id: number;
+  foia_number: string | null;
+  title: string | null;
+  processed_by: string | null;
+  scope: string | null;
+  created_at: string;
+}
 
 interface DataTableProps {
   records: FOIARecord[];
