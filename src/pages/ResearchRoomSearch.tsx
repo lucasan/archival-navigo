@@ -182,19 +182,6 @@ const SearchResultCard = ({ result }) => {
             </div>
           )}
           
-          {type === 'item' && thumbnailUrl && (
-            <div className="flex gap-4 mb-3">
-              <div className="w-24 h-20 overflow-hidden rounded-md border">
-                <img 
-                  src={thumbnailUrl} 
-                  alt={`Thumbnail for ${title}`} 
-                  className="w-full h-full object-cover transition-transform hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          )}
-          
           {(naid || containerId) && (
             <div className="flex flex-wrap gap-3 mt-1 text-xs text-muted-foreground">
               {naid && <span>NAID: <span className="font-medium">{naid}</span></span>}
