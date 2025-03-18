@@ -7,7 +7,6 @@ import CollectionHeader from './collections/CollectionHeader';
 import SpeechwritingCollection from './collections/SpeechwritingCollection';
 import PublicLiaisonCollection from './collections/PublicLiaisonCollection';
 import ScienceTechnologyCollection from './collections/ScienceTechnologyCollection';
-import LiberManCollection from './collections/LiberManCollection';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTreeContext } from './TreeContext';
@@ -84,19 +83,13 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
           searchTerm={searchTerm} 
           statusFilter={statusFilter} 
         />
-        
-        {/* Counsel's Office - Lee Liberman Collection */}
-        <LiberManCollection 
-          searchTerm={searchTerm} 
-          statusFilter={statusFilter} 
-        />
       </div>
     </div>
   );
 };
 
 // Main component that wraps the content with the TreeProvider
-const CollectionStructure: React.FC<CollectionStructureNoContainersProps> = (props) => {
+const CollectionStructureNoContainers: React.FC<CollectionStructureNoContainersProps> = (props) => {
   return (
     <TreeProvider>
       <CollectionStructureNoContainersContent {...props} />
@@ -104,4 +97,4 @@ const CollectionStructure: React.FC<CollectionStructureNoContainersProps> = (pro
   );
 };
 
-export default CollectionStructure;
+export default CollectionStructureNoContainers;

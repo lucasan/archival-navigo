@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -22,15 +23,15 @@ const FindingAidSidebar: React.FC<FindingAidSidebarProps> = ({
   
   // Series links for Textual Finding Aid
   const seriesSections = [
-    { id: "series-2", title: "Series II: Political Documents, 1780-1817" }
+    { id: "series-2", title: "Series II: Political Documents, 1780-1817" },
+    { id: "lee-liberman", title: "Lee S. Liberman's General Subject Files" }
   ];
 
   // Collection links for FOIA Finding Aid
   const collections = [
     { id: "speechwriting", title: "Records of the White House Office of Speechwriting" },
     { id: "public-liaison", title: "Records of the White House Office of Public Liaison" },
-    { id: "science-technology", title: "Records of the White House Office of Science and Technology" },
-    { id: "liberman-counsel", title: "Records of the White House Counsel's Office" }
+    { id: "science-technology", title: "Records of the White House Office of Science and Technology" }
   ];
 
   // Determine which links to show based on current route
