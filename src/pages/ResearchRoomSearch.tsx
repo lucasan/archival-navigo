@@ -69,6 +69,7 @@ const ResearchRoomSearch: React.FC = () => {
     webPages: false,
     
     // Level of Description
+    levelSeries: true,
     levelFindingAid: true,
     levelFileUnit: true,
     levelItem: true,
@@ -76,7 +77,6 @@ const ResearchRoomSearch: React.FC = () => {
     // Digitized Status
     digitized: true,
     nonDigitized: true,
-    partiallyDigitized: true,
   });
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,13 +109,13 @@ const ResearchRoomSearch: React.FC = () => {
       textualRecords: true,
       webPages: false,
       
+      levelSeries: true,
       levelFindingAid: true,
       levelFileUnit: true,
       levelItem: true,
       
       digitized: true,
       nonDigitized: true,
-      partiallyDigitized: true,
     });
   };
 
@@ -289,6 +289,17 @@ const ResearchRoomSearch: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <Checkbox 
+                        id="levelSeries" 
+                        checked={filters.levelSeries} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('levelSeries', checked === true)
+                        }
+                      />
+                      <Label htmlFor="levelSeries">Series</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
                         id="levelFindingAid" 
                         checked={filters.levelFindingAid} 
                         onCheckedChange={(checked) => 
@@ -350,17 +361,6 @@ const ResearchRoomSearch: React.FC = () => {
                         }
                       />
                       <Label htmlFor="nonDigitized">Non Digitized</Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="partiallyDigitized" 
-                        checked={filters.partiallyDigitized} 
-                        onCheckedChange={(checked) => 
-                          handleFilterChange('partiallyDigitized', checked === true)
-                        }
-                      />
-                      <Label htmlFor="partiallyDigitized">Partially Digitized</Label>
                     </div>
                   </div>
                 </div>
