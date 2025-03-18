@@ -23,9 +23,7 @@ const FindingAidSidebar: React.FC<FindingAidSidebarProps> = ({
   
   // Series links for Textual Finding Aid
   const seriesSections = [
-    { id: "series-1", title: "Series I: Personal Correspondence, 1770-1826" },
-    { id: "series-2", title: "Series II: Political Documents, 1780-1817" },
-    { id: "series-3", title: "Series III: Financial Records, 1780-1836" }
+    { id: "series-2", title: "Series II: Political Documents, 1780-1817" }
   ];
 
   // Collection links for FOIA Finding Aid

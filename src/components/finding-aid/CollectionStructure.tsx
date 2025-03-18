@@ -4,9 +4,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SearchControls from './SearchControls';
 import { FileUnitStatus } from './types';
-import SeriesIContent from './SeriesIContent';
 import SeriesIIContent from './SeriesIIContent';
-import SeriesIIIContent from './SeriesIIIContent';
 import { TreeProvider, useTreeContext } from './TreeContext';
 
 interface CollectionStructureProps {
@@ -64,9 +62,7 @@ const CollectionStructureContent: React.FC<CollectionStructureProps> = ({
       />
       
       <div className="space-y-2 text-sm md:text-base overflow-x-auto">
-        <SeriesIContent searchTerm={searchTerm} statusFilter={statusFilter} />
         <SeriesIIContent searchTerm={searchTerm} statusFilter={statusFilter} />
-        <SeriesIIIContent searchTerm={searchTerm} statusFilter={statusFilter} />
       </div>
     </div>
   );
