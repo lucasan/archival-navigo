@@ -65,18 +65,18 @@ const ResearchRoomSearch: React.FC = () => {
     movingImages: false,
     photographs: false,
     soundRecordings: false,
-    textualRecords: true,
+    textualRecords: false,
     webPages: false,
     
     // Level of Description
-    levelSeries: true,
-    levelFindingAid: true,
-    levelFileUnit: true,
-    levelItem: true,
+    levelSeries: false,
+    levelFindingAid: false,
+    levelFileUnit: false,
+    levelItem: false,
     
     // Digitized Status
-    digitized: true,
-    nonDigitized: true,
+    digitized: false,
+    nonDigitized: false,
   });
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,16 +106,16 @@ const ResearchRoomSearch: React.FC = () => {
       movingImages: false,
       photographs: false,
       soundRecordings: false,
-      textualRecords: true,
+      textualRecords: false,
       webPages: false,
       
-      levelSeries: true,
-      levelFindingAid: true,
-      levelFileUnit: true,
-      levelItem: true,
+      levelSeries: false,
+      levelFindingAid: false,
+      levelFileUnit: false,
+      levelItem: false,
       
-      digitized: true,
-      nonDigitized: true,
+      digitized: false,
+      nonDigitized: false,
     });
   };
 
