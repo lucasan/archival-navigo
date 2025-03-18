@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -56,7 +55,7 @@ const FOIAFindingAidsListing: React.FC = () => {
         
         try {
           // This needs to be an RPC function we create
-          const { data, error } = await supabase.rpc('get_schema_info');
+          const { data, error } = await supabase.rpc('get_schema_info' as any);
           console.log("%c[SCHEMA DEBUG] RPC result:", "background: #4b0082; color: #ffffff;", { data, error });
           setSchemaInfo({ rpcResult: data, rpcError: error });
         } catch (e) {

@@ -34,7 +34,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 export const getBushFaFoiaData = async () => {
   try {
     // Try to call the RPC function
-    const { data, error } = await supabase.rpc('get_bush_fa_foia_data');
+    const { data, error } = await supabase.rpc('get_bush_fa_foia_data' as any);
     
     if (error) throw error;
     return { data, error: null };
@@ -47,7 +47,7 @@ export const getBushFaFoiaData = async () => {
 export const getBushFaFoiaDataPaginated = async (from: number, to: number, search?: string) => {
   try {
     // Try to call the RPC function
-    const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', { 
+    const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated' as any, { 
       p_from: from, 
       p_to: to,
       p_search: search || null
