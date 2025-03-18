@@ -242,6 +242,8 @@ const SearchResultCard = ({ result }) => {
     }
   };
   
+  const isFindingAidRelated = ['finding-aid', 'series', 'file-unit', 'item'].includes(type);
+  
   return (
     <Card className="transition-shadow hover:shadow-md">
       <CardContent className="p-4">
@@ -273,20 +275,22 @@ const SearchResultCard = ({ result }) => {
             <p className="text-muted-foreground mb-3 text-sm">{excerpt}</p>
           )}
           
-          <div className="flex flex-wrap items-center gap-3 mb-3 text-xs text-muted-foreground">
-            {date && <span>{date}</span>}
-            {digitized && <span>{digitized}</span>}
-            {seriesExtent && <span>Extent: {seriesExtent}</span>}
-            {duration && <span>Duration: {duration}</span>}
-            {photoCount && <span>{photoCount}</span>}
-            {itemCount && <span>{itemCount}</span>}
-            {sectionCount && <span>{sectionCount}</span>}
-            {type === 'file-unit' && status && (
-              <div className="flex items-center gap-1">
-                <StatusIcon status={status} showLabel={true} />
-              </div>
-            )}
-          </div>
+          {isFindingAidRelated && (
+            <div className="flex flex-wrap items-center gap-3 mb-3 text-xs text-muted-foreground">
+              {date && <span>{date}</span>}
+              {digitized && <span>{digitized}</span>}
+              {seriesExtent && <span>Extent: {seriesExtent}</span>}
+              {duration && <span>Duration: {duration}</span>}
+              {photoCount && <span>{photoCount}</span>}
+              {itemCount && <span>{itemCount}</span>}
+              {sectionCount && <span>{sectionCount}</span>}
+              {type === 'file-unit' && status && (
+                <div className="flex items-center gap-1">
+                  <StatusIcon status={status} showLabel={true} />
+                </div>
+              )}
+            </div>
+          )}
           
           {['series', 'file-unit', 'item'].includes(type) && parentCollection && (
             <div className="mb-2">
@@ -296,7 +300,7 @@ const SearchResultCard = ({ result }) => {
             </div>
           )}
           
-          {(naid || containerId) && (
+          {isFindingAidRelated && (naid || containerId) && (
             <div className="flex flex-wrap gap-3 mt-1 text-xs text-muted-foreground">
               {naid && <span>NAID: <span className="font-medium">{naid}</span></span>}
               {containerId && <span>Container: <span className="font-medium">{containerId}</span></span>}
@@ -749,4 +753,3 @@ const ResearchRoomSearch: React.FC = () => {
 };
 
 export default ResearchRoomSearch;
-
