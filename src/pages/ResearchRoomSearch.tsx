@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
@@ -8,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Search, Archive, Layers, File, FileText, ExternalLink } from 'lucide-react';
+import { Search, Archive, Layers, File, FileText, ExternalLink, FileVideo, FileImage, Calendar, Album, Newspaper } from 'lucide-react';
 import { StatusIcon } from '@/components/finding-aid/StatusIcon';
 
 const mockSearchResults = [
@@ -73,6 +72,68 @@ const mockSearchResults = [
       title: "NASA Space Missions Collection",
       id: 6
     }
+  },
+  {
+    id: 6,
+    title: "Moon Landing Footage",
+    type: "page-media",
+    fileType: "video",
+    date: "1969",
+    digitized: "Digitized",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=Moon+Landing",
+    excerpt: "Original footage of the Apollo 11 moon landing, including Neil Armstrong's first steps on the lunar surface.",
+    duration: "2:56:15"
+  },
+  {
+    id: 7,
+    title: "President's Daily Diary: January 20, 1961",
+    type: "page-daily-diary",
+    date: "1961-01-20",
+    digitized: "Digitized",
+    naid: "67890123",
+    excerpt: "Daily diary documenting President Kennedy's first day in office, including inauguration events and meetings with staff."
+  },
+  {
+    id: 8,
+    title: "Vietnam War Contact Sheets",
+    type: "page-photo-contact-sheet",
+    date: "1968-1969",
+    digitized: "Digitized",
+    naid: "78901234",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=Contact+Sheet",
+    excerpt: "Contact sheets featuring photographs taken by military photographers during the Vietnam War.",
+    photoCount: "120 frames"
+  },
+  {
+    id: 9,
+    title: "Civil Rights Movement",
+    type: "page-finding-aid",
+    date: "1954-1968",
+    digitized: "Digitized",
+    naid: "89012345",
+    excerpt: "Finding aid for collections related to the American Civil Rights Movement, including speeches, photographs, and legal documents."
+  },
+  {
+    id: 10,
+    title: "Presidential Signatures Gallery",
+    type: "page-gallery",
+    date: "1789-2023",
+    digitized: "Digitized",
+    naid: "90123456",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=Signatures",
+    excerpt: "Gallery of signatures from all U.S. Presidents, from George Washington to Joe Biden.",
+    itemCount: "46 items"
+  },
+  {
+    id: 11,
+    title: "World War II Home Front",
+    type: "page-exhibit",
+    date: "1941-1945",
+    digitized: "Digitized",
+    naid: "01234567",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=WW2+Exhibit",
+    excerpt: "Online exhibit showcasing how Americans at home supported the war effort through rationing, victory gardens, and factory work.",
+    sectionCount: "5 sections"
   }
 ];
 
@@ -86,6 +147,18 @@ const ResourceTypeIcon = ({ type }) => {
       return <File size={18} className="text-amber-600" />;
     case 'item':
       return <FileText size={18} className="text-emerald-600" />;
+    case 'page-media':
+      return <FileVideo size={18} className="text-red-600" />;
+    case 'page-daily-diary':
+      return <Calendar size={18} className="text-indigo-600" />;
+    case 'page-photo-contact-sheet':
+      return <FileImage size={18} className="text-pink-600" />;
+    case 'page-finding-aid':
+      return <Archive size={18} className="text-sky-600" />;
+    case 'page-gallery':
+      return <Album size={18} className="text-teal-600" />;
+    case 'page-exhibit':
+      return <Newspaper size={18} className="text-violet-600" />;
     default:
       return <FileText size={18} className="text-gray-600" />;
   }
@@ -112,6 +185,30 @@ const ResourceTypeLabel = ({ type }) => {
       label = 'Item';
       className += ' bg-emerald-100 text-emerald-800';
       break;
+    case 'page-media':
+      label = 'Media';
+      className += ' bg-red-100 text-red-800';
+      break;
+    case 'page-daily-diary':
+      label = 'Daily Diary';
+      className += ' bg-indigo-100 text-indigo-800';
+      break;
+    case 'page-photo-contact-sheet':
+      label = 'Photo Contact Sheet';
+      className += ' bg-pink-100 text-pink-800';
+      break;
+    case 'page-finding-aid':
+      label = 'Finding Aid Page';
+      className += ' bg-sky-100 text-sky-800';
+      break;
+    case 'page-gallery':
+      label = 'Gallery';
+      className += ' bg-teal-100 text-teal-800';
+      break;
+    case 'page-exhibit':
+      label = 'Exhibit';
+      className += ' bg-violet-100 text-violet-800';
+      break;
     default:
       label = type;
       className += ' bg-gray-100 text-gray-800';
@@ -121,7 +218,7 @@ const ResourceTypeLabel = ({ type }) => {
 };
 
 const SearchResultCard = ({ result }) => {
-  const { title, type, date, digitized, naid, containerId, thumbnailUrl, externalUrl, status, seriesExtent, parentCollection, excerpt } = result;
+  const { title, type, date, digitized, naid, containerId, thumbnailUrl, externalUrl, status, seriesExtent, fileType, duration, photoCount, itemCount, sectionCount, parentCollection, excerpt } = result;
   
   const getLinkDestination = () => {
     switch (type) {
@@ -133,6 +230,13 @@ const SearchResultCard = ({ result }) => {
         return '/finding-aid-no-containers';
       case 'item':
         return externalUrl || '#';
+      case 'page-media':
+      case 'page-daily-diary':
+      case 'page-photo-contact-sheet':
+      case 'page-finding-aid':
+      case 'page-gallery':
+      case 'page-exhibit':
+        return '#';
       default:
         return '#';
     }
@@ -145,6 +249,11 @@ const SearchResultCard = ({ result }) => {
           <div className="flex items-center gap-2 mb-2">
             <ResourceTypeIcon type={type} />
             <ResourceTypeLabel type={type} />
+            {fileType && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                {fileType}
+              </span>
+            )}
           </div>
           
           <div className="mb-1">
@@ -168,6 +277,10 @@ const SearchResultCard = ({ result }) => {
             {date && <span>{date}</span>}
             {digitized && <span>{digitized}</span>}
             {seriesExtent && <span>Extent: {seriesExtent}</span>}
+            {duration && <span>Duration: {duration}</span>}
+            {photoCount && <span>{photoCount}</span>}
+            {itemCount && <span>{itemCount}</span>}
+            {sectionCount && <span>{sectionCount}</span>}
             {type === 'file-unit' && status && (
               <div className="flex items-center gap-1">
                 <StatusIcon status={status} showLabel={true} />
@@ -513,7 +626,7 @@ const ResearchRoomSearch: React.FC = () => {
                 </div>
                 
                 <Separator />
-
+                
                 <div>
                   <h3 className="font-medium mb-3">Level of Description</h3>
                   <div className="space-y-2">
@@ -624,3 +737,4 @@ const ResearchRoomSearch: React.FC = () => {
 };
 
 export default ResearchRoomSearch;
+
