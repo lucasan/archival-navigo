@@ -41,7 +41,7 @@ const ReadMore: React.FC<ReadMoreProps> = ({
   return (
     <div className={cn("relative", className)}>
       <div className={cn(
-        "overflow-hidden transition-all duration-300",
+        "overflow-hidden transition-all duration-500 ease-in-out",
         !isOpen && "max-h-[160px]"
       )}>
         {isOpen 
@@ -51,7 +51,7 @@ const ReadMore: React.FC<ReadMoreProps> = ({
       </div>
       
       {!isOpen && (
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent pointer-events-none transition-opacity duration-300 ease-in-out" />
       )}
       
       <Button
@@ -59,7 +59,7 @@ const ReadMore: React.FC<ReadMoreProps> = ({
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "mt-1 p-0 h-auto font-medium relative z-10",
+          "mt-1 p-0 h-auto font-medium relative z-10 transition-all duration-300",
           buttonClassName
         )}
       >
