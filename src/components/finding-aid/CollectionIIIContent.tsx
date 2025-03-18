@@ -39,7 +39,7 @@ const CollectionIIIContent: React.FC<CollectionIIIContentProps> = ({ searchTerm,
             title="Legal Brief - Turnock v. Ragsdale" 
             thumbnailUrl="/placeholder.svg"
             naid="345679"
-            scopeContent="A 25-page legal brief prepared for the 1989 Supreme Court case regarding abortion regulations in Illinois. The document includes detailed constitutional analysis, precedent citations, and Madison's personal annotations on the balance between state powers and individual liberties. Contains unique marginalia revealing Madison's evolving thoughts on federal versus state jurisdiction in matters of personal freedom."
+            scopeContent="This is an example of an item with Scope and Content note, if the text is longer it can be trimmed so users can see it directly in the National Archives Cataog if needed"
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
