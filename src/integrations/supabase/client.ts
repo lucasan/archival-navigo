@@ -66,11 +66,10 @@ export const getBushFaFoiaData = async () => {
   }
 };
 
+// Simplified version with only three parameters to avoid the function selection ambiguity
 export const getBushFaFoiaDataPaginated = async (from: number, to: number, search?: string) => {
-  console.log('Calling RPC with params:', { p_from: from, p_to: to, p_search: search || null });
-  
   try {
-    // Use the version with only three parameters to avoid ambiguity
+    // Only use the 3 parameters version to avoid ambiguity
     const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', { 
       p_from: from, 
       p_to: to,
@@ -78,7 +77,6 @@ export const getBushFaFoiaDataPaginated = async (from: number, to: number, searc
     });
     
     if (error) throw error;
-    // Fix the TypeScript error by ensuring data is an array before accessing length
     const safeData = Array.isArray(data) ? data : [];
     return { data: safeData, error: null, count: safeData.length };
   } catch (error) {
