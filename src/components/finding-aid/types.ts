@@ -20,6 +20,10 @@ export interface SeriesNodeProps extends TreeNodeBase {
   seriesExtent?: string;
   seriesArrangement?: string;
   seriesDate?: string;
+  seriesAccessRestriction?: string;
+  seriesSpecificAccessRestriction?: string;
+  seriesUseRestriction?: string;
+  seriesSpecificUseRestriction?: string;
 }
 
 export interface ContainerNodeProps extends TreeNodeBase {

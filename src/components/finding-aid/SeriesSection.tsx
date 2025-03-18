@@ -6,10 +6,14 @@ import { FileUnitStatus } from './types';
 interface SeriesSectionProps {
   id: string;
   title: string;
-  description: string;
-  extent: string;
-  arrangement: string;
-  date: string;
+  scopeContent?: string;
+  extent?: string;
+  arrangement?: string;
+  date?: string;
+  accessRestriction?: string;
+  specificAccessRestriction?: string;
+  useRestriction?: string;
+  specificUseRestriction?: string;
   searchTerm: string;
   statusFilter: 'all' | FileUnitStatus;
   children: React.ReactNode;
@@ -19,10 +23,14 @@ interface SeriesSectionProps {
 const SeriesSection: React.FC<SeriesSectionProps> = ({
   id,
   title,
-  description,
+  scopeContent,
   extent,
   arrangement,
   date,
+  accessRestriction,
+  specificAccessRestriction,
+  useRestriction,
+  specificUseRestriction,
   searchTerm,
   statusFilter,
   hideMetadata = false,
@@ -33,10 +41,14 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
       <TreeNode 
         type="series" 
         title={title}
-        seriesDescription={hideMetadata ? undefined : description}
+        seriesDescription={hideMetadata ? undefined : scopeContent}
         seriesExtent={hideMetadata ? undefined : extent}
         seriesArrangement={hideMetadata ? undefined : arrangement}
         seriesDate={hideMetadata ? undefined : date}
+        seriesAccessRestriction={hideMetadata ? undefined : accessRestriction}
+        seriesSpecificAccessRestriction={hideMetadata ? undefined : specificAccessRestriction}
+        seriesUseRestriction={hideMetadata ? undefined : useRestriction}
+        seriesSpecificUseRestriction={hideMetadata ? undefined : specificUseRestriction}
         searchTerm={searchTerm}
         statusFilter={statusFilter}
       >

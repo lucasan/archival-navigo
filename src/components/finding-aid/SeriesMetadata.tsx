@@ -1,28 +1,40 @@
 
 import React from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 
 interface SeriesMetadataProps {
   description?: string;
   extent?: string;
   arrangement?: string;
   date?: string;
+  accessRestriction?: string;
+  specificAccessRestriction?: string;
+  useRestriction?: string;
+  specificUseRestriction?: string;
 }
 
 export const SeriesMetadata: React.FC<SeriesMetadataProps> = ({ 
   description, 
   extent, 
   arrangement, 
-  date 
+  date,
+  accessRestriction,
+  specificAccessRestriction,
+  useRestriction,
+  specificUseRestriction
 }) => {
-  if (!description && !extent && !arrangement && !date) {
+  if (!description && !extent && !arrangement && !date && !accessRestriction && !useRestriction) {
     return null;
   }
+
+  const hasRestrictions = accessRestriction || useRestriction;
 
   return (
     <div className="mt-2 mb-4 ml-3 md:ml-5 pl-1 text-xs sm:text-sm text-muted-foreground border-l">
       {description && (
         <div className="mb-2">
-          <span className="font-medium text-foreground">Description: </span>
+          <span className="font-medium text-foreground">Scope and Content Note: </span>
           {description}
         </div>
       )}
@@ -45,6 +57,29 @@ export const SeriesMetadata: React.FC<SeriesMetadataProps> = ({
           <span className="font-medium text-foreground">System of Arrangement: </span>
           {arrangement}
         </div>
+      )}
+      
+      {hasRestrictions && (
+        <Alert className="mt-3 bg-amber-50 border-amber-200">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <AlertTitle className="text-amber-800 text-xs font-medium">Access & Use Restrictions</AlertTitle>
+          <AlertDescription className="text-amber-700 text-xs">
+            {accessRestriction && (
+              <div className="mt-1">
+                <span className="font-medium">Access: </span>
+                {accessRestriction} 
+                {specificAccessRestriction && <> - {specificAccessRestriction}</>}
+              </div>
+            )}
+            {useRestriction && (
+              <div className="mt-1">
+                <span className="font-medium">Use: </span>
+                {useRestriction}
+                {specificUseRestriction && <> - {specificUseRestriction}</>}
+              </div>
+            )}
+          </AlertDescription>
+        </Alert>
       )}
     </div>
   );

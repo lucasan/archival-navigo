@@ -15,11 +15,15 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
   return (
     <SeriesSection
       id="series-2"
-      title="Series II: Political Documents, 1780-1817"
-      description="Documents related to Madison's political career, including Constitutional Convention notes and presidential papers."
-      extent="24 boxes (10.5 linear feet)"
-      arrangement="By document type, then chronological"
-      date="1780-1817"
+      title="1980 Ronald Reagan/George Bush Presidential Campaign Files, August 1980–November 1980"
+      scopeContent="This series contains statewide polls conducted for the Ronald Reagan/George Bush 1980 campaign. Also included are November 1980 post-election campaign magazines."
+      extent="7 linear inches"
+      arrangement="Arranged alphabetically by subject, and chronologically thereunder."
+      date="August 1980–November 1980"
+      accessRestriction="Restricted - Possibly"
+      specificAccessRestriction="Donor Restricted"
+      useRestriction="Restricted - Possibly"
+      specificUseRestriction="Some or all of the records may be subject to copyright restrictions. Researchers should contact the publisher for further information."
       searchTerm={searchTerm}
       statusFilter={statusFilter}
     >
