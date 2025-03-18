@@ -7,6 +7,7 @@ interface SeriesSectionProps {
   id: string;
   title: string;
   scopeContent?: string;
+  description?: string; // Add backwards compatibility for description prop
   extent?: string;
   arrangement?: string;
   date?: string;
@@ -24,6 +25,7 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
   id,
   title,
   scopeContent,
+  description, // Handle both scopeContent and description
   extent,
   arrangement,
   date,
@@ -36,12 +38,15 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
   hideMetadata = false,
   children
 }) => {
+  // Use scopeContent if provided, otherwise fall back to description
+  const finalDescription = scopeContent || description;
+
   return (
     <div id={id}>
       <TreeNode 
         type="series" 
         title={title}
-        seriesDescription={hideMetadata ? undefined : scopeContent}
+        seriesDescription={hideMetadata ? undefined : finalDescription}
         seriesExtent={hideMetadata ? undefined : extent}
         seriesArrangement={hideMetadata ? undefined : arrangement}
         seriesDate={hideMetadata ? undefined : date}
