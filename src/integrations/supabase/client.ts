@@ -66,27 +66,26 @@ export const getBushFaFoiaData = async () => {
   }
 };
 
-// Use direct SQL query instead of the overloaded RPC function to avoid ambiguity
+// Use RPC to access cross-schema data
 export const getBushFaFoiaDataPaginated = async (from: number, to: number, search?: string) => {
   try {
     console.log('Fetching data with params:', { from, to, search });
     
-    let query = supabase.from('foia').select('*');
-    
-    // Apply search filter if provided
-    if (search) {
-      query = query.or(`foia_number.ilike.%${search}%,title.ilike.%${search}%,scope.ilike.%${search}%`);
-    }
-    
-    // Apply pagination and ordering
-    const { data, error, count } = await query
-      .order('created_at', { ascending: false })
-      .range(from, to);
+    // Use RPC function to access cross-schema data
+    const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', {
+      p_from: from,
+      p_to: to,
+      p_search: search || null
+    });
     
     if (error) throw error;
     
+    // Get total count for pagination
+    const countResponse = await getBushFaFoiaData();
+    const totalCount = countResponse.data ? countResponse.data.length : 0;
+    
     console.log('Fetched data count:', data?.length);
-    return { data: data || [], error: null, count: count || 0 };
+    return { data: data || [], error: null, count: totalCount };
   } catch (error) {
     console.error('Error fetching paginated foia data:', error);
     return { data: null, error: error as Error, count: 0 };

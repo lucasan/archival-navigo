@@ -25,14 +25,9 @@ export const useFOIAData = ({ searchQuery, currentPage }: UseFOIADataParams) => 
         throw response.error;
       }
       
-      // If we don't have a count from the response, make a conservative estimate
-      const totalCount = response.count !== undefined && response.count !== null 
-        ? response.count 
-        : response.data ? response.data.length * 10 : 0;
-      
       return { 
         records: response.data || [], 
-        totalCount: totalCount
+        totalCount: response.count 
       };
     } catch (error) {
       console.error('Error in fetchFOIARecords:', error);
