@@ -38,16 +38,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
             />
-            {searchInput && (
-              <button
-                type="button"
-                className="absolute right-20 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                onClick={() => setSearchInput('')}
-                aria-label="Clear input"
-              >
-                <X size={16} />
-              </button>
-            )}
             <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex gap-3">
               {searchInput && (
                 <Button 
@@ -55,7 +45,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={clearSearch}
-                  className="text-sm h-8 hover:bg-slate-100"
+                  className="text-sm h-8 hover:bg-slate-100 flex items-center"
                 >
                   <RotateCcw size={14} className="mr-1" /> Clear
                 </Button>
