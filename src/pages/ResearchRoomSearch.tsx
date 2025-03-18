@@ -16,7 +16,7 @@ const mockSearchResults = [
     title: "Adams Family Papers",
     type: "finding-aid",
     date: "1750-1889",
-    digitized: "Partially Digitized",
+    digitized: "Digitized",
     naid: "12345678",
     excerpt: "Collection of correspondence, diaries, and other papers of the Adams family of Massachusetts, including John Adams and John Quincy Adams."
   },
