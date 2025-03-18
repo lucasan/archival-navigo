@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
@@ -423,17 +424,6 @@ const ResearchRoomSearch: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <Checkbox 
-                        id="levelSeries" 
-                        checked={filters.levelSeries} 
-                        onCheckedChange={(checked) => 
-                          handleFilterChange('levelSeries', checked === true)
-                        }
-                      />
-                      <Label htmlFor="levelSeries">Series</Label>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
                         id="levelFindingAid" 
                         checked={filters.levelFindingAid} 
                         onCheckedChange={(checked) => 
@@ -441,6 +431,17 @@ const ResearchRoomSearch: React.FC = () => {
                         }
                       />
                       <Label htmlFor="levelFindingAid">Finding Aid</Label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="levelSeries" 
+                        checked={filters.levelSeries} 
+                        onCheckedChange={(checked) => 
+                          handleFilterChange('levelSeries', checked === true)
+                        }
+                      />
+                      <Label htmlFor="levelSeries">Series</Label>
                     </div>
                     
                     <div className="flex items-center space-x-2">
