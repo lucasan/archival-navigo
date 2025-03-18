@@ -18,7 +18,7 @@ export const useFOIAData = ({ searchQuery, currentPage }: UseFOIADataParams) => 
     
     try {
       // Skip direct querying of 'foia' table and use the RPC directly
-      const rpcResponse = await getBushFaFoiaDataPaginated(from, to, searchQuery);
+      const rpcResponse = await getBushFaFoiaDataPaginated(from, to, searchQuery, 'foia_number', 'asc');
       
       if (rpcResponse.error) {
         toast.error(`Failed to load data: ${rpcResponse.error.message}`);

@@ -16,6 +16,8 @@ type RPCFunctions = {
     p_from: number; 
     p_to: number; 
     p_search: string | null;
+    p_order_by?: string;
+    p_order_direction?: string;
   }) => Promise<any[]>;
   get_schema_info: () => Promise<any>;
 }
@@ -66,13 +68,21 @@ export const getBushFaFoiaData = async () => {
   }
 };
 
-export const getBushFaFoiaDataPaginated = async (from: number, to: number, search?: string) => {
+export const getBushFaFoiaDataPaginated = async (
+  from: number, 
+  to: number, 
+  search?: string,
+  orderBy: string = 'created_at',
+  orderDirection: 'asc' | 'desc' = 'desc'
+) => {
   try {
     // Try to call the RPC function
     const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', { 
       p_from: from, 
       p_to: to,
-      p_search: search || null
+      p_search: search || null,
+      p_order_by: orderBy,
+      p_order_direction: orderDirection
     });
     
     if (error) throw error;
