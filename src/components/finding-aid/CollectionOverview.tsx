@@ -1,5 +1,6 @@
 
 import React from 'react';
+import ReadMore from '@/components/ui/read-more';
 
 interface CollectionOverviewProps {
   description: string[];
@@ -17,9 +18,12 @@ const CollectionOverview: React.FC<CollectionOverviewProps> = ({
       )}
       <div className="prose prose-sm sm:prose-base prose-slate max-w-none">
         {description.map((paragraph, index) => (
-          <p key={index} className="mb-3 md:mb-4 text-sm md:text-base text-muted-foreground">
-            {paragraph}
-          </p>
+          <div key={index} className="mb-3 md:mb-4">
+            <ReadMore 
+              text={paragraph} 
+              maxLength={600}
+            />
+          </div>
         ))}
       </div>
     </section>
