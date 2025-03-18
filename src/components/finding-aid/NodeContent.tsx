@@ -124,16 +124,17 @@ export const NodeContent: React.FC<NodeContentProps> = ({
             {type === 'file-unit' && (naid || containerId) && (
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground mt-1">
                 {naid && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 w-full">
                     <Archive size={14} className="text-slate-400" />
-                    <span>
-                      NAID: <span className="font-medium text-slate-700">{naid}</span>
-                      {" "}
+                    <span className="flex items-center justify-between w-full">
+                      <span>
+                        NAID: <span className="font-medium text-slate-700">{naid}</span>
+                      </span>
                       <a 
                         href={`https://catalog.archives.gov/id/${naid}`} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline inline-flex items-center"
+                        className="text-blue-600 hover:underline inline-flex items-center ml-auto"
                         onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
                       >
                         <span>View in NAC</span>
