@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import FindingAid from "./pages/FindingAid";
 import FindingAidNoContainers from "./pages/FindingAidNoContainers";
-import FindingAidsListing from "./pages/FindingAidsListing";
 import ResearchRoomSearch from "./pages/ResearchRoomSearch";
 import NotFound from "./pages/NotFound";
 
@@ -23,7 +22,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/finding-aid" element={<FindingAid />} />
           <Route path="/finding-aid-no-containers" element={<FindingAidNoContainers />} />
-          <Route path="/finding-aids-listing" element={<FindingAidsListing />} />
           <Route path="/research-room-search" element={<ResearchRoomSearch />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

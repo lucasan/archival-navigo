@@ -7,18 +7,6 @@ const Index: React.FC = () => {
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <h1 className="text-3xl font-bold text-center mb-12">Archival Finding Aid Demo</h1>
       
-      <div className="mb-8">
-        <Link 
-          to="/finding-aids-listing" 
-          className="block p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow"
-        >
-          <h2 className="text-xl font-bold mb-2">Finding Aids Directory</h2>
-          <p className="text-gray-600">
-            Browse all available finding aids organized alphabetically.
-          </p>
-        </Link>
-      </div>
-      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Link 
           to="/finding-aid" 
@@ -37,6 +25,16 @@ const Index: React.FC = () => {
           <h2 className="text-xl font-bold mb-2">FOIA Finding Aid</h2>
           <p className="text-gray-600">
             View the FOIA finding aid without container organization.
+          </p>
+        </Link>
+        
+        <Link 
+          to="/research-room-search" 
+          className="block p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow"
+        >
+          <h2 className="text-xl font-bold mb-2">Research Room Search</h2>
+          <p className="text-gray-600">
+            Search through the research room records.
           </p>
         </Link>
       </div>
