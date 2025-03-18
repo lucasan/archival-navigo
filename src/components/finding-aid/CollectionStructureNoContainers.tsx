@@ -7,8 +7,6 @@ import CollectionHeader from './collections/CollectionHeader';
 import SpeechwritingCollection from './collections/SpeechwritingCollection';
 import PublicLiaisonCollection from './collections/PublicLiaisonCollection';
 import ScienceTechnologyCollection from './collections/ScienceTechnologyCollection';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useTreeContext } from './TreeContext';
 
 interface CollectionStructureNoContainersProps {
@@ -17,32 +15,6 @@ interface CollectionStructureNoContainersProps {
   statusFilter: 'all' | FileUnitStatus;
   handleStatusFilter: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
-
-// Create a ToggleButton component that uses the TreeContext
-const ToggleExpandButton = () => {
-  const { expandAll, toggleExpandAll } = useTreeContext();
-  
-  return (
-    <Button 
-      variant="outline" 
-      size="sm" 
-      onClick={toggleExpandAll}
-      className="ml-auto flex items-center gap-1"
-    >
-      {expandAll ? (
-        <>
-          <ChevronUp size={16} />
-          <span>Collapse All</span>
-        </>
-      ) : (
-        <>
-          <ChevronDown size={16} />
-          <span>Expand All</span>
-        </>
-      )}
-    </Button>
-  );
-};
 
 // Inner component to use the context
 const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoContainersProps> = ({
@@ -55,7 +27,6 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
     <div className="bg-white rounded-lg border shadow-sm p-3 sm:p-4 md:p-6">
       <div className="flex items-center justify-between mb-3 md:mb-4">
         <CollectionHeader title="Collection Structure" />
-        <ToggleExpandButton />
       </div>
       
       <SearchControls 
