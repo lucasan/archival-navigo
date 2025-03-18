@@ -16,7 +16,7 @@ const ScienceTechnologyCollection: React.FC<ScienceTechnologyCollectionProps> = 
 }) => {
   return (
     <>
-      <div className="font-bold text-base sm:text-lg mt-8 mb-2">
+      <div id="science-technology" className="font-bold text-base sm:text-lg mt-8 mb-2">
         GB-SCT: Records of the White House Office of Science and Technology (George H. W. Bush Administration)
       </div>
       

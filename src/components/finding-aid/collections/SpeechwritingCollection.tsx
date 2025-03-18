@@ -1,4 +1,3 @@
-
 import React from 'react';
 import SeriesSection from '../SeriesSection';
 import FileUnitNode from '../FileUnitNode';
@@ -16,8 +15,8 @@ const SpeechwritingCollection: React.FC<SpeechwritingCollectionProps> = ({
 }) => {
   return (
     <>
-      <div className="font-bold text-base sm:text-lg mt-4 mb-2">
-        GB-SPE: Records of the White House Office of Speechwriting (George H. W. Bush Administration)
+      <div id="speechwriting" className="font-bold text-base sm:text-lg mt-8 mb-2">
+        GB-SPE: Records of the White House Office of Speechwriting
       </div>
       
       <SeriesSection

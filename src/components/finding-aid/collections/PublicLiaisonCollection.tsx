@@ -16,7 +16,7 @@ const PublicLiaisonCollection: React.FC<PublicLiaisonCollectionProps> = ({
 }) => {
   return (
     <>
-      <div className="font-bold text-base sm:text-lg mt-8 mb-2">
+      <div id="public-liaison" className="font-bold text-base sm:text-lg mt-8 mb-2">
         GB-PUL: Records of the White House Office of Public Liaison (George H. W. Bush Administration)
       </div>
       
