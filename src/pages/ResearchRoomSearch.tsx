@@ -105,15 +105,6 @@ const mockSearchResults = [
     photoCount: "120 frames"
   },
   {
-    id: 9,
-    title: "Civil Rights Movement",
-    type: "page-finding-aid",
-    date: "1954-1968",
-    digitized: "Digitized",
-    naid: "89012345",
-    excerpt: "Finding aid for collections related to the American Civil Rights Movement, including speeches, photographs, and legal documents."
-  },
-  {
     id: 10,
     title: "Presidential Signatures Gallery",
     type: "page-gallery",
