@@ -49,131 +49,132 @@ export const NodeContent: React.FC<NodeContentProps> = ({
                      title.toLowerCase().includes(searchTerm.toLowerCase());
 
   return (
-    <div 
-      className={cn(
-        'tree-node flex flex-wrap md:flex-nowrap items-center gap-2 w-full p-1.5 rounded-md transition-colors',
-        {
-          'tree-node-series': type === 'series',
-          'tree-node-container': type === 'container',
-          'tree-node-file': type === 'file-unit',
-          'tree-node-item': type === 'item',
-          'bg-yellow-50 border border-yellow-200': directMatch,
-          'bg-blue-50/50': isExpanded && hasChildren && type !== 'item' && !directMatch,
-        }
-      )}
-      onClick={handleNodeClick}
-      style={hasChildren ? { cursor: 'pointer' } : undefined}
-      role={hasChildren ? "button" : undefined}
-      aria-expanded={hasChildren ? isExpanded : undefined}
-    >
-      {/* Node icon/expand button */}
-      <NodeIcon 
-        type={type} 
-        hasChildren={hasChildren} 
-        isExpanded={isExpanded} 
-        toggleExpand={toggleExpand} 
-      />
+    <div>
+      <div 
+        className={cn(
+          'tree-node flex flex-wrap md:flex-nowrap items-center gap-2 w-full p-1.5 rounded-md transition-colors',
+          {
+            'tree-node-series': type === 'series',
+            'tree-node-container': type === 'container',
+            'tree-node-file': type === 'file-unit',
+            'tree-node-item': type === 'item',
+            'bg-yellow-50 border border-yellow-200': directMatch,
+            'bg-blue-50/50': isExpanded && hasChildren && type !== 'item' && !directMatch,
+          }
+        )}
+        onClick={handleNodeClick}
+        style={hasChildren ? { cursor: 'pointer' } : undefined}
+        role={hasChildren ? "button" : undefined}
+        aria-expanded={hasChildren ? isExpanded : undefined}
+      >
+        {/* Node icon/expand button */}
+        <NodeIcon 
+          type={type} 
+          hasChildren={hasChildren} 
+          isExpanded={isExpanded} 
+          toggleExpand={toggleExpand} 
+        />
 
-      {/* Search match indicator */}
-      {directMatch && (
-        <Sparkle size={16} className="text-amber-500 flex-none animate-pulse" />
-      )}
+        {/* Search match indicator */}
+        {directMatch && (
+          <Sparkle size={16} className="text-amber-500 flex-none animate-pulse" />
+        )}
 
-      {/* Thumbnail for items */}
-      {type === 'item' && thumbnailUrl && (
-        <div 
-          className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-[100px] lg:h-[100px] flex-none overflow-hidden rounded-md border mr-1 sm:mr-2"
-          onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
-        >
-          <img 
-            src={thumbnailUrl} 
-            alt={`Thumbnail for ${title}`} 
-            className="w-full h-full object-cover transition-transform hover:scale-105"
-            loading="lazy"
-          />
-        </div>
-      )}
-
-      {/* Title and content */}
-      <div className="flex-1 min-w-0 break-words">
-        {type === 'item' && externalUrl ? (
-          <a 
-            href={externalUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className={cn(
-              "group inline-flex items-start gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words",
-              directMatch && "font-semibold text-amber-700"
-            )}
+        {/* Thumbnail for items */}
+        {type === 'item' && thumbnailUrl && (
+          <div 
+            className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-[100px] lg:h-[100px] flex-none overflow-hidden rounded-md border mr-1 sm:mr-2"
             onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
           >
-            <span className="break-words">{title}</span>
-            <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity mt-0.5" />
-          </a>
-        ) : (
-          <div className="space-y-1">
-            <div className="flex items-start justify-between">
-              <span className={cn(
-                "break-words inline-block",
-                directMatch && "font-semibold text-amber-700",
-                type === 'series' && "font-bold text-base sm:text-lg",
-                type === 'container' && "font-medium",
-              )}>
-                {title}
-              </span>
-              
-              {/* Status icon for file units - moved to title line */}
-              {type === 'file-unit' && fileUnitStatus && (
-                <div className="flex-none ml-2">
-                  <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
-                </div>
+            <img 
+              src={thumbnailUrl} 
+              alt={`Thumbnail for ${title}`} 
+              className="w-full h-full object-cover transition-transform hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+        )}
+
+        {/* Title and content */}
+        <div className="flex-1 min-w-0 break-words">
+          {type === 'item' && externalUrl ? (
+            <a 
+              href={externalUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className={cn(
+                "group inline-flex items-start gap-1 sm:gap-1.5 font-medium text-primary hover:underline text-sm sm:text-base break-words",
+                directMatch && "font-semibold text-amber-700"
               )}
-            </div>
-            
-            {/* NAID and Container ID for file units */}
-            {type === 'file-unit' && (naid || containerId) && (
-              <div className="flex flex-col gap-y-1 text-xs text-muted-foreground mt-1">
-                {naid && (
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-1">
-                      <Archive size={14} className="text-slate-400" />
-                      <span>
-                        NAID: <span className="font-medium text-slate-700">{naid}</span>
-                      </span>
-                    </div>
-                    {/* Move the NAC link to its own line below NAID */}
-                    <a 
-                      href={`https://catalog.archives.gov/id/${naid}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline inline-flex items-center ml-5 mt-0.5"
-                      onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
-                    >
-                      <span>View in NAC</span>
-                      <ExternalLink size={10} className="ml-0.5 opacity-70" />
-                    </a>
-                  </div>
-                )}
-                {containerId && (
-                  <div className="flex items-center gap-1">
-                    <Tag size={14} className="text-slate-400" />
-                    <span>Container: <span className="font-medium text-slate-700">{containerId}</span></span>
+              onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
+            >
+              <span className="break-words">{title}</span>
+              <ExternalLink size={14} className="flex-none opacity-70 group-hover:opacity-100 transition-opacity mt-0.5" />
+            </a>
+          ) : (
+            <div className="space-y-1">
+              <div className="flex items-start justify-between">
+                <span className={cn(
+                  "break-words inline-block",
+                  directMatch && "font-semibold text-amber-700",
+                  type === 'series' && "font-bold text-base sm:text-lg",
+                  type === 'container' && "font-medium",
+                )}>
+                  {title}
+                </span>
+                
+                {/* Status icon for file units - moved to title line */}
+                {type === 'file-unit' && fileUnitStatus && (
+                  <div className="flex-none ml-2">
+                    <StatusIcon status={fileUnitStatus} showLabel={false} showLabelOnHover />
                   </div>
                 )}
               </div>
-            )}
-          </div>
-        )}
+              
+              {/* NAID and Container ID for file units */}
+              {type === 'file-unit' && (naid || containerId) && (
+                <div className="flex flex-col gap-y-1 text-xs text-muted-foreground mt-1">
+                  {naid && (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-1">
+                        <Archive size={14} className="text-slate-400" />
+                        <span>
+                          NAID: <span className="font-medium text-slate-700">{naid}</span>
+                        </span>
+                      </div>
+                      {/* Move the NAC link to its own line below NAID */}
+                      <a 
+                        href={`https://catalog.archives.gov/id/${naid}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline inline-flex items-center ml-5 mt-0.5"
+                        onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
+                      >
+                        <span>View in NAC</span>
+                        <ExternalLink size={10} className="ml-0.5 opacity-70" />
+                      </a>
+                    </div>
+                  )}
+                  {containerId && (
+                    <div className="flex items-center gap-1">
+                      <Tag size={14} className="text-slate-400" />
+                      <span>Container: <span className="font-medium text-slate-700">{containerId}</span></span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+      
+      {/* Scope Content for items - display below the main content */}
+      {type === 'item' && scopeContent && (
+        <div className="pl-7 pr-2 mt-1 mb-2 text-sm text-slate-700">
+          {scopeContent}
+        </div>
+      )}
     </div>
-    
-    {/* Scope Content for items - display below the main content */}
-    {type === 'item' && scopeContent && (
-      <div className="pl-7 pr-2 mt-1 mb-2 text-sm text-slate-700">
-        {scopeContent}
-      </div>
-    )}
-  </div>
   );
 };
 
