@@ -45,25 +45,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: unknown[]
       }
-      get_bush_fa_foia_data_paginated:
-        | {
-            Args: {
-              p_from: number
-              p_to: number
-              p_search?: string
-            }
-            Returns: unknown[]
-          }
-        | {
-            Args: {
-              p_from: number
-              p_to: number
-              p_search?: string
-              p_order_by?: string
-              p_order_direction?: string
-            }
-            Returns: unknown[]
-          }
+      get_bush_fa_foia_data_paginated: {
+        Args: {
+          p_from: number
+          p_to: number
+          p_search?: string
+        }
+        Returns: unknown[]
+      }
       get_schema_info: {
         Args: Record<PropertyKey, never>
         Returns: Json
