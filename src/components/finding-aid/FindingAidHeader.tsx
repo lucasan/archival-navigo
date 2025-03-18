@@ -27,14 +27,14 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
       <div className="container px-4 py-4 sm:py-6 md:py-8 mx-auto">
         {isTextualFindingAid && (
           <div className="text-sm text-primary font-medium mb-1">
-            Collection GB-SPE
+            Collection GB-RTP
           </div>
         )}
         
         <div className="flex justify-between items-center mb-2 md:mb-3">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
             {isTextualFindingAid 
-              ? "Records of the White House Office of Speechwriting (George H. W. Bush Administration)" 
+              ? "Robert Teeter Papers, April 1979–October 1992" 
               : collectionName}
           </h1>
           <button 
@@ -66,13 +66,13 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
             <span className="mb-1 sm:mb-0">
               NAID:
               <span className="font-medium text-foreground">
-                {' 578954'}
+                {' 891870'}
               </span>
             </span>
             <span>
               Collected:
               <span className="font-medium text-foreground">
-                {' January 20, 1989–January 20, 1993'}
+                {' April 1979–October 1992'}
               </span>
             </span>
           </div>
@@ -96,7 +96,7 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
         {!isFoiaPage && (
           <div className="flex justify-end">
             <a 
-              href={isTextualFindingAid ? "https://catalog.archives.gov/id/578954" : sourceUrl} 
+              href={isTextualFindingAid ? "https://catalog.archives.gov/id/891870" : sourceUrl} 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs sm:text-sm hover:text-primary transition-colors"
