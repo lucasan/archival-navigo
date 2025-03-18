@@ -41,7 +41,7 @@ const SeriesIIIContent: React.FC<SeriesIIIContentProps> = ({ searchTerm, statusF
             title="Montpelier Estate Ledger, 1810-1820" 
             thumbnailUrl="/placeholder.svg"
             naid="345678"
-            scopeContent="Bound ledger containing detailed financial records of Madison's Montpelier plantation, including expenses for slave purchases, crop sales, and household maintenance."
+            scopeContent="Bound ledger containing detailed financial records of Madison's Montpelier plantation, including expenses for slave purchases, crop sales, and household maintenance. The ledger contains meticulously kept records of agricultural production, showing the transition from tobacco to wheat cultivation. Several pages detail Madison's experimental farming methods influenced by European agricultural treatises."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
@@ -66,7 +66,7 @@ const SeriesIIIContent: React.FC<SeriesIIIContentProps> = ({ searchTerm, statusF
             title="Presidential Salary Account, 1809-1817" 
             thumbnailUrl="/placeholder.svg"
             naid="890123"
-            scopeContent="Record of Madison's presidential salary payments and his personal expenditures while in office, including entertaining costs and travel expenses."
+            scopeContent="Record of Madison's presidential salary payments and his personal expenditures while in office, including entertaining costs and travel expenses. This financial journal shows Madison's conservative personal spending habits contrasted with the necessary expenditures for maintaining presidential dignity. Contains interesting entries related to the acquisition of books, scientific instruments, and fine wines that reflect Madison's intellectual and cultural interests."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />

@@ -31,7 +31,7 @@ const CollectionIIIContent: React.FC<CollectionIIIContentProps> = ({ searchTerm,
             title="Montpelier Estate Ledger, 1810-1820" 
             thumbnailUrl="/placeholder.svg"
             naid="345678"
-            scopeContent="Bound ledger containing detailed financial records of Madison's Montpelier plantation, including expenses for slave purchases, crop sales, and household maintenance."
+            scopeContent="Bound ledger containing detailed financial records of Madison's Montpelier plantation, including expenses for slave purchases, crop sales, and household maintenance. The 120-page volume provides comprehensive insights into the daily operations of an elite Virginia plantation and Madison's personal financial management during his presidency and early retirement years. Contains unique entries detailing interactions with Thomas Jefferson regarding shared agricultural experiments."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
@@ -56,7 +56,7 @@ const CollectionIIIContent: React.FC<CollectionIIIContentProps> = ({ searchTerm,
             title="Presidential Salary Account, 1809-1817" 
             thumbnailUrl="/placeholder.svg"
             naid="890123"
-            scopeContent="Record of Madison's presidential salary payments and his personal expenditures while in office, including entertaining costs and travel expenses."
+            scopeContent="Record of Madison's presidential salary payments and his personal expenditures while in office, including entertaining costs and travel expenses. This rare document provides a window into the lifestyle of an early American president, documenting everything from formal state dinners to personal purchases. Notable entries include expenditures related to the rebuilding of the White House after its burning in 1814."
             searchTerm={searchTerm}
             statusFilter={statusFilter}
           />
