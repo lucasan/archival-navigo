@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -30,7 +29,8 @@ const FindingAidSidebar: React.FC<FindingAidSidebarProps> = ({
   const collections = [
     { id: "speechwriting", title: "Records of the White House Office of Speechwriting" },
     { id: "public-liaison", title: "Records of the White House Office of Public Liaison" },
-    { id: "science-technology", title: "Records of the White House Office of Science and Technology" }
+    { id: "science-technology", title: "Records of the White House Office of Science and Technology" },
+    { id: "liberman-counsel", title: "Records of the White House Counsel's Office" }
   ];
 
   // Determine which links to show based on current route

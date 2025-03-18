@@ -7,6 +7,7 @@ import CollectionHeader from './collections/CollectionHeader';
 import SpeechwritingCollection from './collections/SpeechwritingCollection';
 import PublicLiaisonCollection from './collections/PublicLiaisonCollection';
 import ScienceTechnologyCollection from './collections/ScienceTechnologyCollection';
+import LiberManCollection from './collections/LiberManCollection';
 
 interface CollectionStructureNoContainersProps {
   searchTerm: string;
@@ -48,6 +49,12 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
         
         {/* Science and Technology Collection */}
         <ScienceTechnologyCollection 
+          searchTerm={searchTerm} 
+          statusFilter={statusFilter} 
+        />
+        
+        {/* Counsel's Office - Lee Liberman Collection */}
+        <LiberManCollection 
           searchTerm={searchTerm} 
           statusFilter={statusFilter} 
         />
