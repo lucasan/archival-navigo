@@ -11,7 +11,7 @@ interface CollectionHighlight {
 
 interface FindingAidSidebarProps {
   isVisible: boolean;
-  highlights: CollectionHighlight[];
+  highlights?: CollectionHighlight[]; // Make highlights optional
   showSeriesNavigation?: boolean;
 }
 
