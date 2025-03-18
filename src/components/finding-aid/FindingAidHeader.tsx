@@ -36,28 +36,45 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
             <Menu size={20} />
           </button>
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-xs sm:text-sm text-muted-foreground">
-          <div className="flex flex-col sm:flex-row sm:gap-x-6 mb-2 md:mb-0">
-            <span className="mb-1 sm:mb-0">
-              {isFoiaPage ? 'FOIA Number:' : 'Collection ID:'} 
+        
+        {isFoiaPage ? (
+          <div className="flex flex-col text-xs sm:text-sm text-muted-foreground mb-2 md:mb-3">
+            <span className="mb-1">
+              Processed by:
               <span className="font-medium text-foreground">
-                {isFoiaPage ? ' 1998-0099-F' : ` ${collectionId}`}
+                {' Staff Archivists, March - September 1998. Previously restricted materials are added as they are released.'}
               </span>
             </span>
             <span>
-              {isFoiaPage ? 'Processed by:' : 'Acquisition Date:'} 
+              FOIA Number:
               <span className="font-medium text-foreground">
-                {isFoiaPage 
-                  ? ' Staff Archivists, March - September 1998. Previously restricted materials are added as they are released.' 
-                  : ` ${acquisitionDate}`}
+                {' 1998-0099-F'}
               </span>
             </span>
           </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row sm:gap-x-6 text-xs sm:text-sm text-muted-foreground mb-2 md:mb-3">
+            <span className="mb-1 sm:mb-0">
+              Collection ID:
+              <span className="font-medium text-foreground">
+                {` ${collectionId}`}
+              </span>
+            </span>
+            <span>
+              Acquisition Date:
+              <span className="font-medium text-foreground">
+                {` ${acquisitionDate}`}
+              </span>
+            </span>
+          </div>
+        )}
+        
+        <div className="flex justify-end">
           <a 
             href={sourceUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-primary transition-colors"
+            className="flex items-center gap-1.5 text-xs sm:text-sm hover:text-primary transition-colors"
           >
             View Original Source
             <ExternalLink size={14} className="inline" />
