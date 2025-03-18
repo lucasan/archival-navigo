@@ -5,7 +5,6 @@ import NavigationHeader from '@/components/finding-aid/NavigationHeader';
 import FindingAidSidebar from '@/components/finding-aid/FindingAidSidebar';
 import CollectionOverview from '@/components/finding-aid/CollectionOverview';
 import FindingAidTabsNoContainers from '@/components/finding-aid/FindingAidTabsNoContainers';
-import { collectionData } from '@/components/finding-aid/constants';
 
 const FindingAidNoContainers: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,12 +23,18 @@ const FindingAidNoContainers: React.FC = () => {
     setSidebarVisible(!sidebarVisible);
   };
 
-  // FOIA Page-specific content
-  const foiaDescription = [
-    "The materials in FOIA 1998-0099-F are a selective, not necessarily all inclusive, body of documents responsive to the topic of the FOIA. Researchers should consult the archivist about related materials.",
-    "FOIA 1998-0099-F contains materials related to the diplomatic and military response by the United States (as part of a multi-national force) to the Iraqi invasion of Kuwait on August 2, 1990. The first part of the intervention, Operation Desert Shield, took place between September 1990 and January 1991. During this operation the U.S. and a coalition of other nations committed forces to protect Saudi Arabia from further 1998-0099-F 2 Iraqi aggression. The military campaign to drive Iraq out of Kuwait, Operation Desert Storm, commenced on January 16, 1991, immediately following the expiration of a UN Security Council Resolution demanding the unconditional withdrawal of Iraqi forces.",
-    "White House Office of Records Management (WHORM) Subject File categories contain correspondence, memoranda, news clippings, and brochures from the general public, Congress, and the Bush administration. WHORM Subject File categories CO072 and CO083 contain documents concerning Iraq and Kuwait, respectively. Most of the material in these categories concerns Iraq's invasion of Kuwait. Another large segment related to this subject is WHORM Subject File category ND016.",
-    "The Staff and Office Files contain correspondence, memoranda, and publications maintained by individual staff members and offices. A significant amount of material responsive to this FOIA is contained in the files of the National Security Council (NSC). Although these files are listed, it should be noted that most of these documents are security classified and have been closed under the restrictions of the Freedom of Information Act. These documents deal with topics such as: the inspection and elimination of Iraq's weapons of mass destruction; diplomatic efforts to create the Gulf Coalition; United States policy towards Iraq prior to the conflict; United States efforts to assist Kurdish refugees; and military operations in the Persian Gulf Theater."
+  // Bush Presidential Library Collection Description
+  const collectionDescription = [
+    "The Records of the White House Office of Speechwriting consists of materials created and accumulated by the speechwriting staff during the George H. W. Bush Administration (1989-1993).",
+    "This collection contains speech drafts, speech backup materials, presidential remarks, press releases, and other public statements. The collection is especially rich in documenting the collaborative effort that went into crafting Presidential addresses on important domestic and foreign policy issues of the Bush Administration.",
+    "Researchers interested in foreign policy, domestic initiatives, and the rhetorical presidency will find this collection particularly valuable for understanding how the administration shaped its message and communicated with the American public and international audiences during significant historical events including the end of the Cold War, the Gulf War, and economic policy debates."
+  ];
+
+  const collectionHighlights = [
+    { text: "Presidential Speeches with Handwritten Notes" },
+    { text: "Gulf War Address Drafts and Background Materials" },
+    { text: "Berlin Wall and German Reunification Remarks" },
+    { text: "Major Domestic Policy Initiative Announcements" }
   ];
 
   return (
@@ -39,10 +44,10 @@ const FindingAidNoContainers: React.FC = () => {
       
       {/* Header Section */}
       <FindingAidHeader 
-        collectionName="Records on the Persian Gulf Conflict"
-        collectionId={collectionData.id}
-        acquisitionDate={collectionData.acquisitionDate}
-        sourceUrl={collectionData.sourceUrl}
+        collectionName="Records of the White House Office of Speechwriting"
+        collectionId="GB-SPE"
+        acquisitionDate="01/20/1993"
+        sourceUrl="https://example.org/archive/bush-speechwriting"
         toggleSidebar={toggleSidebar}
       />
 
@@ -52,7 +57,7 @@ const FindingAidNoContainers: React.FC = () => {
           {/* Main Content (75%) */}
           <div className={`w-full lg:w-3/4 animate-slide-in order-first transition-all duration-300 ${sidebarVisible ? 'lg:w-3/4' : 'lg:w-full'}`}>
             {/* Overview Section */}
-            <CollectionOverview description={foiaDescription} />
+            <CollectionOverview description={collectionDescription} />
 
             {/* Collection Structure (without containers) */}
             <FindingAidTabsNoContainers 
@@ -66,7 +71,7 @@ const FindingAidNoContainers: React.FC = () => {
           {/* Sidebar (25%) */}
           <FindingAidSidebar 
             isVisible={sidebarVisible}
-            highlights={collectionData.collectionHighlights}
+            highlights={collectionHighlights}
           />
         </div>
       </main>
