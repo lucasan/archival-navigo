@@ -15,7 +15,7 @@ const FOIAFindingAidsListing: React.FC = () => {
   
   const [searchInput, setSearchInput] = useState(searchQuery);
   
-  const { data, isLoading, isError, error, refetch } = useFOIAData({ searchQuery, currentPage });
+  const { data, isLoading, isError, error } = useFOIAData({ searchQuery, currentPage });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
