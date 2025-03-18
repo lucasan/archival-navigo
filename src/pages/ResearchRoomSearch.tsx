@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
@@ -433,7 +434,7 @@ const SearchResultCard = ({ result }) => {
 
 const ResearchRoomSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [randomizedResults, setRandomizedResults] = useState([...mockSearchResults]);
+  const [filteredResults, setFilteredResults] = useState([...mockSearchResults]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     // Record Type filters
@@ -466,16 +467,87 @@ const ResearchRoomSearch: React.FC = () => {
     pageTypeExhibits: false,
   });
 
+  // Apply filters to the search results
   useEffect(() => {
-    const shuffledResults = [...mockSearchResults];
+    let results = [...mockSearchResults];
     
-    for (let i = shuffledResults.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledResults[i], shuffledResults[j]] = [shuffledResults[j], shuffledResults[i]];
+    // Filter by search term
+    if (searchTerm.trim() !== '') {
+      const term = searchTerm.toLowerCase().trim();
+      results = results.filter(result => 
+        result.title.toLowerCase().includes(term) || 
+        (result.excerpt && result.excerpt.toLowerCase().includes(term))
+      );
     }
     
-    setRandomizedResults(shuffledResults);
-    setCurrentPage(1);
+    // Apply Level of Description filters
+    const levelFilters = {
+      'finding-aid': filters.levelFindingAid,
+      'series': filters.levelSeries,
+      'file-unit': filters.levelFileUnit,
+      'item': filters.levelItem
+    };
+    
+    const hasLevelFilter = Object.values(levelFilters).some(value => value);
+    if (hasLevelFilter) {
+      results = results.filter(result => {
+        return levelFilters[result.type] || false;
+      });
+    }
+    
+    // Apply Digitized Status filters
+    const hasDigitizedFilter = filters.digitized || filters.nonDigitized;
+    if (hasDigitizedFilter) {
+      results = results.filter(result => {
+        if (filters.digitized && result.digitized === "Digitized") return true;
+        if (filters.nonDigitized && result.digitized === "Non Digitized") return true;
+        return false;
+      });
+    }
+    
+    // Apply Page Type filters
+    const pageTypeFilters = {
+      'page-media': filters.pageTypeMedia,
+      'page-daily-diary': filters.pageTypeDailyDiary,
+      'page-photo-contact-sheet': filters.pageTypePhotoContactSheet,
+      'page-finding-aid': filters.pageTypeFindingAid,
+      'page-gallery': filters.pageTypeGallery,
+      'page-exhibit': filters.pageTypeExhibits
+    };
+    
+    const hasPageTypeFilter = Object.values(pageTypeFilters).some(value => value);
+    if (hasPageTypeFilter) {
+      results = results.filter(result => {
+        return pageTypeFilters[result.type] || false;
+      });
+    }
+    
+    // Apply Record Type filters - match based on file type or type properties
+    const hasRecordTypeFilter = filters.architecturalAndEngineering || 
+                              filters.artifacts || 
+                              filters.dataFiles || 
+                              filters.mapsAndCharts || 
+                              filters.movingImages || 
+                              filters.photographs || 
+                              filters.soundRecordings || 
+                              filters.textualRecords || 
+                              filters.webPages;
+    
+    if (hasRecordTypeFilter) {
+      results = results.filter(result => {
+        // This is a simplified mapping - in a real app, you would have more detailed mappings
+        if (filters.movingImages && (result.type === 'page-media' && result.fileType === 'video')) return true;
+        if (filters.photographs && (result.type === 'page-photo-contact-sheet' || result.type === 'page-gallery')) return true;
+        if (filters.soundRecordings && (result.type === 'page-media' && result.fileType === 'audio')) return true;
+        if (filters.textualRecords && (['finding-aid', 'series', 'file-unit'].includes(result.type))) return true;
+        
+        // No match for any selected filter
+        return false;
+      });
+    }
+    
+    setFilteredResults(results);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [searchTerm, filters]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -493,7 +565,7 @@ const ResearchRoomSearch: React.FC = () => {
     e.preventDefault();
     console.log("Search term:", searchTerm);
     console.log("Filters:", filters);
-    // Would trigger actual search here
+    // Search is now handled by the useEffect
   };
 
   const resetFilters = () => {
@@ -529,8 +601,8 @@ const ResearchRoomSearch: React.FC = () => {
     });
   };
 
-  const totalPages = Math.ceil(randomizedResults.length / ITEMS_PER_PAGE);
-  const paginatedResults = randomizedResults.slice(
+  const totalPages = Math.ceil(filteredResults.length / ITEMS_PER_PAGE);
+  const paginatedResults = filteredResults.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -894,7 +966,7 @@ const ResearchRoomSearch: React.FC = () => {
                 
                 <Separator />
                 
-                <Button className="w-full">Apply Filters</Button>
+                {/* Apply filters button removed as filtering is automatic */}
               </div>
             </div>
           </div>
@@ -902,7 +974,7 @@ const ResearchRoomSearch: React.FC = () => {
           <div className="w-full lg:w-3/4">
             <div className="mb-4">
               <p className="text-muted-foreground">
-                Showing {paginatedResults.length} of {randomizedResults.length} results for{" "}
+                Showing {paginatedResults.length} of {filteredResults.length} results for{" "}
                 <span className="font-medium text-foreground">
                   {searchTerm || "all finding aids"}
                 </span>
@@ -910,9 +982,22 @@ const ResearchRoomSearch: React.FC = () => {
             </div>
             
             <div className="space-y-4 mb-8">
-              {paginatedResults.map((result) => (
-                <SearchResultCard key={result.id} result={result} />
-              ))}
+              {paginatedResults.length > 0 ? (
+                paginatedResults.map((result) => (
+                  <SearchResultCard key={result.id} result={result} />
+                ))
+              ) : (
+                <div className="bg-white rounded-lg border shadow p-8 text-center">
+                  <p className="text-lg text-muted-foreground">No results match your search criteria</p>
+                  <Button 
+                    variant="outline" 
+                    className="mt-4"
+                    onClick={resetFilters}
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              )}
             </div>
             
             {totalPages > 1 && (
