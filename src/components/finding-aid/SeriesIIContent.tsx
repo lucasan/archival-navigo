@@ -159,45 +159,6 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
             />
           </FileUnitNode>
         </ContainerNode>
-        
-        <ContainerNode 
-          title="Container ID 56790" 
-          containerType="Box" 
-          containerNumber="2"
-          containerId="56790"
-          searchTerm={searchTerm}
-          statusFilter={statusFilter}
-        >
-          <FileUnitNode 
-            title="Presidential Records Act Implementation" 
-            status="digitized"
-            naid="486123795"
-            searchTerm={searchTerm}
-            statusFilter={statusFilter}
-          >
-            <ItemNode 
-              title="Records Management Memorandum" 
-              thumbnailUrl="/placeholder.svg" 
-              externalUrl="#records-management-memo"
-              searchTerm={searchTerm}
-              statusFilter={statusFilter}
-            />
-            <ItemNode 
-              title="PRA Compliance Training Materials" 
-              thumbnailUrl="/placeholder.svg" 
-              externalUrl="#pra-training-materials"
-              searchTerm={searchTerm}
-              statusFilter={statusFilter}
-            />
-            <ItemNode 
-              title="Record Retention Schedule" 
-              thumbnailUrl="/placeholder.svg" 
-              externalUrl="#retention-schedule"
-              searchTerm={searchTerm}
-              statusFilter={statusFilter}
-            />
-          </FileUnitNode>
-        </ContainerNode>
       </SeriesSection>
     </>
   );
