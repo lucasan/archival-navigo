@@ -65,7 +65,6 @@ const FindingAid: React.FC = () => {
           {/* Sidebar (25%) */}
           <FindingAidSidebar 
             isVisible={sidebarVisible}
-            highlights={collectionData.collectionHighlights}
           />
         </div>
       </main>

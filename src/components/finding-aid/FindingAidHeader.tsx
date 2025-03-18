@@ -20,13 +20,22 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
 }) => {
   const location = useLocation();
   const isFoiaPage = location.pathname === '/finding-aid-no-containers';
+  const isTextualFindingAid = location.pathname === '/finding-aid';
   
   return (
     <header className="border-b border-border bg-white shadow-sm animate-fade-in">
       <div className="container px-4 py-4 sm:py-6 md:py-8 mx-auto">
+        {isTextualFindingAid && (
+          <div className="text-sm text-primary font-medium mb-1">
+            Collection GB-SPE
+          </div>
+        )}
+        
         <div className="flex justify-between items-center mb-2 md:mb-3">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
-            {collectionName}
+            {isTextualFindingAid 
+              ? "Records of the White House Office of Speechwriting (George H. W. Bush Administration)" 
+              : collectionName}
           </h1>
           <button 
             onClick={toggleSidebar}
@@ -49,6 +58,21 @@ const FindingAidHeader: React.FC<FindingAidHeaderProps> = ({
               FOIA Number:
               <span className="font-medium text-foreground">
                 {' 1998-0099-F'}
+              </span>
+            </span>
+          </div>
+        ) : isTextualFindingAid ? (
+          <div className="flex flex-col sm:flex-row sm:gap-x-6 text-xs sm:text-sm text-muted-foreground mb-2 md:mb-3">
+            <span className="mb-1 sm:mb-0">
+              NAID:
+              <span className="font-medium text-foreground">
+                {' 578954'}
+              </span>
+            </span>
+            <span>
+              Collected:
+              <span className="font-medium text-foreground">
+                {' January 20, 1989–January 20, 1993'}
               </span>
             </span>
           </div>
