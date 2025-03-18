@@ -3,10 +3,11 @@ import React from 'react';
 import SeriesSection from '../SeriesSection';
 import FileUnitNode from '../FileUnitNode';
 import ItemNode from '../ItemNode';
+import { FileUnitStatus } from '../types';
 
 interface PublicLiaisonCollectionProps {
   searchTerm: string;
-  statusFilter: string;
+  statusFilter: 'all' | FileUnitStatus;
 }
 
 const PublicLiaisonCollection: React.FC<PublicLiaisonCollectionProps> = ({ 
