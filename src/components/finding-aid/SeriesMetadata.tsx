@@ -1,7 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 interface SeriesMetadataProps {
   description?: string;
@@ -24,33 +26,49 @@ export const SeriesMetadata: React.FC<SeriesMetadataProps> = ({
   useRestriction,
   specificUseRestriction
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
   if (!description && !extent && !arrangement && !date && !accessRestriction && !useRestriction) {
     return null;
   }
 
   const hasRestrictions = accessRestriction || useRestriction;
 
+  // Create a summary of restrictions for the collapsed view
+  const restrictionsSummary = () => {
+    const parts = [];
+    if (accessRestriction) parts.push(`Access: ${accessRestriction}`);
+    if (useRestriction) parts.push(`Use: ${useRestriction}`);
+    return parts.join(' • ');
+  };
+
   return (
     <div className="mt-2 mb-4 ml-3 md:ml-5 pl-1 text-xs sm:text-sm text-muted-foreground border-l">
-      {/* Restrictions notice with updated styling */}
+      {/* Collapsible restrictions notice */}
       {hasRestrictions && (
-        <Alert className="mb-3 bg-blue-50/30 border-blue-100">
+        <Alert className="mb-3 bg-blue-50/20 border-blue-100 py-2 px-3">
           <Info className="h-4 w-4 text-blue-500" />
           <AlertDescription className="text-slate-700 text-xs">
-            {accessRestriction && (
-              <div className="mt-1">
-                <span className="font-medium">Access: </span>
-                {accessRestriction} 
-                {specificAccessRestriction && <> - {specificAccessRestriction}</>}
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+              <div className="flex items-center">
+                <CollapsibleTrigger className="flex items-center text-xs hover:underline cursor-pointer">
+                  {isOpen ? <ChevronDown className="h-3 w-3 mr-1" /> : <ChevronRight className="h-3 w-3 mr-1" />}
+                  <span className="font-medium">{restrictionsSummary()}</span>
+                </CollapsibleTrigger>
               </div>
-            )}
-            {useRestriction && (
-              <div className="mt-1">
-                <span className="font-medium">Use: </span>
-                {useRestriction}
-                {specificUseRestriction && <> - {specificUseRestriction}</>}
-              </div>
-            )}
+              <CollapsibleContent>
+                {accessRestriction && specificAccessRestriction && (
+                  <div className="mt-1 pl-4">
+                    <span className="text-xs text-slate-600">{specificAccessRestriction}</span>
+                  </div>
+                )}
+                {useRestriction && specificUseRestriction && (
+                  <div className="mt-1 pl-4">
+                    <span className="text-xs text-slate-600">{specificUseRestriction}</span>
+                  </div>
+                )}
+              </CollapsibleContent>
+            </Collapsible>
           </AlertDescription>
         </Alert>
       )}
