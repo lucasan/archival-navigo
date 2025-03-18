@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
@@ -467,11 +466,9 @@ const ResearchRoomSearch: React.FC = () => {
     pageTypeExhibits: false,
   });
 
-  // Apply filters to the search results
   useEffect(() => {
     let results = [...mockSearchResults];
     
-    // Filter by search term
     if (searchTerm.trim() !== '') {
       const term = searchTerm.toLowerCase().trim();
       results = results.filter(result => 
@@ -480,7 +477,6 @@ const ResearchRoomSearch: React.FC = () => {
       );
     }
     
-    // Apply Level of Description filters
     const levelFilters = {
       'finding-aid': filters.levelFindingAid,
       'series': filters.levelSeries,
@@ -495,7 +491,6 @@ const ResearchRoomSearch: React.FC = () => {
       });
     }
     
-    // Apply Digitized Status filters
     const hasDigitizedFilter = filters.digitized || filters.nonDigitized;
     if (hasDigitizedFilter) {
       results = results.filter(result => {
@@ -505,7 +500,6 @@ const ResearchRoomSearch: React.FC = () => {
       });
     }
     
-    // Apply Page Type filters
     const pageTypeFilters = {
       'page-media': filters.pageTypeMedia,
       'page-daily-diary': filters.pageTypeDailyDiary,
@@ -518,11 +512,15 @@ const ResearchRoomSearch: React.FC = () => {
     const hasPageTypeFilter = Object.values(pageTypeFilters).some(value => value);
     if (hasPageTypeFilter) {
       results = results.filter(result => {
+        if (filters.pageTypeFindingAid && 
+           ['finding-aid', 'series', 'file-unit', 'item'].includes(result.type)) {
+          return true;
+        }
+        
         return pageTypeFilters[result.type] || false;
       });
     }
     
-    // Apply Record Type filters - match based on file type or type properties
     const hasRecordTypeFilter = filters.architecturalAndEngineering || 
                               filters.artifacts || 
                               filters.dataFiles || 
@@ -535,19 +533,17 @@ const ResearchRoomSearch: React.FC = () => {
     
     if (hasRecordTypeFilter) {
       results = results.filter(result => {
-        // This is a simplified mapping - in a real app, you would have more detailed mappings
         if (filters.movingImages && (result.type === 'page-media' && result.fileType === 'video')) return true;
         if (filters.photographs && (result.type === 'page-photo-contact-sheet' || result.type === 'page-gallery')) return true;
         if (filters.soundRecordings && (result.type === 'page-media' && result.fileType === 'audio')) return true;
         if (filters.textualRecords && (['finding-aid', 'series', 'file-unit'].includes(result.type))) return true;
         
-        // No match for any selected filter
         return false;
       });
     }
     
     setFilteredResults(results);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [searchTerm, filters]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -565,12 +561,10 @@ const ResearchRoomSearch: React.FC = () => {
     e.preventDefault();
     console.log("Search term:", searchTerm);
     console.log("Filters:", filters);
-    // Search is now handled by the useEffect
   };
 
   const resetFilters = () => {
     setFilters({
-      // Record Type filters
       architecturalAndEngineering: false,
       artifacts: false,
       dataFiles: false,
@@ -581,17 +575,14 @@ const ResearchRoomSearch: React.FC = () => {
       textualRecords: false,
       webPages: false,
       
-      // Level of Description filters
       levelSeries: false,
       levelFindingAid: false,
       levelFileUnit: false,
       levelItem: false,
       
-      // Digitized Status filters
       digitized: false,
       nonDigitized: false,
       
-      // Page Type filters
       pageTypeMedia: false,
       pageTypeDailyDiary: false,
       pageTypePhotoContactSheet: false,
