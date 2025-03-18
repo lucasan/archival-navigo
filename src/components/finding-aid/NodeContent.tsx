@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle, Archive, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -125,7 +126,20 @@ export const NodeContent: React.FC<NodeContentProps> = ({
                 {naid && (
                   <div className="flex items-center gap-1">
                     <Archive size={14} className="text-slate-400" />
-                    <span>NAID: <span className="font-medium text-slate-700">{naid}</span></span>
+                    <span>
+                      NAID: <span className="font-medium text-slate-700">{naid}</span>
+                      {" "}
+                      <a 
+                        href={`https://catalog.archives.gov/id/${naid}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline inline-flex items-center"
+                        onClick={(e) => e.stopPropagation()} // Prevent triggering parent's onClick
+                      >
+                        <span>View in NAC</span>
+                        <ExternalLink size={10} className="ml-0.5 opacity-70" />
+                      </a>
+                    </span>
                   </div>
                 )}
                 {containerId && (
