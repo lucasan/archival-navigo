@@ -25,8 +25,17 @@ const ReadMore: React.FC<ReadMoreProps> = ({
     ? `${text.substring(0, maxLength)}...`
     : text;
 
+  // Function to convert newlines to paragraph elements
+  const renderTextWithLineBreaks = (content: string) => {
+    return content.split('\n\n').map((paragraph, index) => (
+      <p key={index} className={cn("mb-3", textClassName)}>
+        {paragraph}
+      </p>
+    ));
+  };
+
   if (!needsTruncation) {
-    return <p className={cn("text-sm md:text-base text-muted-foreground", textClassName)}>{text}</p>;
+    return <div className={className}>{renderTextWithLineBreaks(text)}</div>;
   }
 
   return (
@@ -35,9 +44,10 @@ const ReadMore: React.FC<ReadMoreProps> = ({
         "overflow-hidden transition-all duration-300",
         !isOpen && "max-h-[160px]"
       )}>
-        <p className={cn("text-sm md:text-base text-muted-foreground", textClassName)}>
-          {isOpen ? text : truncatedText}
-        </p>
+        {isOpen 
+          ? renderTextWithLineBreaks(text)
+          : <p className={cn("text-sm md:text-base text-muted-foreground", textClassName)}>{truncatedText}</p>
+        }
       </div>
       
       {!isOpen && (
