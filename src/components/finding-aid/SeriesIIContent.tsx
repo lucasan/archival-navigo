@@ -28,16 +28,17 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
       statusFilter={statusFilter}
     >
       <ContainerNode 
-        title="Box 3" 
+        title="Container ID 45732" 
         containerType="Box" 
         containerNumber="3"
-        containerId="23456"
+        containerId="45732"
         searchTerm={searchTerm}
         statusFilter={statusFilter}
       >
         <FileUnitNode 
-          title="File Unit 1: Constitutional Convention Notes" 
-          status="open"
+          title="Michigan [Statewide] Presidential Study - WAVE II - Data - 1980 [9/26-29/1980] [1]" 
+          status="closed"
+          naid="441677228"
           searchTerm={searchTerm}
           statusFilter={statusFilter}
         >
@@ -56,19 +57,11 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
             statusFilter={statusFilter}
           />
         </FileUnitNode>
-      </ContainerNode>
-            
-      <ContainerNode 
-        title="Box 4" 
-        containerType="Box" 
-        containerNumber="4"
-        containerId="78901"
-        searchTerm={searchTerm}
-        statusFilter={statusFilter}
-      >
+        
         <FileUnitNode 
-          title="File Unit 2: Presidential Papers" 
-          status="digitized"
+          title="Michigan Statewide - Data - August, 1980 [Prepared for Reagan/Bush Committee] [1]" 
+          status="closed"
+          naid="441677230"
           searchTerm={searchTerm}
           statusFilter={statusFilter}
         >
@@ -81,6 +74,29 @@ const SeriesIIContent: React.FC<SeriesIIContentProps> = ({ searchTerm, statusFil
           />
           <ItemNode 
             title="War of 1812 Documents" 
+            thumbnailUrl="/placeholder.svg"
+            externalUrl="#"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
+          />
+        </FileUnitNode>
+        
+        <FileUnitNode 
+          title="Miscellaneous Campaign Material [November 1980 Post-Election Magazines: Newsweek, U.S. News & World Report, and Time]" 
+          status="closed"
+          naid="441677232"
+          searchTerm={searchTerm}
+          statusFilter={statusFilter}
+        >
+          <ItemNode 
+            title="Post-Election Analysis" 
+            thumbnailUrl="/placeholder.svg"
+            externalUrl="#"
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
+          />
+          <ItemNode 
+            title="Campaign Coverage Photographs" 
             thumbnailUrl="/placeholder.svg"
             externalUrl="#"
             searchTerm={searchTerm}

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle, Archive, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -118,11 +117,6 @@ export const NodeContent: React.FC<NodeContentProps> = ({
               type === 'container' && "font-medium",
             )}>
               {title}
-              {type === 'container' && containerType && containerNumber && (
-                <span className="text-muted-foreground ml-1 sm:ml-2 text-xs sm:text-sm">
-                  ({containerType} {containerNumber})
-                </span>
-              )}
             </span>
             
             {/* NAID and Container ID for file units */}

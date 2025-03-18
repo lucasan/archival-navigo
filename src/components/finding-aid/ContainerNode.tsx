@@ -23,7 +23,7 @@ const ContainerNode: React.FC<ContainerNodeProps> = ({
   statusFilter,
   isVisible
 }) => {
-  // If containerId is provided, use it to override the title
+  // If containerId is provided, use it as the title directly
   const displayTitle = containerId ? `Container ID ${containerId}` : title;
   
   return (
