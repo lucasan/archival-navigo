@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Info } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
@@ -47,7 +46,6 @@ export const SeriesMetadata: React.FC<SeriesMetadataProps> = ({
       {/* Collapsible restrictions notice */}
       {hasRestrictions && (
         <Alert className="mb-3 bg-blue-50/20 border-blue-100 py-2 px-3">
-          <Info className="h-4 w-4 text-blue-500" />
           <AlertDescription className="text-slate-700 text-xs">
             <Collapsible open={isOpen} onOpenChange={setIsOpen}>
               <div className="flex items-center">
