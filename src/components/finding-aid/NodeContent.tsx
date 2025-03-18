@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ExternalLink, File, Package, ChevronRight, ChevronDown, Sparkle, Archive, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -30,7 +31,8 @@ export const NodeContent: React.FC<NodeContentProps> = ({
   isExpanded,
   hasChildren,
   matchesSearch,
-  searchTerm
+  searchTerm,
+  scopeContent
 }) => {
   // Explicit handler for the entire node click
   const handleNodeClick = (e: React.MouseEvent) => {
@@ -164,6 +166,14 @@ export const NodeContent: React.FC<NodeContentProps> = ({
         )}
       </div>
     </div>
+    
+    {/* Scope Content for items - display below the main content */}
+    {type === 'item' && scopeContent && (
+      <div className="pl-7 pr-2 mt-1 mb-2 text-sm text-slate-700">
+        {scopeContent}
+      </div>
+    )}
+  </div>
   );
 };
 
