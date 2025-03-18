@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationHeader from '@/components/finding-aid/NavigationHeader';
@@ -8,56 +7,190 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Search } from 'lucide-react';
+import { Search, Archive, Layers, File, FileText, ExternalLink } from 'lucide-react';
+import { StatusIcon } from '@/components/finding-aid/StatusIcon';
 
-// Mock search results data
 const mockSearchResults = [
   {
     id: 1,
     title: "Adams Family Papers",
-    type: "Textual Records",
+    type: "finding-aid",
     date: "1750-1889",
     digitized: "Partially Digitized",
+    naid: "12345678",
     excerpt: "Collection of correspondence, diaries, and other papers of the Adams family of Massachusetts, including John Adams and John Quincy Adams."
   },
   {
     id: 2,
-    title: "Civil War Photographs",
-    type: "Photographs and other Graphic Materials",
+    title: "Series I: Civil War Photographs",
+    type: "series",
     date: "1861-1865",
     digitized: "Digitized",
-    excerpt: "Photographs documenting the Civil War, including images of military personnel, preparations for battle, and battlefield operations."
+    naid: "23456789",
+    excerpt: "Photographs documenting the Civil War, including images of military personnel, preparations for battle, and battlefield operations.",
+    seriesExtent: "245 photographs"
   },
   {
     id: 3,
-    title: "Immigration Records Collection",
-    type: "Textual Records",
+    title: "Immigration Records",
+    type: "file-unit",
     date: "1892-1954",
     digitized: "Non Digitized",
+    status: "closed",
+    naid: "34567890",
+    containerId: "B-432-01",
     excerpt: "Records documenting immigration to the United States, including passenger lists and naturalization papers."
   },
   {
     id: 4,
     title: "Presidential Executive Orders",
-    type: "Textual Records",
+    type: "finding-aid",
     date: "1789-2023",
     digitized: "Digitized",
+    naid: "45678901",
     excerpt: "Collection of executive orders issued by presidents of the United States from George Washington to the present day."
   },
   {
     id: 5,
-    title: "NASA Space Program Archives",
-    type: "Data Files",
-    date: "1958-2022",
-    digitized: "Partially Digitized",
-    excerpt: "Documentation of NASA's space programs including mission reports, technical drawings, and correspondence related to various space missions."
+    title: "Apollo 11 Mission Patch",
+    type: "item",
+    date: "1969",
+    digitized: "Digitized",
+    naid: "56789012",
+    thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=Apollo+11+Patch",
+    excerpt: "Official mission patch worn by astronauts during the Apollo 11 mission, the first lunar landing.",
+    externalUrl: "https://catalog.archives.gov/"
   }
 ];
+
+const ResourceTypeIcon = ({ type }) => {
+  switch (type) {
+    case 'finding-aid':
+      return <Archive size={18} className="text-blue-600" />;
+    case 'series':
+      return <Layers size={18} className="text-purple-600" />;
+    case 'file-unit':
+      return <File size={18} className="text-amber-600" />;
+    case 'item':
+      return <FileText size={18} className="text-emerald-600" />;
+    default:
+      return <FileText size={18} className="text-gray-600" />;
+  }
+};
+
+const ResourceTypeLabel = ({ type }) => {
+  let label = '';
+  let className = 'px-2 py-0.5 rounded-full text-xs font-medium';
+  
+  switch (type) {
+    case 'finding-aid':
+      label = 'Finding Aid';
+      className += ' bg-blue-100 text-blue-800';
+      break;
+    case 'series':
+      label = 'Series';
+      className += ' bg-purple-100 text-purple-800';
+      break;
+    case 'file-unit':
+      label = 'File Unit';
+      className += ' bg-amber-100 text-amber-800';
+      break;
+    case 'item':
+      label = 'Item';
+      className += ' bg-emerald-100 text-emerald-800';
+      break;
+    default:
+      label = type;
+      className += ' bg-gray-100 text-gray-800';
+  }
+  
+  return <span className={className}>{label}</span>;
+};
+
+const SearchResultCard = ({ result }) => {
+  const { title, type, date, digitized, excerpt, naid, containerId, thumbnailUrl, externalUrl, status, seriesExtent } = result;
+  
+  const getLinkDestination = () => {
+    switch (type) {
+      case 'finding-aid':
+        return '/finding-aid';
+      case 'series':
+        return '/finding-aid#' + title.toLowerCase().replace(/\s+/g, '-');
+      case 'file-unit':
+        return '/finding-aid-no-containers';
+      case 'item':
+        return externalUrl || '#';
+      default:
+        return '#';
+    }
+  };
+  
+  return (
+    <Card className="transition-shadow hover:shadow-md">
+      <CardContent className="p-4">
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2 mb-2">
+            <ResourceTypeIcon type={type} />
+            <ResourceTypeLabel type={type} />
+          </div>
+          
+          <div className="mb-1">
+            <Link 
+              to={getLinkDestination()}
+              className="text-xl font-semibold text-primary hover:underline block"
+              target={type === 'item' && externalUrl ? '_blank' : undefined}
+            >
+              {title}
+              {type === 'item' && externalUrl && 
+                <ExternalLink size={14} className="inline-flex ml-1 opacity-70" />
+              }
+            </Link>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-3 mb-2">
+            {date && <span className="text-sm text-muted-foreground">{date}</span>}
+            {digitized && <span className="text-sm text-muted-foreground">{digitized}</span>}
+            {seriesExtent && <span className="text-sm text-muted-foreground">Extent: {seriesExtent}</span>}
+            {type === 'file-unit' && status && (
+              <div className="flex items-center gap-1">
+                <StatusIcon status={status} showLabel={true} />
+              </div>
+            )}
+          </div>
+          
+          {type === 'item' && thumbnailUrl && (
+            <div className="flex gap-4 mb-3">
+              <div className="w-24 h-20 overflow-hidden rounded-md border">
+                <img 
+                  src={thumbnailUrl} 
+                  alt={`Thumbnail for ${title}`} 
+                  className="w-full h-full object-cover transition-transform hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+              <p className="text-muted-foreground flex-1">{excerpt}</p>
+            </div>
+          )}
+          
+          {(type !== 'item' || !thumbnailUrl) && (
+            <p className="text-muted-foreground mb-2">{excerpt}</p>
+          )}
+          
+          {(naid || containerId) && (
+            <div className="flex flex-wrap gap-3 mt-1 text-xs text-muted-foreground">
+              {naid && <span>NAID: <span className="font-medium">{naid}</span></span>}
+              {containerId && <span>Container: <span className="font-medium">{containerId}</span></span>}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const ResearchRoomSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
-    // Record Types
     architecturalAndEngineering: false,
     artifacts: false,
     dataFiles: false,
@@ -68,13 +201,11 @@ const ResearchRoomSearch: React.FC = () => {
     textualRecords: false,
     webPages: false,
     
-    // Level of Description
     levelSeries: false,
     levelFindingAid: false,
     levelFileUnit: false,
     levelItem: false,
     
-    // Digitized Status
     digitized: false,
     nonDigitized: false,
   });
@@ -145,7 +276,6 @@ const ResearchRoomSearch: React.FC = () => {
         </form>
         
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filters Column (Left) */}
           <div className="w-full lg:w-1/4">
             <div className="bg-white rounded-lg border p-4 shadow-sm">
               <div className="flex items-center justify-between mb-4">
@@ -158,7 +288,6 @@ const ResearchRoomSearch: React.FC = () => {
               </div>
               
               <div className="space-y-6">
-                {/* Record Type Filter Section */}
                 <div>
                   <h3 className="font-medium mb-3">Record Type</h3>
                   <div className="space-y-2">
@@ -283,7 +412,6 @@ const ResearchRoomSearch: React.FC = () => {
                 
                 <Separator />
 
-                {/* Level of Description Filter Section */}
                 <div>
                   <h3 className="font-medium mb-3">Level of Description</h3>
                   <div className="space-y-2">
@@ -335,7 +463,6 @@ const ResearchRoomSearch: React.FC = () => {
                 
                 <Separator />
                 
-                {/* Digitized Status Filter Section */}
                 <div>
                   <h3 className="font-medium mb-3">Digitized Status</h3>
                   <div className="space-y-2">
@@ -367,13 +494,11 @@ const ResearchRoomSearch: React.FC = () => {
                 
                 <Separator />
                 
-                {/* Apply Filters Button */}
                 <Button className="w-full">Apply Filters</Button>
               </div>
             </div>
           </div>
           
-          {/* Results Column (Right) */}
           <div className="w-full lg:w-3/4">
             <div className="mb-4">
               <p className="text-muted-foreground">
@@ -386,32 +511,7 @@ const ResearchRoomSearch: React.FC = () => {
             
             <div className="space-y-4">
               {mockSearchResults.map((result) => (
-                <Card key={result.id} className="transition-shadow hover:shadow-md">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col">
-                      <div className="mb-1">
-                        <Link 
-                          to={result.type === "Textual Records" ? "/finding-aid" : 
-                               result.type === "Textual" ? "/finding-aid-no-series" : 
-                               "/finding-aid-no-containers"} 
-                          className="text-xl font-semibold text-primary hover:underline block"
-                        >
-                          {result.title}
-                        </Link>
-                      </div>
-                      
-                      <div className="flex items-center gap-4 mb-2">
-                        <span className="text-sm text-muted-foreground">{result.type}</span>
-                        <span className="text-sm text-muted-foreground">{result.date}</span>
-                        <span className="text-sm text-muted-foreground">{result.digitized}</span>
-                      </div>
-                      
-                      <p className="text-muted-foreground mb-2">
-                        {result.excerpt}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <SearchResultCard key={result.id} result={result} />
               ))}
             </div>
           </div>
