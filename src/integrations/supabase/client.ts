@@ -66,21 +66,29 @@ export const getBushFaFoiaData = async () => {
   }
 };
 
-// Simplified version with only three parameters to avoid the function selection ambiguity
+// Use direct SQL query instead of the overloaded RPC function to avoid ambiguity
 export const getBushFaFoiaDataPaginated = async (from: number, to: number, search?: string) => {
   try {
-    // Only use the 3 parameters version to avoid ambiguity
-    const { data, error } = await supabase.rpc('get_bush_fa_foia_data_paginated', { 
-      p_from: from, 
-      p_to: to,
-      p_search: search || null
-    });
+    console.log('Fetching data with params:', { from, to, search });
+    
+    let query = supabase.from('foia').select('*');
+    
+    // Apply search filter if provided
+    if (search) {
+      query = query.or(`foia_number.ilike.%${search}%,title.ilike.%${search}%,scope.ilike.%${search}%`);
+    }
+    
+    // Apply pagination and ordering
+    const { data, error, count } = await query
+      .order('created_at', { ascending: false })
+      .range(from, to);
     
     if (error) throw error;
-    const safeData = Array.isArray(data) ? data : [];
-    return { data: safeData, error: null, count: safeData.length };
+    
+    console.log('Fetched data count:', data?.length);
+    return { data: data || [], error: null, count: count || 0 };
   } catch (error) {
-    console.error('Error fetching paginated bush_fa.foia data:', error);
+    console.error('Error fetching paginated foia data:', error);
     return { data: null, error: error as Error, count: 0 };
   }
 };

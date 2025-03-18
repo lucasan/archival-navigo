@@ -1,6 +1,6 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { supabase, getBushFaFoiaDataPaginated } from '@/integrations/supabase/client';
+import { getBushFaFoiaDataPaginated } from '@/integrations/supabase/client';
 import { toast } from "sonner";
 import { FetchFOIAResponse } from '@/components/foia/types';
 
@@ -17,23 +17,25 @@ export const useFOIAData = ({ searchQuery, currentPage }: UseFOIADataParams) => 
     const to = from + ITEMS_PER_PAGE - 1;
     
     try {
-      // Simple approach: just use the three required parameters
-      const rpcResponse = await getBushFaFoiaDataPaginated(from, to, searchQuery);
+      console.log('Fetching FOIA records:', { from, to, searchQuery });
+      const response = await getBushFaFoiaDataPaginated(from, to, searchQuery);
       
-      if (rpcResponse.error) {
-        toast.error(`Failed to load data: ${rpcResponse.error.message}`);
-        throw rpcResponse.error;
+      if (response.error) {
+        toast.error(`Failed to load data: ${response.error.message}`);
+        throw response.error;
       }
       
-      // Count total records via another RPC call for accurate pagination
-      const countQuery = await supabase.rpc('get_bush_fa_foia_data');
-      const totalCount = countQuery.data ? countQuery.data.length : 0;
+      // If we don't have a count from the response, make a conservative estimate
+      const totalCount = response.count !== undefined && response.count !== null 
+        ? response.count 
+        : response.data ? response.data.length * 10 : 0;
       
       return { 
-        records: rpcResponse.data || [], 
+        records: response.data || [], 
         totalCount: totalCount
       };
     } catch (error) {
+      console.error('Error in fetchFOIARecords:', error);
       toast.error('Failed to load data. Please try again later.');
       throw error;
     }
