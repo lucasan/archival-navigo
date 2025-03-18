@@ -6,6 +6,7 @@ import { ITEMS_PER_PAGE, useFOIAData } from '@/hooks/useFOIAData';
 import SearchBar from '@/components/foia/SearchBar';
 import DataTable from '@/components/foia/DataTable';
 import PaginationControls from '@/components/foia/PaginationControls';
+import { toast } from 'sonner';
 
 const FOIAFindingAidsListing: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,6 +29,15 @@ const FOIAFindingAidsListing: React.FC = () => {
     setSearchParams(params);
   };
 
+  const clearSearch = () => {
+    setSearchInput('');
+    const params = new URLSearchParams(searchParams);
+    params.delete('q');
+    params.set('page', '1');
+    setSearchParams(params);
+    toast.success('Search cleared');
+  };
+
   const goToPage = (page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', page.toString());
@@ -48,6 +58,7 @@ const FOIAFindingAidsListing: React.FC = () => {
           searchInput={searchInput}
           setSearchInput={setSearchInput}
           handleSearch={handleSearch}
+          clearSearch={clearSearch}
         />
         
         <DataTable 
