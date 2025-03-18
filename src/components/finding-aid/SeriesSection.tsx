@@ -13,6 +13,7 @@ interface SeriesSectionProps {
   searchTerm: string;
   statusFilter: 'all' | FileUnitStatus;
   children: React.ReactNode;
+  hideMetadata?: boolean;
 }
 
 const SeriesSection: React.FC<SeriesSectionProps> = ({
@@ -24,6 +25,7 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
   date,
   searchTerm,
   statusFilter,
+  hideMetadata = false,
   children
 }) => {
   return (
@@ -31,10 +33,10 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
       <TreeNode 
         type="series" 
         title={title}
-        seriesDescription={description}
-        seriesExtent={extent}
-        seriesArrangement={arrangement}
-        seriesDate={date}
+        seriesDescription={hideMetadata ? undefined : description}
+        seriesExtent={hideMetadata ? undefined : extent}
+        seriesArrangement={hideMetadata ? undefined : arrangement}
+        seriesDate={hideMetadata ? undefined : date}
         searchTerm={searchTerm}
         statusFilter={statusFilter}
       >

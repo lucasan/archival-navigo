@@ -77,6 +77,7 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
           date="1989-1993"
           searchTerm={searchTerm}
           statusFilter={statusFilter}
+          hideMetadata={true}
         >
           <FileUnitNode 
             title="Black History Month, 2/25/91 [OA 6855] [2]" 
