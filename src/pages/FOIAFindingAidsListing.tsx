@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
@@ -23,6 +23,7 @@ import {
   PaginationPrevious
 } from '@/components/ui/pagination';
 import NavigationHeader from '../components/finding-aid/NavigationHeader';
+import { toast } from "sonner";
 
 // Define how many items to show per page
 const ITEMS_PER_PAGE = 50;
@@ -47,33 +48,43 @@ const FOIAFindingAidsListing: React.FC = () => {
 
   // Function to fetch FOIA records from Supabase with search and pagination
   const fetchFOIARecords = async () => {
+    console.log("Fetching FOIA records...");
     // Calculate the range for pagination
     const from = (currentPage - 1) * ITEMS_PER_PAGE;
     const to = from + ITEMS_PER_PAGE - 1;
     
-    let query = supabase
-      .from('foia')
-      .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' });
-    
-    // Apply search filter if search query exists
-    if (searchQuery) {
-      query = query.or(`foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%`);
-    }
-    
-    // Apply pagination
-    const { data, error, count } = await query
-      .order('created_at', { ascending: false })
-      .range(from, to);
-    
-    if (error) {
-      console.error('Error fetching FOIA records:', error);
+    try {
+      let query = supabase
+        .from('foia')
+        .select('id, foia_number, title, processed_by, scope, created_at', { count: 'exact' });
+      
+      // Apply search filter if search query exists
+      if (searchQuery) {
+        query = query.or(`foia_number.ilike.%${searchQuery}%, title.ilike.%${searchQuery}%, scope.ilike.%${searchQuery}%`);
+      }
+      
+      // Apply pagination
+      const { data, error, count } = await query
+        .order('created_at', { ascending: false })
+        .range(from, to);
+      
+      if (error) {
+        console.error('Error fetching FOIA records:', error);
+        toast.error(`Failed to load data: ${error.message}`);
+        throw error;
+      }
+      
+      console.log("Fetched data:", data, "Total count:", count);
+      
+      return { 
+        records: data as FOIARecord[], 
+        totalCount: count || 0
+      };
+    } catch (error) {
+      console.error('Unexpected error fetching FOIA records:', error);
+      toast.error('Failed to load data. Please try again later.');
       throw error;
     }
-    
-    return { 
-      records: data as FOIARecord[], 
-      totalCount: count || 0
-    };
   };
 
   // Use React Query to fetch data
@@ -178,7 +189,12 @@ const FOIAFindingAidsListing: React.FC = () => {
         
         {/* Loading and error states */}
         {isLoading && <p className="text-gray-500">Loading records...</p>}
-        {isError && <p className="text-red-500">Error: {(error as Error).message}</p>}
+        {isError && (
+          <div className="text-red-500 mb-4">
+            <p>Error: {(error as Error).message}</p>
+            <p className="text-sm">Please try refreshing the page or contact support.</p>
+          </div>
+        )}
         
         {/* Records table */}
         {!isLoading && !isError && data && (
