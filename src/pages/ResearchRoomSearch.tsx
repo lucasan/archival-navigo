@@ -28,7 +28,11 @@ const mockSearchResults = [
     digitized: "Digitized",
     naid: "23456789",
     excerpt: "Photographs documenting the Civil War, including images of military personnel, preparations for battle, and battlefield operations.",
-    seriesExtent: "245 photographs"
+    seriesExtent: "245 photographs",
+    parentCollection: {
+      title: "Civil War Records",
+      id: 4
+    }
   },
   {
     id: 3,
@@ -39,7 +43,11 @@ const mockSearchResults = [
     status: "closed",
     naid: "34567890",
     containerId: "B-432-01",
-    excerpt: "Records documenting immigration to the United States, including passenger lists and naturalization papers."
+    excerpt: "Records documenting immigration to the United States, including passenger lists and naturalization papers.",
+    parentCollection: {
+      title: "Bureau of Immigration and Naturalization",
+      id: 5
+    }
   },
   {
     id: 4,
@@ -59,7 +67,11 @@ const mockSearchResults = [
     naid: "56789012",
     thumbnailUrl: "https://placehold.co/400x300/e4e4e7/71717a?text=Apollo+11+Patch",
     excerpt: "Official mission patch worn by astronauts during the Apollo 11 mission, the first lunar landing.",
-    externalUrl: "https://catalog.archives.gov/"
+    externalUrl: "https://catalog.archives.gov/",
+    parentCollection: {
+      title: "NASA Space Missions Collection",
+      id: 6
+    }
   }
 ];
 
@@ -108,7 +120,7 @@ const ResourceTypeLabel = ({ type }) => {
 };
 
 const SearchResultCard = ({ result }) => {
-  const { title, type, date, digitized, excerpt, naid, containerId, thumbnailUrl, externalUrl, status, seriesExtent } = result;
+  const { title, type, date, digitized, naid, containerId, thumbnailUrl, externalUrl, status, seriesExtent, parentCollection } = result;
   
   const getLinkDestination = () => {
     switch (type) {
@@ -158,6 +170,14 @@ const SearchResultCard = ({ result }) => {
             )}
           </div>
           
+          {['series', 'file-unit', 'item'].includes(type) && parentCollection && (
+            <div className="mb-2">
+              <span className="text-sm text-muted-foreground">
+                From collection: <Link to="/finding-aid" className="text-primary hover:underline">{parentCollection.title}</Link>
+              </span>
+            </div>
+          )}
+          
           {type === 'item' && thumbnailUrl && (
             <div className="flex gap-4 mb-3">
               <div className="w-24 h-20 overflow-hidden rounded-md border">
@@ -168,12 +188,7 @@ const SearchResultCard = ({ result }) => {
                   loading="lazy"
                 />
               </div>
-              <p className="text-muted-foreground flex-1">{excerpt}</p>
             </div>
-          )}
-          
-          {(type !== 'item' || !thumbnailUrl) && (
-            <p className="text-muted-foreground mb-2">{excerpt}</p>
           )}
           
           {(naid || containerId) && (
