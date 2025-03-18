@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { FileDown, List } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,16 +16,27 @@ interface FindingAidSidebarProps {
 }
 
 const FindingAidSidebar: React.FC<FindingAidSidebarProps> = ({ 
-  isVisible,
-  highlights,
-  showSeriesNavigation = false
+  isVisible
 }) => {
-  // Collection links for the table of contents
+  const location = useLocation();
+  const isTextualFindingAid = location.pathname === "/finding-aid";
+  
+  // Series links for Textual Finding Aid
+  const seriesSections = [
+    { id: "series-1", title: "Series I: Personal Correspondence, 1770-1826" },
+    { id: "series-2", title: "Series II: Political Documents, 1780-1817" },
+    { id: "series-3", title: "Series III: Financial Records, 1780-1836" }
+  ];
+
+  // Collection links for FOIA Finding Aid
   const collections = [
     { id: "speechwriting", title: "Records of the White House Office of Speechwriting" },
     { id: "public-liaison", title: "Records of the White House Office of Public Liaison" },
     { id: "science-technology", title: "Records of the White House Office of Science and Technology" }
   ];
+
+  // Determine which links to show based on current route
+  const navigationLinks = isTextualFindingAid ? seriesSections : collections;
 
   // Scroll smoothly to the selected section
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -58,14 +70,14 @@ const FindingAidSidebar: React.FC<FindingAidSidebarProps> = ({
           <ScrollArea className="h-[200px] pr-2">
             <nav className="text-xs md:text-sm">
               <ul className="space-y-2">
-                {collections.map((collection) => (
-                  <li key={collection.id}>
+                {navigationLinks.map((link) => (
+                  <li key={link.id}>
                     <a 
-                      href={`#${collection.id}`}
-                      onClick={(e) => scrollToSection(e, collection.id)}
+                      href={`#${link.id}`}
+                      onClick={(e) => scrollToSection(e, link.id)}
                       className="text-blue-600 hover:text-blue-800 hover:underline block py-1.5 px-2 rounded-md transition-colors hover:bg-blue-50 flex items-start"
                     >
-                      <span className="inline-block w-[90%]">{collection.title}</span>
+                      <span className="inline-block w-[90%]">{link.title}</span>
                     </a>
                   </li>
                 ))}
