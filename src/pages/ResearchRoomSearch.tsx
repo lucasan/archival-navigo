@@ -248,6 +248,7 @@ const ResearchRoomSearch: React.FC = () => {
 
   const resetFilters = () => {
     setFilters({
+      // Record Type filters
       architecturalAndEngineering: false,
       artifacts: false,
       dataFiles: false,
@@ -258,13 +259,23 @@ const ResearchRoomSearch: React.FC = () => {
       textualRecords: false,
       webPages: false,
       
+      // Level of Description filters
       levelSeries: false,
       levelFindingAid: false,
       levelFileUnit: false,
       levelItem: false,
       
+      // Digitized Status filters
       digitized: false,
       nonDigitized: false,
+      
+      // Page Type filters
+      pageTypeMedia: false,
+      pageTypeDailyDiary: false,
+      pageTypePhotoContactSheet: false,
+      pageTypeFindingAid: false,
+      pageTypeGallery: false,
+      pageTypeExhibits: false,
     });
   };
 
