@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { FileUnitStatus } from './types';
 import SeriesSection from './SeriesSection';
 import ContainerNode from './ContainerNode';
 import FileUnitNode from './FileUnitNode';
+import ItemNode from './ItemNode';
 
 interface SeriesIIContentProps {
   searchTerm: string;
