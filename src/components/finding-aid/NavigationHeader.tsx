@@ -22,7 +22,7 @@ const NavigationHeader: React.FC = () => {
             )}
           >
             <FileText className="h-4 w-4 mr-1" />
-            FOIA Finding Aids
+            FOIA Finding Aids Listing
           </Link>
           
           <ArrowLeftRight className="h-4 w-4 text-gray-400" />
