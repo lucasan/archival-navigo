@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Search, Archive, Database, ArrowRight } from 'lucide-react';
+import { FileText, Search, Archive, Database, ArrowRight, ExternalLink } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+
 const Index: React.FC = () => {
   return <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 py-12 max-w-5xl">
@@ -90,10 +90,23 @@ const Index: React.FC = () => {
           </Link>
         </div>
         
+        <div className="text-center mb-8">
+          <a 
+            href="https://docs.google.com/spreadsheets/d/1N4c-EbGqgG5eTg54MGglnmDaYnyPsZ-UvAYs6apmiQk/edit?gid=296372129#gid=296372129" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-flex items-center gap-2 text-primary hover:underline"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Finding Aids field's mapping spreadsheet
+          </a>
+        </div>
+        
         <div className="text-center text-sm text-slate-500">
           <p>Bush Presidential Library Finding Aid Prototypes</p>
         </div>
       </div>
     </div>;
 };
+
 export default Index;
