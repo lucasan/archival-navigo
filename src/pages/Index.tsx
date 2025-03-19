@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Search, Archive, Database, ArrowRight } from 'lucide-react';
@@ -37,7 +38,7 @@ const Index: React.FC = () => {
                 <FileText className="h-10 w-10 text-blue-500 group-hover:scale-110 transition-transform duration-300" />
               </div>
               <CardHeader className="pt-4">
-                <CardTitle className="text-lg text-center group-hover:text-blue-500 transition-colors">Finding Aid with Series</CardTitle>
+                <CardTitle className="text-lg text-center group-hover:text-blue-500 transition-colors">Textual Finding Aid</CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-center text-slate-600">
                 View the standard finding aid with Series organization
