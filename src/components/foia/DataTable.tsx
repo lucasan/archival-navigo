@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Table,
   TableBody,
@@ -8,6 +9,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
+import { Link2 } from 'lucide-react';
 
 interface FOIARecord {
   id: number;
@@ -75,7 +77,19 @@ const DataTable: React.FC<DataTableProps> = ({
             ) : (
               records.map((record) => (
                 <TableRow key={record.id}>
-                  <TableCell className="font-medium">{record.foia_number || 'N/A'}</TableCell>
+                  <TableCell className="font-medium">
+                    {record.foia_number ? (
+                      <Link 
+                        to="/finding-aid-no-containers" 
+                        className="flex items-center gap-1.5 text-primary hover:underline"
+                      >
+                        {record.foia_number}
+                        <Link2 className="h-3.5 w-3.5 text-gray-400" />
+                      </Link>
+                    ) : (
+                      'N/A'
+                    )}
+                  </TableCell>
                   <TableCell>{record.title || 'N/A'}</TableCell>
                 </TableRow>
               ))
