@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FileText, Search, Archive, Database, ArrowRight, ExternalLink } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Index: React.FC = () => {
   return <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -90,17 +91,23 @@ const Index: React.FC = () => {
           </Link>
         </div>
         
-        <div className="text-center mb-8">
-          <a 
-            href="https://docs.google.com/spreadsheets/d/1N4c-EbGqgG5eTg54MGglnmDaYnyPsZ-UvAYs6apmiQk/edit?gid=296372129#gid=296372129" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="inline-flex items-center gap-2 text-primary hover:underline"
-          >
-            <ExternalLink className="h-4 w-4" />
-            Finding Aids field's mapping spreadsheet
-          </a>
-        </div>
+        <Alert className="mb-8 border-primary/30 bg-primary/5">
+          <div className="flex flex-col items-center py-2">
+            <h3 className="text-lg font-medium text-primary mb-2">Documentation Resource</h3>
+            <AlertDescription className="text-center mb-3">
+              Document mapping the fields for Finding Aids from NAC to Drupal
+            </AlertDescription>
+            <a 
+              href="https://docs.google.com/spreadsheets/d/1N4c-EbGqgG5eTg54MGglnmDaYnyPsZ-UvAYs6apmiQk/edit?gid=296372129#gid=296372129" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="inline-flex items-center gap-2 text-primary font-medium hover:underline text-lg"
+            >
+              <ExternalLink className="h-5 w-5" />
+              Finding Aids field's mapping spreadsheet
+            </a>
+          </div>
+        </Alert>
         
         <div className="text-center text-sm text-slate-500">
           <p>Bush Presidential Library Finding Aid Prototypes</p>
