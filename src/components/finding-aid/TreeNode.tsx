@@ -55,8 +55,6 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   // Check if we actually have children
   const hasChildren = Boolean(children && React.Children.count(children) > 0);
   
-  console.log(`TreeNode "${title}" - hasChildren: ${hasChildren}, isExpanded: ${isExpanded}, expandAll: ${expandAll}`);
-
   // Process children for search and filter
   const childrenArray = React.Children.toArray(children) as React.ReactElement[];
   
@@ -135,13 +133,12 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     });
   });
 
-  // Force render when expandAll changes - only once
+  // Force render when expandAll changes
   useEffect(() => {
     if (hasChildren) {
-      console.log(`ExpandAll changed to ${expandAll} for ${title}`);
       setIsExpanded(expandAll);
     }
-  }, [expandAll, hasChildren, title]);
+  }, [expandAll, hasChildren]);
   
   // Check if any descendants match search and filter criteria
   const hasVisibleDescendants = useCallback(() => {
@@ -231,7 +228,6 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   // Handle node expansion toggle - using callback to prevent recreation
   const toggleExpand = useCallback(() => {
     if (hasChildren) {
-      console.log(`TOGGLE EVENT: ${title} from ${isExpanded} to ${!isExpanded}`);
       setIsExpanded(prevState => !prevState);
     }
   }, [hasChildren, isExpanded, title]);

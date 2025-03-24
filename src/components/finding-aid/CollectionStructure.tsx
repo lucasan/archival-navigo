@@ -1,11 +1,10 @@
 
 import React from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import SearchControls from './SearchControls';
 import { FileUnitStatus } from './types';
 import SeriesIIContent from './SeriesIIContent';
-import { TreeProvider, useTreeContext } from './TreeContext';
+import { TreeProvider } from './TreeContext';
+import ToggleExpandButton from './collections/ToggleExpandButton';
 
 interface CollectionStructureProps {
   searchTerm: string;
@@ -13,32 +12,6 @@ interface CollectionStructureProps {
   statusFilter: 'all' | FileUnitStatus;
   handleStatusFilter: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
-
-// Create a ToggleButton component that uses the TreeContext
-const ToggleExpandButton = () => {
-  const { expandAll, toggleExpandAll } = useTreeContext();
-  
-  return (
-    <Button 
-      variant="outline" 
-      size="sm" 
-      onClick={toggleExpandAll}
-      className="ml-auto flex items-center gap-1"
-    >
-      {expandAll ? (
-        <>
-          <ChevronUp size={16} />
-          <span>Collapse All</span>
-        </>
-      ) : (
-        <>
-          <ChevronDown size={16} />
-          <span>Expand All</span>
-        </>
-      )}
-    </Button>
-  );
-};
 
 // Inner component to use the context
 const CollectionStructureContent: React.FC<CollectionStructureProps> = ({

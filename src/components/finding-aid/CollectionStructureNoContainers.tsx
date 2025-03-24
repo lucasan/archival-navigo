@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { TreeProvider } from './TreeContext';
+import { TreeProvider, useTreeContext } from './TreeContext';
 import SearchControls from './SearchControls';
 import { FileUnitStatus } from './types';
 import CollectionHeader from './collections/CollectionHeader';
 import SpeechwritingCollection from './collections/SpeechwritingCollection';
 import PublicLiaisonCollection from './collections/PublicLiaisonCollection';
 import ScienceTechnologyCollection from './collections/ScienceTechnologyCollection';
-import { useTreeContext } from './TreeContext';
+import ToggleExpandButton from './collections/ToggleExpandButton';
 
 interface CollectionStructureNoContainersProps {
   searchTerm: string;
@@ -27,6 +27,7 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
     <div className="bg-white rounded-lg border shadow-sm p-3 sm:p-4 md:p-6">
       <div className="flex items-center justify-between mb-3 md:mb-4">
         <CollectionHeader title="Collection Structure" />
+        <ToggleExpandButton />
       </div>
       
       <SearchControls 
