@@ -23,7 +23,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   } = props;
 
   // Get the global expand state from context
-  const { expandAll, setExpandAll } = useTreeContext();
+  const { expandAll } = useTreeContext();
 
   // Type-specific properties with proper type narrowing
   const seriesDescription = type === 'series' ? (props as SeriesNodeProps).seriesDescription : undefined;
@@ -55,6 +55,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   // Check if we actually have children
   const hasChildren = Boolean(children && React.Children.count(children) > 0);
   
+  console.log(`TreeNode "${title}" - hasChildren: ${hasChildren}, isExpanded: ${isExpanded}, expandAll: ${expandAll}`);
+
   // Process children for search and filter
   const childrenArray = React.Children.toArray(children) as React.ReactElement[];
   
@@ -133,12 +135,13 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     });
   });
 
-  // Force expand/collapse based on context state
+  // Force render when expandAll changes - only once
   useEffect(() => {
     if (hasChildren) {
+      console.log(`ExpandAll changed to ${expandAll} for ${title}`);
       setIsExpanded(expandAll);
     }
-  }, [expandAll, hasChildren]);
+  }, [expandAll, hasChildren, title]);
   
   // Check if any descendants match search and filter criteria
   const hasVisibleDescendants = useCallback(() => {
@@ -168,10 +171,22 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     if (!autoExpandTriggered.current && 
         ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all')) {
       
+      console.log(`Auto-expand check for ${title}, search: "${searchTerm}", filter: ${statusFilter}`);
+      
       if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
         if (matchesSearch || hasVisibleDescendants() || hasDescendantItemMatchingSearch()) {
           // Mark as triggered to prevent infinite loop
           autoExpandTriggered.current = true;
+          
+          if (searchTerm && searchTerm.trim() !== '') {
+            console.log(`Search/filter active for ${title}`);
+          }
+          
+          if (matchesSearch && searchTerm && searchTerm.trim() !== '') {
+            console.log(`Node ${title} matches search/filter - expanding`);
+          } else if (hasVisibleDescendants()) {
+            console.log(`Node ${title} has visible descendants - expanding`);
+          }
           
           setIsExpanded(true);
         }
@@ -216,9 +231,10 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   // Handle node expansion toggle - using callback to prevent recreation
   const toggleExpand = useCallback(() => {
     if (hasChildren) {
+      console.log(`TOGGLE EVENT: ${title} from ${isExpanded} to ${!isExpanded}`);
       setIsExpanded(prevState => !prevState);
     }
-  }, [hasChildren]);
+  }, [hasChildren, isExpanded, title]);
 
   // Early return if node shouldn't be displayed
   if (!shouldDisplay) {

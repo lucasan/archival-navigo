@@ -1,10 +1,9 @@
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type TreeContextType = {
   expandAll: boolean;
   toggleExpandAll: () => void;
-  setExpandAll: (value: boolean) => void; // Add direct setter for more control
 };
 
 const TreeContext = createContext<TreeContextType | undefined>(undefined);
@@ -17,7 +16,7 @@ export const TreeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <TreeContext.Provider value={{ expandAll, toggleExpandAll, setExpandAll }}>
+    <TreeContext.Provider value={{ expandAll, toggleExpandAll }}>
       {children}
     </TreeContext.Provider>
   );
