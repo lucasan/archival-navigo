@@ -137,16 +137,10 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
         </CollapsibleTrigger>
         
         <CollapsibleContent className="pb-2">
-          {/* Render the TreeNode with children */}
-          <TreeNode 
-            type="series" 
-            title=""
-            searchTerm={searchTerm}
-            statusFilter={statusFilter}
-            hideNodeContent={true}
-          >
+          {/* Pass the children directly instead of wrapping in TreeNode */}
+          <div className="pl-4 pt-2">
             {children}
-          </TreeNode>
+          </div>
         </CollapsibleContent>
       </Collapsible>
     </div>
