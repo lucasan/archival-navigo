@@ -44,6 +44,7 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
   // Use scopeContent if provided, otherwise fall back to description
   const finalDescription = scopeContent || description;
   const [isOpen, setIsOpen] = useState(false);
+  const [isRestrictionsOpen, setIsRestrictionsOpen] = useState(false);
 
   // Check if search is active to force open state
   React.useEffect(() => {
@@ -51,6 +52,16 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
       setIsOpen(true);
     }
   }, [searchTerm]);
+
+  // Create a summary of restrictions for the collapsed view
+  const restrictionsSummary = () => {
+    const parts = [];
+    if (accessRestriction) parts.push(`Access: ${accessRestriction}`);
+    if (useRestriction) parts.push(`Use: ${useRestriction}`);
+    return parts.join(' • ');
+  };
+
+  const hasRestrictions = accessRestriction || useRestriction;
 
   return (
     <div id={id} className="border border-gray-200 rounded-md mb-4 bg-white overflow-hidden">
@@ -84,31 +95,52 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
             </div>
           )}
           
-          {/* Restrictions Section */}
-          {(accessRestriction || useRestriction) && (
+          {/* Collapsible Restrictions Section */}
+          {hasRestrictions && (
             <div className="mb-2 p-2 bg-blue-50/20 border border-blue-100 rounded-sm">
-              {accessRestriction && (
-                <div className="mb-1">
-                  <span className="font-medium text-foreground">Access Restriction: </span>
-                  {accessRestriction}
-                  {specificAccessRestriction && (
-                    <div className="ml-4 text-xs mt-1 text-slate-600">
-                      {specificAccessRestriction}
+              <Collapsible
+                open={isRestrictionsOpen}
+                onOpenChange={setIsRestrictionsOpen}
+              >
+                <CollapsibleTrigger className="flex items-center w-full text-left text-sm">
+                  <div className="flex items-center gap-1 font-medium">
+                    {isRestrictionsOpen ? (
+                      <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+                    ) : (
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-500" />
+                    )}
+                    <span className="text-foreground">Restrictions: </span>
+                    {!isRestrictionsOpen && (
+                      <span className="text-sm font-normal">{restrictionsSummary()}</span>
+                    )}
+                  </div>
+                </CollapsibleTrigger>
+                
+                <CollapsibleContent className="pt-1 pl-5">
+                  {accessRestriction && (
+                    <div className="mb-1">
+                      <span className="font-medium text-foreground">Access Restriction: </span>
+                      {accessRestriction}
+                      {specificAccessRestriction && (
+                        <div className="ml-4 text-xs mt-1 text-slate-600">
+                          {specificAccessRestriction}
+                        </div>
+                      )}
                     </div>
                   )}
-                </div>
-              )}
-              {useRestriction && (
-                <div>
-                  <span className="font-medium text-foreground">Use Restriction: </span>
-                  {useRestriction}
-                  {specificUseRestriction && (
-                    <div className="ml-4 text-xs mt-1 text-slate-600">
-                      {specificUseRestriction}
+                  {useRestriction && (
+                    <div>
+                      <span className="font-medium text-foreground">Use Restriction: </span>
+                      {useRestriction}
+                      {specificUseRestriction && (
+                        <div className="ml-4 text-xs mt-1 text-slate-600">
+                          {specificUseRestriction}
+                        </div>
+                      )}
                     </div>
                   )}
-                </div>
-              )}
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           )}
         </div>
@@ -137,7 +169,6 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
         </CollapsibleTrigger>
         
         <CollapsibleContent className="pb-2">
-          {/* Pass the children directly instead of wrapping in TreeNode */}
           <div className="pl-4 pt-2">
             {children}
           </div>
