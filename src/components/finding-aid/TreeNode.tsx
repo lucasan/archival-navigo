@@ -19,6 +19,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     statusFilter = 'all',
     isVisible = true,
     scopeContent,
+    hideNodeContent = false,
   } = props;
 
   // Get the global expand state from context
@@ -242,35 +243,39 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
 
   return (
     <div className="animate-fade-in">
-      <NodeContent
-        type={type}
-        title={title}
-        externalUrl={externalUrl}
-        thumbnailUrl={thumbnailUrl}
-        containerType={containerType}
-        containerNumber={containerNumber}
-        fileUnitStatus={fileUnitStatus}
-        naid={naid}
-        containerId={containerId}
-        toggleExpand={toggleExpand}
-        isExpanded={isExpanded}
-        hasChildren={hasChildren}
-        matchesSearch={matchesSearch}
-        searchTerm={searchTerm}
-        scopeContent={itemScopeContent}
-      />
+      {!hideNodeContent && (
+        <>
+          <NodeContent
+            type={type}
+            title={title}
+            externalUrl={externalUrl}
+            thumbnailUrl={thumbnailUrl}
+            containerType={containerType}
+            containerNumber={containerNumber}
+            fileUnitStatus={fileUnitStatus}
+            naid={naid}
+            containerId={containerId}
+            toggleExpand={toggleExpand}
+            isExpanded={isExpanded}
+            hasChildren={hasChildren}
+            matchesSearch={matchesSearch}
+            searchTerm={searchTerm}
+            scopeContent={itemScopeContent}
+          />
 
-      {type === 'series' && (
-        <SeriesMetadata
-          description={seriesDescription}
-          extent={seriesExtent}
-          arrangement={seriesArrangement}
-          date={seriesDate}
-          accessRestriction={seriesAccessRestriction}
-          specificAccessRestriction={seriesSpecificAccessRestriction}
-          useRestriction={seriesUseRestriction}
-          specificUseRestriction={seriesSpecificUseRestriction}
-        />
+          {type === 'series' && (
+            <SeriesMetadata
+              description={seriesDescription}
+              extent={seriesExtent}
+              arrangement={seriesArrangement}
+              date={seriesDate}
+              accessRestriction={seriesAccessRestriction}
+              specificAccessRestriction={seriesSpecificAccessRestriction}
+              useRestriction={seriesUseRestriction}
+              specificUseRestriction={seriesSpecificUseRestriction}
+            />
+          )}
+        </>
       )}
 
       {/* Render children with explicit styles to ensure proper display */}
@@ -278,7 +283,8 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
         <div 
           className={cn(
             "ml-5 border-l pl-1 mt-1",
-            isExpanded ? "block" : "hidden"
+            isExpanded ? "block" : "hidden",
+            hideNodeContent && "ml-0 border-l-0"
           )}
           style={{ display: isExpanded ? 'block' : 'none' }} 
           data-expanded={isExpanded ? "true" : "false"}

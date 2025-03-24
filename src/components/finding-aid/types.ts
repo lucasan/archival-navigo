@@ -14,6 +14,7 @@ export interface TreeNodeBase {
   searchTerm?: string;
   statusFilter?: FileUnitStatus | 'all';
   isVisible?: boolean;
+  hideNodeContent?: boolean;
 }
 
 export interface SeriesNodeProps extends TreeNodeBase {

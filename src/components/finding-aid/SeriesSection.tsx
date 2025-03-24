@@ -1,7 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import TreeNode from './TreeNode';
 import { FileUnitStatus } from './types';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { cn } from '@/lib/utils';
 
 interface SeriesSectionProps {
   id: string;
@@ -40,25 +43,112 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
 }) => {
   // Use scopeContent if provided, otherwise fall back to description
   const finalDescription = scopeContent || description;
+  const [isOpen, setIsOpen] = useState(true);
+
+  // Check if search is active to force open state
+  React.useEffect(() => {
+    if (searchTerm && searchTerm.trim() !== '') {
+      setIsOpen(true);
+    }
+  }, [searchTerm]);
 
   return (
-    <div id={id}>
-      <TreeNode 
-        type="series" 
-        title={title}
-        seriesDescription={hideMetadata ? undefined : finalDescription}
-        seriesExtent={hideMetadata ? undefined : extent}
-        seriesArrangement={hideMetadata ? undefined : arrangement}
-        seriesDate={hideMetadata ? undefined : date}
-        seriesAccessRestriction={hideMetadata ? undefined : accessRestriction}
-        seriesSpecificAccessRestriction={hideMetadata ? undefined : specificAccessRestriction}
-        seriesUseRestriction={hideMetadata ? undefined : useRestriction}
-        seriesSpecificUseRestriction={hideMetadata ? undefined : specificUseRestriction}
-        searchTerm={searchTerm}
-        statusFilter={statusFilter}
+    <div id={id} className="border border-gray-200 rounded-md mb-4 bg-white overflow-hidden">
+      {/* Series Header - Always visible */}
+      <div className="p-3 pb-1">
+        <h3 className="text-lg font-medium">{title}</h3>
+      </div>
+
+      {/* Series Metadata - Always visible */}
+      {!hideMetadata && finalDescription && (
+        <div className="px-3 py-1 text-sm text-muted-foreground">
+          <div className="mb-2">{finalDescription}</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+            {extent && (
+              <div>
+                <span className="font-medium text-foreground">Extent: </span>
+                {extent}
+              </div>
+            )}
+            {date && (
+              <div>
+                <span className="font-medium text-foreground">Date: </span>
+                {date}
+              </div>
+            )}
+          </div>
+          {arrangement && (
+            <div className="mb-2">
+              <span className="font-medium text-foreground">System of Arrangement: </span>
+              {arrangement}
+            </div>
+          )}
+          
+          {/* Restrictions Section */}
+          {(accessRestriction || useRestriction) && (
+            <div className="mb-2 p-2 bg-blue-50/20 border border-blue-100 rounded-sm">
+              {accessRestriction && (
+                <div className="mb-1">
+                  <span className="font-medium text-foreground">Access Restriction: </span>
+                  {accessRestriction}
+                  {specificAccessRestriction && (
+                    <div className="ml-4 text-xs mt-1 text-slate-600">
+                      {specificAccessRestriction}
+                    </div>
+                  )}
+                </div>
+              )}
+              {useRestriction && (
+                <div>
+                  <span className="font-medium text-foreground">Use Restriction: </span>
+                  {useRestriction}
+                  {specificUseRestriction && (
+                    <div className="ml-4 text-xs mt-1 text-slate-600">
+                      {specificUseRestriction}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Collapsible Section for Children Content */}
+      <Collapsible
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        className="border-t border-gray-200"
       >
-        {children}
-      </TreeNode>
+        <CollapsibleTrigger className="flex items-center w-full p-2 text-left hover:bg-gray-50 transition-colors">
+          <div className="flex items-center gap-2 text-sm font-medium px-1">
+            {isOpen ? (
+              <ChevronDown className="h-4 w-4 text-gray-500" />
+            ) : (
+              <ChevronRight className="h-4 w-4 text-gray-500" />
+            )}
+            <span className={cn(
+              "transition-colors",
+              isOpen ? "text-primary" : "text-gray-600"
+            )}>
+              Series Content
+            </span>
+          </div>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent className="pb-2">
+          {/* Render the TreeNode with children */}
+          <TreeNode 
+            type="series" 
+            title=""
+            searchTerm={searchTerm}
+            statusFilter={statusFilter}
+            hideNodeContent={true}
+          >
+            {children}
+          </TreeNode>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };
