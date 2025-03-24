@@ -23,7 +23,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
   } = props;
 
   // Get the global expand state from context
-  const { expandAll } = useTreeContext();
+  const { expandAll, setExpandAll } = useTreeContext();
 
   // Type-specific properties with proper type narrowing
   const seriesDescription = type === 'series' ? (props as SeriesNodeProps).seriesDescription : undefined;
@@ -133,7 +133,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     });
   });
 
-  // Force render when expandAll changes
+  // Force expand/collapse based on context state
   useEffect(() => {
     if (hasChildren) {
       setIsExpanded(expandAll);
@@ -168,22 +168,10 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     if (!autoExpandTriggered.current && 
         ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all')) {
       
-      console.log(`Auto-expand check for ${title}, search: "${searchTerm}", filter: ${statusFilter}`);
-      
       if ((searchTerm && searchTerm.trim() !== '') || statusFilter !== 'all') {
         if (matchesSearch || hasVisibleDescendants() || hasDescendantItemMatchingSearch()) {
           // Mark as triggered to prevent infinite loop
           autoExpandTriggered.current = true;
-          
-          if (searchTerm && searchTerm.trim() !== '') {
-            console.log(`Search/filter active for ${title}`);
-          }
-          
-          if (matchesSearch && searchTerm && searchTerm.trim() !== '') {
-            console.log(`Node ${title} matches search/filter - expanding`);
-          } else if (hasVisibleDescendants()) {
-            console.log(`Node ${title} has visible descendants - expanding`);
-          }
           
           setIsExpanded(true);
         }
@@ -230,7 +218,7 @@ const TreeNode: React.FC<TreeNodeProps> = (props) => {
     if (hasChildren) {
       setIsExpanded(prevState => !prevState);
     }
-  }, [hasChildren, isExpanded, title]);
+  }, [hasChildren]);
 
   // Early return if node shouldn't be displayed
   if (!shouldDisplay) {

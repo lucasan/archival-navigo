@@ -1,13 +1,12 @@
 
 import React from 'react';
-import { TreeProvider, useTreeContext } from './TreeContext';
+import { TreeProvider } from './TreeContext';
 import SearchControls from './SearchControls';
 import { FileUnitStatus } from './types';
 import CollectionHeader from './collections/CollectionHeader';
 import SpeechwritingCollection from './collections/SpeechwritingCollection';
 import PublicLiaisonCollection from './collections/PublicLiaisonCollection';
 import ScienceTechnologyCollection from './collections/ScienceTechnologyCollection';
-import ToggleExpandButton from './collections/ToggleExpandButton';
 
 interface CollectionStructureNoContainersProps {
   searchTerm: string;
@@ -26,8 +25,8 @@ const CollectionStructureNoContainersContent: React.FC<CollectionStructureNoCont
   return (
     <div className="bg-white rounded-lg border shadow-sm p-3 sm:p-4 md:p-6">
       <div className="flex items-center justify-between mb-3 md:mb-4">
-        <CollectionHeader title="Collection Structure" />
-        <ToggleExpandButton />
+        <h3 className="text-lg md:text-xl font-medium">Collection Structure</h3>
+        {/* Remove the duplicated ToggleExpandButton here as it's already in CollectionHeader */}
       </div>
       
       <SearchControls 
