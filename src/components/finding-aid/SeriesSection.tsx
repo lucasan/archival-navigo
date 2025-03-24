@@ -43,7 +43,7 @@ const SeriesSection: React.FC<SeriesSectionProps> = ({
 }) => {
   // Use scopeContent if provided, otherwise fall back to description
   const finalDescription = scopeContent || description;
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   // Check if search is active to force open state
   React.useEffect(() => {
